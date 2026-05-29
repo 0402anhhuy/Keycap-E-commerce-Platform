@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #ff7a1a;
+}
+
+:root {
+    --theme-bg: #0b0b0f;
+    --theme-surface: #15151a;
+    --theme-surface-2: #1d1d24;
+    --theme-line: rgba(255, 255, 255, 0.08);
+    --theme-text: #f4f0e9;
+    --theme-muted: #a7a0a0;
+    --theme-accent: #ff7a1a;
+    --theme-accent-2: #ffb36b;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(255, 122, 26, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 179, 107, 0.10), transparent 24%),
+        linear-gradient(180deg, #111116 0%, #09090c 100%);
+    color: var(--theme-text);
+    font-family: 'Inter', sans-serif;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+::selection {
+    background: rgba(255, 122, 26, 0.28);
+    color: #fff;
+}
+
+a {
+    color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
