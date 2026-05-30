@@ -1,18 +1,9 @@
 const express = require('express');
-
 const router = express.Router();
+const revenueController = require('../controllers/revenueController');
 const { authMiddleware, vendorMiddleware } = require('../middleware/auth');
 
-const {
-    getShopRevenue,
-    getWalletHistory,
-    getPlatformRevenue,
-    requestWithdraw
-} = require('../controllers/revenueController');
-
-router.get('/shop', authMiddleware, vendorMiddleware, getShopRevenue);
-router.get('/wallet-history', authMiddleware, vendorMiddleware, getWalletHistory);
-router.get('/platform', authMiddleware, getPlatformRevenue);
-router.post('/withdraw', authMiddleware, vendorMiddleware, requestWithdraw);
+// Admin thống kê doanh thu toàn hệ thống
+router.get('/manager', authMiddleware, vendorMiddleware, revenueController.getManagerRevenue);
 
 module.exports = router;
