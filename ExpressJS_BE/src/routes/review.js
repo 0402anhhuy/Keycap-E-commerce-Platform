@@ -1,29 +1,15 @@
 const express = require('express');
-
 const router = express.Router();
+const reviewController = require('../controllers/reviewController');
 const { authMiddleware, vendorMiddleware } = require('../middleware/auth');
 
-const {
-    createProductReview,
-    createShopReview,
-    createOrderReview,
-    getProductReviews,
-    getShopReviews,
-    vendorReplyReview,
-    setReviewVisibility
-} = require('../controllers/reviewController');
+// Lấy danh sách đánh giá của một sản phẩm (public)
+router.get('/product/:productId', reviewController.getProductReviews);
 
-router.post('/product', authMiddleware, createProductReview);
-router.post('/shop', authMiddleware, createShopReview);
-router.post('/order', authMiddleware, createOrderReview);
-router.get('/product/:productId', getProductReviews);
-router.get('/shop', authMiddleware, vendorMiddleware, getShopReviews);
-router.patch('/:id/reply', authMiddleware, vendorMiddleware, vendorReplyReview);
+// Tạo đánh giá cho sản phẩm (user)
+router.post('/product', authMiddleware, reviewController.createProductReview);
 
-router.patch(
-    '/:type/:id/visibility',
-    authMiddleware,
-    setReviewVisibility
-);
+// Admin lấy danh sách toàn bộ đánh giá trên hệ thống
+router.get('/manager', authMiddleware, vendorMiddleware, reviewController.getManagerReviews);
 
 module.exports = router;
