@@ -1,4 +1,4 @@
-const productService = require('../services/productService');
+const productService = require("../services/productService");
 
 const getProducts = async (req, res) => {
     try {
@@ -20,7 +20,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const product = await productService.createProduct(req.shop.id, req.body);
+        const product = await productService.createProduct(req.body);
         return res.status(201).json(product);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -29,7 +29,10 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const product = await productService.updateProduct(req.params.id, req.shop.id, req.body);
+        const product = await productService.updateProduct(
+            req.params.id,
+            req.body,
+        );
         return res.json(product);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -38,8 +41,8 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        await productService.deleteProduct(req.params.id, req.shop.id);
-        return res.json({ message: 'Đã xoá sản phẩm.' });
+        await productService.deleteProduct(req.params.id);
+        return res.json({ message: "Đã xoá sản phẩm." });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
     }
@@ -47,7 +50,10 @@ const deleteProduct = async (req, res) => {
 
 const setProductStatus = async (req, res) => {
     try {
-        const product = await productService.setProductStatus(req.params.id, req.body.status);
+        const product = await productService.setProductStatus(
+            req.params.id,
+            req.body.status,
+        );
         return res.json(product);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -80,5 +86,5 @@ module.exports = {
     deleteProduct,
     setProductStatus,
     getSimilarProducts,
-    getManagerProducts
+    getManagerProducts,
 };
