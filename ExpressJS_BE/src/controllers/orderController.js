@@ -1,4 +1,4 @@
-const orderService = require('../services/orderService');
+const orderService = require("../services/orderService");
 
 const createOrder = async (req, res) => {
     try {
@@ -11,7 +11,9 @@ const createOrder = async (req, res) => {
 
 const confirmOrder = async (req, res) => {
     try {
-        const order = await orderService.confirmOrder(req.params.id, req.shop.id);
+        const order = await orderService.confirmOrder(
+            req.params.id
+        );
         return res.json(order);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -29,7 +31,11 @@ const getMyOrders = async (req, res) => {
 
 const getOrderDetail = async (req, res) => {
     try {
-        const order = await orderService.getOrderDetail(req.params.id, req.user.id, req.user.role);
+        const order = await orderService.getOrderDetail(
+            req.params.id,
+            req.user.id,
+            req.user.role,
+        );
         return res.json(order);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -38,7 +44,11 @@ const getOrderDetail = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
     try {
-        const order = await orderService.cancelOrder(req.params.id, req.user.id, req.body.reason);
+        const order = await orderService.cancelOrder(
+            req.params.id,
+            req.user.id,
+            req.body.reason,
+        );
         return res.json(order);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -47,7 +57,10 @@ const cancelOrder = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
     try {
-        const order = await orderService.updateOrderStatus(req.params.id, req.shop.id, req.body.status);
+        const order = await orderService.updateOrderStatus(
+            req.params.id,
+            req.body.status,
+        );
         return res.json(order);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -56,7 +69,7 @@ const updateOrderStatus = async (req, res) => {
 
 const getShopOrders = async (req, res) => {
     try {
-        const result = await orderService.getShopOrders(req.shop.id, req.query);
+        const result = await orderService.getManagerOrders(req.query);
         return res.json(result);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -72,4 +85,13 @@ const checkCoupon = async (req, res) => {
     }
 };
 
-module.exports = { createOrder, confirmOrder, getMyOrders, getOrderDetail, cancelOrder, updateOrderStatus, getShopOrders, checkCoupon };
+module.exports = {
+    createOrder,
+    confirmOrder,
+    getMyOrders,
+    getOrderDetail,
+    cancelOrder,
+    updateOrderStatus,
+    getShopOrders,
+    checkCoupon,
+};
