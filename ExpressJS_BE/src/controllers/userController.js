@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const userService = require("../services/userService");
 
 const getProfile = async (req, res) => {
     try {
@@ -12,8 +12,12 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const { name, phone } = req.body;
-        const user = await userService.updateProfile(req.user.id, { name, phone, file: req.file });
-        return res.json({ message: 'Cập nhật hồ sơ thành công.', user });
+        const user = await userService.updateProfile(req.user.id, {
+            name,
+            phone,
+            file: req.file,
+        });
+        return res.json({ message: "Cập nhật hồ sơ thành công.", user });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
     }
@@ -21,7 +25,10 @@ const updateProfile = async (req, res) => {
 
 const upsertAddress = async (req, res) => {
     try {
-        const addresses = await userService.upsertAddress(req.user.id, req.body);
+        const addresses = await userService.upsertAddress(
+            req.user.id,
+            req.body,
+        );
         return res.json(addresses);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -30,7 +37,10 @@ const upsertAddress = async (req, res) => {
 
 const removeAddress = async (req, res) => {
     try {
-        const addresses = await userService.removeAddress(req.user.id, req.params.addressId);
+        const addresses = await userService.removeAddress(
+            req.user.id,
+            req.params.addressId,
+        );
         return res.json(addresses);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -39,7 +49,10 @@ const removeAddress = async (req, res) => {
 
 const setDefaultAddress = async (req, res) => {
     try {
-        const addresses = await userService.setDefaultAddress(req.user.id, req.params.addressId);
+        const addresses = await userService.setDefaultAddress(
+            req.user.id,
+            req.params.addressId,
+        );
         return res.json(addresses);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -58,7 +71,11 @@ const listUsers = async (req, res) => {
 const setUserStatus = async (req, res) => {
     try {
         const { isActive, reason } = req.body;
-        const user = await userService.setUserStatus(req.params.id, isActive, reason);
+        const user = await userService.setUserStatus(
+            req.params.id,
+            isActive,
+            reason,
+        );
         return res.json({ user });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -84,4 +101,14 @@ const getUserCoupons = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, upsertAddress, removeAddress, setDefaultAddress, listUsers, setUserStatus, setUserRole, getUserCoupons };
+module.exports = {
+    getProfile,
+    updateProfile,
+    upsertAddress,
+    removeAddress,
+    setDefaultAddress,
+    listUsers,
+    setUserStatus,
+    setUserRole,
+    getUserCoupons,
+};
