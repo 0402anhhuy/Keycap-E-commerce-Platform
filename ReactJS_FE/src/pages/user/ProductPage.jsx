@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
-import Breadcrumb from "../../components/Breadcrumb";
 import { fetchAllProducts } from "../../utils/productApi";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -24,33 +23,20 @@ const PRICE_RANGES = [
     { value: "1000000-999999999", label: "Trên 1.000.000đ" },
 ];
 
-const STOCK_OPTIONS = [
-    { value: "all", label: "Tất cả" },
-    { value: "instock", label: "Còn hàng" },
-    { value: "outofstock", label: "Hết hàng" },
+const COLORS = [
+    { label: "Black", value: "black", bg: "bg-black", text: "text-white" },
+    { label: "White", value: "white", bg: "bg-white", text: "text-black" },
+    { label: "Red", value: "red", bg: "bg-[#C63323]", text: "text-white" },
+    { label: "Orange", value: "orange", bg: "bg-[#DE6036]", text: "text-white" },
+    { label: "Yellow", value: "yellow", bg: "bg-[#E6BC49]", text: "text-white" },
+    { label: "Green", value: "green", bg: "bg-[#52A358]", text: "text-white" },
+    { label: "Blue", value: "blue", bg: "bg-[#234483]", text: "text-white" },
+    { label: "Grey", value: "grey", bg: "bg-[#67686C]", text: "text-white" },
+    { label: "Purple", value: "purple", bg: "bg-[#541270]", text: "text-white" },
+    { label: "Pink", value: "pink", bg: "bg-[#D40078]", text: "text-white" },
+    { label: "Brown", value: "brown", bg: "bg-[#5C2B14]", text: "text-white" },
+    { label: "Multi Color", value: "multi", bg: "bg-[#EAEBEA]", text: "text-black" },
 ];
-
-const FilterChip = ({ label, active, onClick }) => (
-    <button
-        onClick={onClick}
-        style={{
-            padding: "6px 14px",
-            borderRadius: "999px",
-            border: active ? "2px solid #e11d48" : "1.5px solid #e5e7eb",
-            background: active ? "#fff1f2" : "#fff",
-            color: active ? "#e11d48" : "#374151",
-            fontWeight: active ? 700 : 500,
-            fontSize: "0.82rem",
-            cursor: "pointer",
-            transition: "all 0.18s",
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            letterSpacing: "0.01em",
-            whiteSpace: "nowrap",
-        }}
-    >
-        {label}
-    </button>
-);
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -68,13 +54,23 @@ const ProductPage = () => {
     const [stockFilter, setStockFilter] = useState("all");
     const [onlyDiscount, setOnlyDiscount] = useState(false);
     const [sortBy, setSortBy] = useState("newest");
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    
+    // UI state
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [filterShopId, setFilterShopId] = useState(null);
 
+    // Filter collapse states
+    const [isCategoryOpen, setIsCategoryOpen] = useState(true);
+    const [isPriceRangeOpen, setIsPriceRangeOpen] = useState(true);
+    const [isColorOpen, setIsColorOpen] = useState(true);
+    
+    // Color state
+    const [selectedColor, setSelectedColor] = useState("all");
+
     useEffect(() => {
         setCurrentPage(1);
-    }, [search, selectedCategory, priceRange, customMin, customMax, stockFilter, onlyDiscount, sortBy, filterShopId]);
+    }, [search, selectedCategory, priceRange, customMin, customMax, stockFilter, onlyDiscount, sortBy, filterShopId, selectedColor]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -91,24 +87,7 @@ const ProductPage = () => {
         }
     }, [location.search]);
 
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        const userRaw = localStorage.getItem("user");
 
-        if (!token || !userRaw) {
-            navigate("/login", { replace: true });
-            return;
-        }
-
-        try {
-            const user = JSON.parse(userRaw);
-            if (user?.role !== "user" && user?.role !== "vendor") {
-                navigate("/login", { replace: true });
-            }
-        } catch {
-            navigate("/login", { replace: true });
-        }
-    }, [navigate]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -149,6 +128,7 @@ const ProductPage = () => {
         setStockFilter("all");
         setOnlyDiscount(false);
         setSortBy("newest");
+        setSelectedColor("all");
     };
 
     const filtered = useMemo(() => {
@@ -170,6 +150,10 @@ const ProductPage = () => {
 
         if (selectedCategory !== "all") {
             list = list.filter((p) => p.category === selectedCategory);
+        }
+
+        if (selectedColor !== "all") {
+            list = list.filter((p) => p.color?.toLowerCase() === selectedColor.toLowerCase());
         }
 
         if (customMin || customMax) {
@@ -203,212 +187,222 @@ const ProductPage = () => {
         }
 
         return list;
-    }, [products, search, selectedCategory, priceRange, customMin, customMax, stockFilter, onlyDiscount, sortBy, filterShopId]);
+    }, [products, search, selectedCategory, priceRange, customMin, customMax, stockFilter, onlyDiscount, sortBy, filterShopId, selectedColor]);
 
-    const activeFilterCount = [
-        selectedCategory !== "all",
-        priceRange !== "all",
-        stockFilter !== "all",
-        onlyDiscount,
-    ].filter(Boolean).length;
 
     if (loading) {
         return (
-            <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f9fafb", fontFamily: "'Be Vietnam Pro', sans-serif" }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #fce7f3", borderTopColor: "#e11d48", animation: "spin 0.8s linear infinite" }} />
-                    <span style={{ color: "#6b7280", fontWeight: 500 }}>Đang tải sản phẩm...</span>
-                    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-                </div>
+            <div className="min-h-screen flex items-center justify-center bg-texture-light font-oswald text-xl font-bold">
+                Loading products...
             </div>
         );
     }
 
     if (error) {
         return (
-            <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f9fafb" }}>
-                <div style={{ background: "#fff", padding: 32, borderRadius: 16, textAlign: "center", boxShadow: "0 4px 24px #0001" }}>
-                    <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
-                    <p style={{ color: "#dc2626", fontWeight: 600, fontFamily: "'Be Vietnam Pro', sans-serif" }}>{error}</p>
+            <div className="min-h-screen flex items-center justify-center bg-texture-light font-oswald">
+                <div className="bg-white p-8 border-2 border-black text-center max-w-sm">
+                    <p className="text-[var(--theme-accent)] font-bold text-xl">{error}</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: "100vh", background: "var(--theme-bg)", color: "var(--theme-text)", fontFamily: "'Inter', sans-serif" }}>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
-                * { box-sizing: border-box; }
-                input:focus { outline: none; }
-                select:focus { outline: none; }
-                ::-webkit-scrollbar { width: 5px; }
-                ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 99px; }
-                .prod-card-wrap { transition: transform 0.18s, box-shadow 0.18s; }
-                .prod-card-wrap:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(255,122,26,0.18); }
-                @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-                .fade-up { animation: fadeUp 0.35s ease both; }
-            `}</style>
-
+        <div className="min-h-screen bg-texture-light text-black">
             <Header />
-            <Breadcrumb align="viewport"/>
 
-            <main className="max-w-7xl mx-auto px-6 py-10 flex gap-8">
-                {/* Sidebar */}
-                <aside className="w-64 flex-shrink-0">
-                    <div className="rounded-[28px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+            <div className="max-w-[1400px] mx-auto px-6 py-10">
+                {/* Header Title Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b-2 border-black/10 gap-4">
+                    <div>
+                        <div className="text-xs uppercase font-bold tracking-widest text-black/50 mb-1">HOME / STORE</div>
+                        <h1 className="text-5xl font-anton uppercase tracking-wider text-black">ALL ITEMS</h1>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-oswald font-bold uppercase tracking-widest">
+                        <span>SORT BY:</span>
+                        <select 
+                            value={sortBy} 
+                            onChange={(e) => setSortBy(e.target.value)} 
+                            className="bg-transparent border-none focus:outline-none cursor-pointer uppercase"
+                        >
+                            {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                        </select>
+                    </div>
+                </div>
+
+                {/* Toolbar */}
+                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mb-8 gap-4">
+                    <button 
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        className="border-2 border-black px-6 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-colors btn-2d"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        Filter
+                    </button>
+
+                    <form onSubmit={handleSearch} className="flex border-2 border-black w-full md:w-80 bg-white">
+                        <input
+                            type="text"
+                            placeholder="Pokemon, Gummy Pet..."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            className="flex-1 px-4 py-2 font-oswald bg-transparent focus:outline-none"
+                        />
+                        <button type="submit" className="px-4 text-black hover:text-[var(--theme-accent)]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div className="flex gap-8 items-start">
+                    {/* Overlay */}
+                    {sidebarOpen && (
+                        <div 
+                            className="fixed inset-0 bg-black/60 z-40 transition-opacity"
+                            onClick={() => setSidebarOpen(false)}
+                        />
+                    )}
+
+                    {/* Sidebar */}
+                    <aside 
+                        className={`fixed top-0 left-0 h-full w-[350px] bg-[#ebebeb] p-6 z-50 transform transition-transform duration-300 overflow-y-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} shadow-2xl`}
+                    >
+                        <div className="flex items-center justify-between mb-8 pb-4">
+                            <button onClick={() => setSidebarOpen(false)} className="text-[var(--theme-accent)] hover:text-black">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <h2 className="text-3xl font-anton uppercase tracking-wider m-0 flex-1 ml-4 text-black">Filter</h2>
+                            <button onClick={clearFilters} className="text-sm font-oswald font-bold uppercase tracking-widest text-[var(--theme-accent)] hover:underline">Clear all</button>
+                        </div>
+
                         {/* Categories */}
                         <div className="mb-8">
-                            <h3 className="text-xs uppercase tracking-[0.3em] font-black text-white/70 mb-4 border-b border-white/10 pb-3">Collections</h3>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setIsCategoryOpen(!isCategoryOpen)}>
+                                <h3 className="text-2xl font-anton uppercase tracking-widest m-0 text-black">Category</h3>
+                                <svg className={`w-4 h-4 text-black transform transition-transform ${isCategoryOpen ? '' : 'rotate-180'}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className={`grid grid-cols-2 gap-3 overflow-hidden transition-all duration-300 ${isCategoryOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                 {categories.map((cat) => (
-                                    <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                                        <div className="relative flex items-center justify-center">
-                                            <input 
-                                                type="checkbox" 
-                                                className="w-4 h-4 border-2 border-gray-300 rounded-sm appearance-none checked:bg-blue-600 checked:border-blue-600 cursor-pointer transition-colors"
-                                                checked={selectedCategory === cat}
-                                                onChange={() => setSelectedCategory(cat)}
-                                            />
-                                            {selectedCategory === cat && (
-                                                <svg className="w-3 h-3 text-white absolute pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                                            )}
-                                        </div>
-                                        <span className={`text-sm ${selectedCategory === cat ? 'text-gray-900 font-medium' : 'text-gray-600 group-hover:text-gray-900'}`}>{cat === 'all' ? 'Tất cả' : cat}</span>
-                                    </label>
+                                    <button
+                                        key={cat}
+                                        onClick={() => setSelectedCategory(cat)}
+                                        className={`px-3 py-4 border border-black rounded-md font-oswald text-sm font-bold uppercase tracking-widest transition-colors ${selectedCategory === cat ? 'bg-[var(--theme-accent)] text-white border-[var(--theme-accent)]' : 'bg-transparent text-black hover:bg-black/5'} text-center min-h-[64px] flex items-center justify-center`}
+                                    >
+                                        {cat === 'all' ? 'Tất cả' : cat}
+                                    </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Price Range */}
-                        <div>
-                            <h3 className="text-xs uppercase tracking-[0.3em] font-black text-white/70 mb-4 border-b border-white/10 pb-3">Price range</h3>
-                            <div className="flex flex-col gap-3">
-                                {PRICE_RANGES.map((pr) => (
-                                    <label key={pr.value} className="flex items-center gap-3 cursor-pointer group">
-                                        <div className="relative flex items-center justify-center">
-                                            <input 
-                                                type="radio" 
-                                                name="priceRange"
-                                                className="w-4 h-4 border-2 border-gray-300 rounded-full appearance-none checked:bg-blue-600 checked:border-blue-600 cursor-pointer transition-colors"
-                                                checked={priceRange === pr.value && !customMin && !customMax}
-                                                onChange={() => {
-                                                    setPriceRange(pr.value);
-                                                    setCustomMin("");
-                                                    setCustomMax("");
-                                                }}
-                                            />
-                                            {(priceRange === pr.value && !customMin && !customMax) && (
-                                                <div className="w-2 h-2 bg-white rounded-full absolute pointer-events-none"></div>
-                                            )}
-                                        </div>
-                                        <span className={`text-sm ${(priceRange === pr.value && !customMin && !customMax) ? 'text-gray-900 font-medium' : 'text-gray-600 group-hover:text-gray-900'}`}>{pr.label}</span>
-                                    </label>
-                                ))}
+                        <div className="mb-8">
+                            <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setIsPriceRangeOpen(!isPriceRangeOpen)}>
+                                <h3 className="text-2xl font-anton uppercase tracking-widest m-0 text-black">Price range</h3>
+                                <svg className={`w-4 h-4 text-black transform transition-transform ${isPriceRangeOpen ? '' : 'rotate-180'}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                                </svg>
                             </div>
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <span className="block text-xs font-bold text-gray-700 mb-3">Tự chọn khoảng giá</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="flex-1 border border-gray-300 rounded-md p-1.5 bg-white">
-                                        <input 
-                                            type="number" 
-                                            placeholder="Tối thiểu" 
-                                            className="w-full text-xs text-center border-none focus:outline-none" 
-                                            value={customMin}
-                                            onChange={(e) => {
-                                                setCustomMin(e.target.value);
-                                            }}
-                                        />
-                                    </div>
-                                    <span className="text-gray-400 text-xs font-semibold">-</span>
-                                    <div className="flex-1 border border-gray-300 rounded-md p-1.5 bg-white">
-                                        <input 
-                                            type="number" 
-                                            placeholder="Tối đa" 
-                                            className="w-full text-xs text-center border-none focus:outline-none" 
-                                            value={customMax}
-                                            onChange={(e) => {
-                                                setCustomMax(e.target.value);
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                                {(customMin || customMax) && (
-                                    <button 
-                                        type="button"
+                            <div className={`flex flex-col gap-4 overflow-hidden transition-all duration-300 ${isPriceRangeOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                {PRICE_RANGES.map((pr) => (
+                                    <button
+                                        key={pr.value}
                                         onClick={() => {
+                                            setPriceRange(pr.value);
                                             setCustomMin("");
                                             setCustomMax("");
                                         }}
-                                        className="mt-2.5 w-full py-1 text-[11px] font-bold text-red-500 bg-red-50 border border-red-200 rounded hover:bg-red-100 transition-all cursor-pointer"
+                                        className={`px-3 py-4 border border-black rounded-md font-oswald text-sm font-bold uppercase tracking-widest transition-colors ${priceRange === pr.value && !customMin && !customMax ? 'bg-white text-black' : 'bg-transparent text-black hover:bg-white/50'} flex items-center justify-center w-full`}
                                     >
-                                        Xóa tự chọn
+                                        {pr.label}
                                     </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Main Content */}
-                <div className="flex-1 min-w-0">
-                    {/* Top bar */}
-                    <div className="flex items-center justify-end mb-6">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-500">Sort:</span>
-                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border border-gray-200 rounded-md text-sm py-1.5 px-3 text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-                                {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
-                        </div>
-                    </div>
-
-                    {filtered.length === 0 ? (
-                        <div className="text-center py-20 text-white/55">
-                            <div className="text-5xl mb-4">⌁</div>
-                            <p className="font-black text-lg text-white mb-2 uppercase tracking-[0.18em]">No keycap matches</p>
-                            <button onClick={clearFilters} className="mt-4 bg-[var(--theme-accent)] text-black px-6 py-2 rounded-full font-black text-xs uppercase tracking-[0.18em]">Clear filters</button>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {filtered.slice((currentPage - 1) * 9, currentPage * 9).map((p, i) => (
-                                    <div key={p.id} className="cursor-pointer h-full" onClick={() => navigate(`/product/${p.id}`)}>
-                                        <ProductCard product={p} />
-                                    </div>
                                 ))}
                             </div>
+                        </div>
 
-                            {/* Pagination */}
-                            {Math.ceil(filtered.length / 9) > 1 && (
-                                <div className="flex justify-center items-center gap-2 mt-12 mb-8">
-                                    <button 
-                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                        disabled={currentPage === 1}
-                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 disabled:opacity-50"
-                                    >&lt;</button>
-                                    
-                                    {Array.from({ length: Math.ceil(filtered.length / 9) }, (_, i) => i + 1).map(page => (
-                                        <button 
-                                            key={page}
-                                            onClick={() => setCurrentPage(page)}
-                                            className={`w-8 h-8 flex items-center justify-center rounded font-medium ${currentPage === page ? 'bg-[#004b87] text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-                                        >
-                                            {page}
-                                        </button>
+                        {/* Color */}
+                        <div className="mb-8">
+                            <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setIsColorOpen(!isColorOpen)}>
+                                <h3 className="text-2xl font-anton uppercase tracking-widest m-0 text-black">Color</h3>
+                                <svg className={`w-4 h-4 text-black transform transition-transform ${isColorOpen ? '' : 'rotate-180'}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className={`grid grid-cols-2 gap-3 overflow-hidden transition-all duration-300 ${isColorOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                {COLORS.map((color) => (
+                                    <button
+                                        key={color.value}
+                                        onClick={() => setSelectedColor(selectedColor === color.value ? 'all' : color.value)}
+                                        className={`px-3 py-4 border border-black rounded-md font-oswald text-sm font-bold uppercase tracking-widest transition-colors ${color.bg} ${color.text} ${selectedColor === color.value ? 'ring-2 ring-offset-2 ring-black' : ''} text-center min-h-[64px] flex items-center justify-center`}
+                                    >
+                                        {color.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div className="mt-12 flex justify-end">
+                            <button 
+                                onClick={() => setSidebarOpen(false)}
+                                className="bg-[var(--theme-accent)] text-white px-8 py-3 font-oswald font-bold text-xl uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
+                            >
+                                Apply
+                            </button>
+                        </div>
+                    </aside>
+
+                    {/* Main Content Grid */}
+                    <div className="flex-1 min-w-0">
+                        {filtered.length === 0 ? (
+                            <div className="text-center py-20">
+                                <div className="text-5xl mb-4">⌁</div>
+                                <p className="font-anton text-2xl text-black mb-4 uppercase tracking-widest">No keycap matches</p>
+                                <button onClick={clearFilters} className="bg-[var(--theme-accent)] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black">Clear filters</button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {filtered.slice((currentPage - 1) * 9, currentPage * 9).map((p) => (
+                                        <ProductCard key={p.id} product={p} />
                                     ))}
-                                    
-                                    <button 
-                                        onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filtered.length / 9), prev + 1))}
-                                        disabled={currentPage === Math.ceil(filtered.length / 9)}
-                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 disabled:opacity-50"
-                                    >&gt;</button>
                                 </div>
-                            )}
-                        </>
-                    )}
-                </div>
-            </main>
 
+                                {/* Pagination */}
+                                {Math.ceil(filtered.length / 9) > 1 && (
+                                    <div className="flex justify-center items-center gap-2 mt-12 mb-8 font-oswald font-bold">
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                            disabled={currentPage === 1}
+                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                                        >&lt;</button>
+                                        
+                                        {Array.from({ length: Math.ceil(filtered.length / 9) }, (_, i) => i + 1).map(page => (
+                                            <button 
+                                                key={page}
+                                                onClick={() => setCurrentPage(page)}
+                                                className={`w-10 h-10 flex items-center justify-center border-2 border-black transition-colors btn-2d ${currentPage === page ? 'bg-[var(--theme-accent)] text-white border-[var(--theme-accent)]' : 'hover:bg-black hover:text-white'}`}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+                                        
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filtered.length / 9), prev + 1))}
+                                            disabled={currentPage === Math.ceil(filtered.length / 9)}
+                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                                        >&gt;</button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+            
+            {/* The footer is dark, but this page is light. Let's use the torn-paper-bottom effect on the main container to transition to the dark footer */}
+            <div className="torn-paper-bottom"></div>
             <Footer />
         </div>
     );
