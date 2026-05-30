@@ -24,20 +24,86 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route
+                        path="/forgot-password"
+                        element={<ForgotPassword />}
+                    />
 
-                    <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                    <Route path="/products" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
-                    <Route path="/product/:id" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
-                    <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-                    <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-                    <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-                    <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
-                    <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
-                    <Route path="/vendor/setup" element={<ProtectedRoute><VendorOnboarding /></ProtectedRoute>} />
-                    <Route path="/vendor/dashboard" element={<ProtectedRoute><VendorDashboard /></ProtectedRoute>} />
-                    <Route path="/manager/dashboard" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
+                    <Route path="/" element={<HomePage />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/products" element={<ProductPage />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route
+                        path="/cart"
+                        element={
+                            <ProtectedRoute>
+                                <CartPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/checkout"
+                        element={
+                            <ProtectedRoute>
+                                <CheckoutPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/orders"
+                        element={
+                            <ProtectedRoute>
+                                <OrdersPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/orders/:id"
+                        element={
+                            <ProtectedRoute>
+                                <OrderDetailPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/wishlist"
+                        element={
+                            <ProtectedRoute>
+                                <WishlistPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/vendor/setup"
+                        element={
+                            <ProtectedRoute>
+                                <VendorOnboarding />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/vendor/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <VendorDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/manager/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <ManagerDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
             </CartProvider>
         </BrowserRouter>
