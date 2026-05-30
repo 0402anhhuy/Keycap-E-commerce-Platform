@@ -1,25 +1,18 @@
 const { Op } = require('sequelize');
 const Coupon = require('../models/Coupon');
-const Shop = require('../models/Shop');
 const Product = require('../models/Product');
 
 /**
  * Lấy danh sách mã giảm giá khả dụng của người dùng
  */
-const getUserCoupons = async (userId) => {
-    const coupons = await Coupon.findAll({
+const getUserCoupons = async () => {
+    return await Coupon.findAll({
         where: {
             isActive: true,
-            [Op.or]: [{ userId: null }, { userId }],
-            [Op.or]: [{ expiresAt: null }, { expiresAt: { [Op.gte]: new Date() } }]
-        },
-        include: [{
-            model: Shop,
-            as: 'shop',
-            attributes: ['id', 'name', 'avatar']
-        }]
+            startDate: { [Op.lte]: new Date() },
+            endDate: { [Op.gte]: new Date() }
+        }
     });
-    return coupons;
 };
 
 /**
@@ -31,20 +24,19 @@ const checkCoupon = async (userId, { items, couponCode }) => {
     const productIds = items.map((i) => i.productId);
     const products = await Product.findAll({ where: { id: { [Op.in]: productIds }, status: 'active' } });
 
-    const shopSubtotals = {};
+    let subtotal = 0;
     for (const item of items) {
         const product = products.find((p) => p.id === item.productId);
         if (!product) continue;
-        if (!shopSubtotals[product.shopId]) shopSubtotals[product.shopId] = 0;
-        shopSubtotals[product.shopId] += Number(product.price) * item.quantity;
+        subtotal += Number(product.price) * item.quantity;
     }
 
     const coupon = await Coupon.findOne({
         where: {
             code: couponCode,
             isActive: true,
-            [Op.or]: [{ userId: null }, { userId }],
-            [Op.or]: [{ expiresAt: null }, { expiresAt: { [Op.gte]: new Date() } }]
+            startDate: { [Op.lte]: new Date() },
+            endDate: { [Op.gte]: new Date() }
         }
     });
 
@@ -52,108 +44,105 @@ const checkCoupon = async (userId, { items, couponCode }) => {
         throw Object.assign(new Error('Mã giảm giá không hợp lệ hoặc đã hết hạn.'), { status: 400 });
     }
 
-    const shopSubtotal = shopSubtotals[coupon.shopId] || 0;
-    if (shopSubtotal === 0) {
+    if (subtotal === 0) {
         throw Object.assign(new Error('Mã giảm giá không áp dụng cho các sản phẩm trong giỏ hàng.'), { status: 400 });
     }
 
-    if (coupon.minOrderAmount && shopSubtotal < Number(coupon.minOrderAmount)) {
-        throw Object.assign(new Error(`Đơn hàng của shop phải tối thiểu ${Number(coupon.minOrderAmount).toLocaleString('vi-VN')}đ để dùng mã này.`), { status: 400 });
+    if (coupon.minOrderAmount && subtotal < Number(coupon.minOrderAmount)) {
+        throw Object.assign(new Error(`Đơn hàng phải tối thiểu ${Number(coupon.minOrderAmount).toLocaleString('vi-VN')}đ để dùng mã này.`), { status: 400 });
     }
 
-    let discount = coupon.type === 'percent'
-        ? (shopSubtotal * Number(coupon.value)) / 100
-        : Number(coupon.value);
+    let discount = coupon.discountType === 'percentage'
+        ? (subtotal * Number(coupon.discountValue)) / 100
+        : Number(coupon.discountValue);
 
-    if (coupon.maxDiscount) {
-        discount = Math.min(discount, Number(coupon.maxDiscount));
+    if (coupon.maxDiscountAmount) {
+        discount = Math.min(discount, Number(coupon.maxDiscountAmount));
     }
-    discount = Math.min(discount, shopSubtotal);
+    discount = Math.min(discount, subtotal);
 
     return {
         discount,
         discountAmount: discount,
         code: coupon.code,
         couponCode: coupon.code,
-        shopId: coupon.shopId,
-        type: coupon.type,
-        value: coupon.value
+        type: coupon.discountType,
+        value: coupon.discountValue
     };
 };
 
 /**
  * Tạo mã giảm giá thưởng khi khách hàng đánh giá sản phẩm (REV-)
  */
-const createReviewRewardCoupon = async (userId, shopId) => {
+const createReviewRewardCoupon = async (userId) => {
     const randStr = Math.random().toString(36).substring(2, 8).toUpperCase();
     const couponCode = `REV-${userId}-${randStr}`;
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // Hạn 30 ngày
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30); // Hạn 30 ngày
 
     await Coupon.create({
-        shopId: shopId,
-        userId: userId,
         code: couponCode,
-        type: 'percent',
-        value: 10.00,
+        description: "Mã giảm giá thưởng đánh giá sản phẩm",
+        discountType: 'percentage',
+        discountValue: 10.00,
         minOrderAmount: 50000.00,
-        maxDiscount: 20000.00,
+        maxDiscountAmount: 20000.00,
         usageLimit: 1,
         usedCount: 0,
-        startsAt: new Date(),
-        expiresAt,
+        startDate: new Date(),
+        endDate,
         isActive: true
     });
 
     return couponCode;
 };
 
-const getShopCoupons = async (shopId) => {
+const getShopCoupons = async () => {
     return await Coupon.findAll({
-        where: { shopId },
         order: [['createdAt', 'DESC']]
     });
 };
 
-const createCoupon = async (shopId, data) => {
-    const { code, type, value, minOrderAmount, maxDiscount, usageLimit, startsAt, expiresAt } = data;
+const createCoupon = async (data) => {
+    const { code, description, discountType, discountValue, minOrderAmount, maxDiscountAmount, usageLimit, startDate, endDate } = data;
     const existing = await Coupon.findOne({ where: { code } });
     if (existing) throw Object.assign(new Error('Mã giảm giá đã tồn tại.'), { status: 400 });
 
     return await Coupon.create({
-        shopId,
         code: code.trim().toUpperCase(),
-        type,
-        value,
+        description,
+        discountType,
+        discountValue,
         minOrderAmount: minOrderAmount || 0,
-        maxDiscount: maxDiscount || null,
+        maxDiscountAmount: maxDiscountAmount || null,
         usageLimit: usageLimit || null,
-        startsAt: startsAt || new Date(),
-        expiresAt: expiresAt || null,
+        startDate: startDate || new Date(),
+        endDate: endDate || null,
         isActive: true
     });
 };
 
-const updateCoupon = async (shopId, couponId, data) => {
-    const coupon = await Coupon.findOne({ where: { id: couponId, shopId } });
+const updateCoupon = async (couponId, data) => {
+    const coupon = await Coupon.findByPk(couponId);
     if (!coupon) throw Object.assign(new Error('Mã giảm giá không tồn tại.'), { status: 404 });
 
-    const { type, value, minOrderAmount, maxDiscount, usageLimit, startsAt, expiresAt, isActive } = data;
+    const { description, discountType, discountValue, minOrderAmount, maxDiscountAmount, usageLimit, startDate, endDate, isActive } = data;
     await coupon.update({
-        type,
-        value,
+        description,
+        discountType,
+        discountValue,
         minOrderAmount,
-        maxDiscount,
+        maxDiscountAmount,
         usageLimit,
-        startsAt,
-        expiresAt,
+        startDate,
+        endDate,
         isActive: isActive !== undefined ? isActive : coupon.isActive
     });
     return coupon;
 };
 
-const deleteCoupon = async (shopId, couponId) => {
-    const coupon = await Coupon.findOne({ where: { id: couponId, shopId } });
+const deleteCoupon = async (couponId) => {
+    const coupon = await Coupon.findByPk(couponId);
     if (!coupon) throw Object.assign(new Error('Mã giảm giá không tồn tại.'), { status: 404 });
 
     await coupon.destroy();
