@@ -15,10 +15,7 @@ const OrderItem = require("./OrderItem");
 const Coupon = require("./Coupon");
 const CouponUsage = require("./CouponUsage");
 
-//
 // CATEGORY - PRODUCT
-//
-
 Category.hasMany(Product, {
     foreignKey: "categoryId",
     as: "products",
@@ -29,10 +26,7 @@ Product.belongsTo(Category, {
     as: "category",
 });
 
-//
 // COLLECTION - PRODUCT
-//
-
 Collection.hasMany(Product, {
     foreignKey: "collectionId",
     as: "products",
@@ -43,10 +37,7 @@ Product.belongsTo(Collection, {
     as: "collection",
 });
 
-//
 // USER - CART
-//
-
 User.hasMany(CartItem, {
     foreignKey: "userId",
     as: "cartItems",
@@ -67,10 +58,7 @@ CartItem.belongsTo(Product, {
     as: "product",
 });
 
-//
 // USER - WISHLIST
-//
-
 User.hasMany(Wishlist, {
     foreignKey: "userId",
     as: "wishlist",
@@ -91,10 +79,7 @@ Wishlist.belongsTo(Product, {
     as: "product",
 });
 
-//
 // USER - REVIEW
-//
-
 User.hasMany(Review, {
     foreignKey: "userId",
     as: "reviews",
@@ -115,10 +100,7 @@ Review.belongsTo(Product, {
     as: "product",
 });
 
-//
 // USER - ORDER
-//
-
 User.hasMany(Order, {
     foreignKey: "userId",
     as: "orders",
@@ -129,10 +111,7 @@ Order.belongsTo(User, {
     as: "user",
 });
 
-//
 // ORDER - ORDER ITEM
-//
-
 Order.hasMany(OrderItem, {
     foreignKey: "orderId",
     as: "items",
@@ -143,10 +122,7 @@ OrderItem.belongsTo(Order, {
     as: "order",
 });
 
-//
 // PRODUCT - ORDER ITEM
-//
-
 Product.hasMany(OrderItem, {
     foreignKey: "productId",
     as: "orderItems",
@@ -157,10 +133,7 @@ OrderItem.belongsTo(Product, {
     as: "product",
 });
 
-//
 // COUPON - COUPON USAGE
-//
-
 Coupon.hasMany(CouponUsage, {
     foreignKey: "couponId",
     as: "usages",
@@ -171,10 +144,7 @@ CouponUsage.belongsTo(Coupon, {
     as: "coupon",
 });
 
-//
 // USER - COUPON USAGE
-//
-
 User.hasMany(CouponUsage, {
     foreignKey: "userId",
     as: "couponUsages",
@@ -185,10 +155,7 @@ CouponUsage.belongsTo(User, {
     as: "user",
 });
 
-//
 // ORDER - COUPON USAGE
-//
-
 Order.hasOne(CouponUsage, {
     foreignKey: "orderId",
     as: "couponUsage",
