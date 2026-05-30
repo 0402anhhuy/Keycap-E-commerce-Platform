@@ -159,9 +159,11 @@ const ProductDetail = () => {
     }, [id]);
 
     const [activeImage, setActiveImage] = useState(0);
+    const [showCarousel, setShowCarousel] = useState(false);
 
     useEffect(() => {
         setActiveImage(0);
+        setShowCarousel(false);
     }, [id]);
 
     const images = useMemo(() => {
@@ -419,39 +421,32 @@ const ProductDetail = () => {
                     {/* Left: Images */}
                     <div className="w-1/2">
                         {images.length ? (
-                            <div className="flex flex-col gap-4">
-                                <div className="w-full aspect-[4/4] bg-gray-100 rounded-xl overflow-hidden border border-gray-200">
+                            <div className="flex flex-col gap-8 relative">
+                                <div className="absolute -top-10 -left-10 w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent -z-10 pointer-events-none rounded-full blur-3xl"></div>
+                                <div className="w-full aspect-[4/4] bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
                                     <img
                                         src={images[activeImage]}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-auto max-h-full object-contain cursor-zoom-in hover:scale-105 transition-transform duration-500"
                                         alt={product.title}
+                                        onClick={() => setShowCarousel(true)}
                                     />
                                 </div>
-                                <div className="flex gap-3 overflow-x-auto pb-2">
+                                <div className="flex gap-4 overflow-x-auto pb-2 justify-start">
                                     {images.map((img, idx) => (
                                         <div
                                             key={idx}
                                             onClick={() => {
                                                 setActiveImage(idx);
-                                                // Only update selected color when images and colors arrays match in length
                                                 if (
                                                     product &&
-                                                    Array.isArray(
-                                                        product.colors,
-                                                    ) &&
-                                                    product.colors.length ===
-                                                        images.length
+                                                    Array.isArray(product.colors) &&
+                                                    product.colors.length === images.length
                                                 ) {
-                                                    const colorLabel =
-                                                        product.colors[idx]
-                                                            ?.label;
-                                                    if (colorLabel)
-                                                        setSelectedColor(
-                                                            colorLabel,
-                                                        );
+                                                    const colorLabel = product.colors[idx]?.label;
+                                                    if (colorLabel) setSelectedColor(colorLabel);
                                                 }
                                             }}
-                                            className={`w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden cursor-pointer border-2 transition-colors ${activeImage === idx ? "border-blue-600" : "border-transparent hover:border-gray-300"}`}
+                                            className={`w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden cursor-pointer border-[3px] transition-all ${activeImage === idx ? "border-white" : "border-white/10 hover:border-white/30"}`}
                                         >
                                             <img
                                                 src={img}
@@ -463,7 +458,7 @@ const ProductDetail = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="w-full aspect-[4/4] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
+                            <div className="w-full aspect-[4/4] bg-white/5 rounded-xl flex items-center justify-center text-white/40 border border-white/10">
                                 Không có hình ảnh
                             </div>
                         )}
@@ -523,7 +518,7 @@ const ProductDetail = () => {
                             </span>
                         </div>
 
-                        <div className="text-3xl font-black text-white mt-5">
+                        <div className="text-2xl font-semibold text-gray-200 mt-2">
                             {Number(product.price).toLocaleString()}đ
                             {product.originalPrice &&
                                 product.originalPrice > product.price && (
@@ -536,29 +531,40 @@ const ProductDetail = () => {
                                 )}
                         </div>
 
-                        <p className="mt-5 text-white/65 leading-relaxed text-sm">
+                        <p className="mt-5 text-white/65 leading-relaxed text-sm hidden">
                             {product.description ||
                                 "Chưa có mô tả cho sản phẩm này."}
                         </p>
 
-                        {/* Colors */}
-                        <div className="mt-8">
-                            <div className="text-sm font-semibold mb-3 text-white">
-                                Màu sắc:
+                        {/* Colors / Skin */}
+                        <div className="mt-10 border-t border-white/10 pt-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <div className="text-xl font-medium text-white">
+                                    Skin
+                                </div>
+                                <div className="text-sm text-gray-400">
+                                    {product.colors ? product.colors.length : 0} skins
+                                </div>
                             </div>
-                            <div className="flex gap-3">
+                            <div className="flex gap-4">
                                 {product.colors && product.colors.length > 0 ? (
                                     product.colors.map((c, i) => (
-                                        <button
+                                        <div
                                             key={i}
                                             title={c.label}
                                             onClick={() => {
                                                 setSelectedColor(c.label);
-                                                setActiveImage(i);
+                                                if (images[i]) setActiveImage(i);
                                             }}
-                                            className={`w-8 h-8 rounded-full border border-white/20 transition-all ${selectedColor === c.label ? "ring-2 ring-offset-2 ring-[var(--theme-accent)] scale-110" : "hover:scale-105"}`}
-                                            style={{ backgroundColor: c.value }}
-                                        ></button>
+                                            className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex items-center justify-center ${selectedColor === c.label ? "border-white" : "border-white/10 hover:border-white/30"}`}
+                                            style={{ backgroundColor: images[i] ? "transparent" : c.value }}
+                                        >
+                                            {images[i] ? (
+                                                <img src={images[i]} alt={c.label} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="text-[10px] text-white/80 font-bold text-center p-1">{c.label}</div>
+                                            )}
+                                        </div>
                                     ))
                                 ) : (
                                     <div className="text-sm text-gray-400">
@@ -568,73 +574,46 @@ const ProductDetail = () => {
                             </div>
                         </div>
 
-                        {/* Quantity */}
-                        <div className="mt-6">
-                            <div className="text-sm font-semibold mb-3 text-white">
-                                Số lượng
-                            </div>
-                            <div className="flex items-center border border-white/10 rounded-md w-28 h-10 bg-white/5 overflow-hidden">
+                        {/* Quantity and Buttons in a row */}
+                        <div className="mt-10 p-6 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-6 shadow-xl">
+                            <div className="flex items-center border border-white/20 rounded-md h-12 bg-transparent overflow-hidden w-32 shrink-0">
                                 <button
-                                    onClick={() =>
-                                        handleQuantityChange(quantity - 1)
-                                    }
-                                    className="w-1/3 h-full flex items-center justify-center text-white/60 hover:bg-white/10 font-medium transition-colors"
+                                    onClick={() => handleQuantityChange(quantity - 1)}
+                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg"
                                 >
-                                    -
+                                    −
                                 </button>
+                                <div className="w-px h-full bg-white/20"></div>
                                 <input
                                     type="text"
                                     value={quantity}
                                     readOnly
-                                    className="w-1/3 h-full text-center border-none bg-transparent focus:outline-none text-sm font-semibold text-white"
+                                    className="flex-1 h-full text-center border-none bg-transparent focus:outline-none text-base font-semibold text-white w-10"
                                 />
+                                <div className="w-px h-full bg-white/20"></div>
                                 <button
-                                    onClick={() =>
-                                        handleQuantityChange(quantity + 1)
-                                    }
-                                    className="w-1/3 h-full flex items-center justify-center text-white/60 hover:bg-white/10 font-medium transition-colors"
+                                    onClick={() => handleQuantityChange(quantity + 1)}
+                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg"
                                 >
                                     +
                                 </button>
                             </div>
-                        </div>
-
-                        {/* Buttons */}
-                        <div className="mt-8 flex flex-col gap-3">
-                            <button
-                                onClick={handleAddToCart}
-                                disabled={adding}
-                                className={`w-full text-black font-black py-3.5 rounded-md transition flex items-center justify-center gap-2 uppercase tracking-[0.18em] ${
-                                    success
-                                        ? "bg-emerald-500 hover:bg-emerald-600"
-                                        : "bg-[var(--theme-accent)] hover:brightness-110"
-                                }`}
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                            
+                            <div className="flex-1">
+                                <button
+                                    onClick={handleAddToCart}
+                                    disabled={adding}
+                                    className="w-full bg-[#F17336] hover:bg-[#D55F2A] text-white font-black py-3.5 h-12 rounded flex items-center justify-center gap-3 uppercase tracking-wider transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100 relative overflow-hidden"
+                                    style={{ clipPath: "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 98% 30%, 100% 40%, 98% 50%, 100% 60%, 98% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 2% 70%, 0% 60%, 2% 50%, 0% 40%, 2% 30%, 0% 20%, 2% 10%)" }}
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                                    ></path>
-                                </svg>
-                                {adding
-                                    ? "Đang thêm..."
-                                    : success
-                                      ? "Đã thêm vào giỏ thành công! ✓"
-                                      : "Thêm vào giỏ hàng"}
-                            </button>
-                            <button
-                                onClick={handleBuyNow}
-                                className="w-full bg-white/5 text-white border border-white/10 font-semibold py-3.5 rounded-md hover:bg-white/10 transition"
-                            >
-                                Mua ngay
-                            </button>
+                                    {adding ? "ĐANG THÊM..." : success ? "ĐÃ THÊM ✓" : "ADD TO CART"}
+                                    {!adding && !success && (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         <div className="mt-8 flex flex-col gap-3 text-sm text-gray-600">
@@ -996,6 +975,131 @@ const ProductDetail = () => {
                     )}
                 </div>
             </main>
+
+            {/* Carousel Modal */}
+            {showCarousel && (
+                <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center backdrop-blur-md">
+                    {/* Header */}
+                    <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-10">
+                        <div className="flex-1"></div>
+                        <h2 className="text-white text-2xl font-bold tracking-widest uppercase text-center">
+                            {product.title.split(":")[1]?.trim() || product.title}
+                        </h2>
+                        <div className="flex-1 flex justify-end">
+                            <button
+                                onClick={() => setShowCarousel(false)}
+                                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition cursor-pointer border border-white/20"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Main Image View */}
+                    <div className="w-full flex-1 flex items-center justify-center relative px-20 max-h-[70vh] mt-10">
+                        <button
+                            onClick={() => setActiveImage((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
+                            className="absolute left-8 w-12 h-12 flex items-center justify-center text-white bg-white/5 border border-white/20 hover:bg-white/20 rounded-full transition z-10 cursor-pointer"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <div className="w-full h-full flex items-center justify-center py-4 relative">
+                            <img
+                                src={images[activeImage]}
+                                alt={product.title}
+                                className="max-w-full max-h-full object-contain"
+                            />
+                        </div>
+
+                        <button
+                            onClick={() => setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
+                            className="absolute right-8 w-12 h-12 flex items-center justify-center text-white bg-white/5 border border-white/20 hover:bg-white/20 rounded-full transition z-10 cursor-pointer"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    {/* Footer Controls */}
+                    <div className="w-full max-w-4xl pb-8 px-6 flex flex-col items-center mt-6">
+                        <div className="flex gap-4 mb-6 overflow-x-auto max-w-full pb-2">
+                            {images.map((img, idx) => (
+                                <div key={idx} className="flex flex-col items-center gap-2">
+                                    <div
+                                        onClick={() => {
+                                            setActiveImage(idx);
+                                            if (product && Array.isArray(product.colors) && product.colors.length === images.length) {
+                                                const colorLabel = product.colors[idx]?.label;
+                                                if (colorLabel) setSelectedColor(colorLabel);
+                                            }
+                                        }}
+                                        className={`w-16 h-16 rounded-xl overflow-hidden cursor-pointer transition-all border-2 ${activeImage === idx ? "border-[#F17336]" : "border-white/20 hover:border-white/50"}`}
+                                    >
+                                        <img src={img} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
+                                    </div>
+                                    <span className={`text-[10px] font-bold ${activeImage === idx ? "text-white" : "text-white/50"}`}>
+                                        {product.colors && product.colors[idx] ? product.colors[idx].label : `Style ${idx + 1}`}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center gap-6 bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl">
+                            <div className="text-xl font-bold text-white mr-4">
+                                {Number(product.price).toLocaleString()}đ
+                                {product.stock > 0 && (
+                                    <span className="ml-3 text-xs bg-[#F17336] text-white px-2 py-1 rounded font-bold tracking-wider">
+                                        {product.stock} IN STOCK
+                                    </span>
+                                )}
+                            </div>
+                            
+                            <div className="flex items-center border border-white/20 rounded-md h-12 bg-transparent overflow-hidden w-32 shrink-0">
+                                <button
+                                    onClick={() => handleQuantityChange(quantity - 1)}
+                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg cursor-pointer"
+                                >
+                                    −
+                                </button>
+                                <div className="w-px h-full bg-white/20"></div>
+                                <input
+                                    type="text"
+                                    value={quantity}
+                                    readOnly
+                                    className="flex-1 h-full text-center border-none bg-transparent focus:outline-none text-base font-semibold text-white w-10"
+                                />
+                                <div className="w-px h-full bg-white/20"></div>
+                                <button
+                                    onClick={() => handleQuantityChange(quantity + 1)}
+                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg cursor-pointer"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            <button
+                                onClick={handleAddToCart}
+                                disabled={adding}
+                                className="w-48 bg-[#F17336] hover:bg-[#D55F2A] text-white font-black py-3 h-12 rounded flex items-center justify-center gap-2 uppercase tracking-wider transition-all disabled:opacity-70 cursor-pointer"
+                                style={{ clipPath: "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 98% 30%, 100% 40%, 98% 50%, 100% 60%, 98% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 2% 70%, 0% 60%, 2% 50%, 0% 40%, 2% 30%, 0% 20%, 2% 10%)" }}
+                            >
+                                {adding ? "THÊM..." : success ? "ĐÃ THÊM ✓" : "ADD TO CART"}
+                                {!adding && !success && (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>
