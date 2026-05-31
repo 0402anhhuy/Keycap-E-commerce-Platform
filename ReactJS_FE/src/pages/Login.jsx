@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, InputField, Message, Card, PageWrapper } from "../components";
-
+import { Toast } from "../components";
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -56,8 +55,6 @@ const Login = () => {
 
             const data = await res.json();
 
-            console.log("LOGIN RESPONSE:", data, res.status);
-
             if (!res.ok) {
                 setMsg(data.message || "Lỗi đăng nhập");
                 setMsgType("error");
@@ -98,37 +95,75 @@ const Login = () => {
     };
 
     return (
-        <PageWrapper>
-            <Card>
+        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col items-center justify-center pt-24 pb-12 px-4 relative">
+            <Toast 
+                show={!!msg} 
+                message={msg} 
+                type={msgType} 
+                onClose={() => setMsg(null)} 
+            />
+            
+            <Link 
+                to="/" 
+                className="absolute top-6 left-6 md:top-10 md:left-10 bg-white text-black font-black px-4 py-2 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] transition-all z-20 flex items-center gap-2"
+            >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span className="text-[12px] leading-tight tracking-widest uppercase mt-0.5">BACK TO HOME</span>
+            </Link>
+
+            <div className="w-full max-w-md bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] p-8 md:p-10 z-10 relative">
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-extrabold text-gray-900 mb-1">Chào mừng trở lại!</h2>
-                    <p className="text-gray-500 font-medium">Đăng nhập vào UTEShop</p>
+                    <h2 className="text-4xl font-anton uppercase tracking-wider text-black mb-2">Login</h2>
+                    <p className="text-black/60 font-bold uppercase tracking-widest text-xs">Access your account</p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    <InputField label="Email" name="email" type="email" placeholder="example@hcmute.edu.vn" value={formData.email} onChange={handleChange} />
-                    <InputField label="Mật khẩu" name="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} />
-
-                    <div className="flex justify-end mb-4">
-                        <Link to="/forgot-password" className="text-sm text-primary opacity-80 hover:underline">Quên mật khẩu?</Link>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-bold uppercase tracking-widest text-black">Email</label>
+                        <input 
+                            name="email" 
+                            type="email" 
+                            placeholder="example@email.com" 
+                            value={formData.email} 
+                            onChange={handleChange} 
+                            className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
+                        />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1.5">
+                        <div className="flex justify-between items-center">
+                            <label className="text-xs font-bold uppercase tracking-widest text-black">Password</label>
+                            <Link to="/forgot-password" className="text-[10px] text-[var(--theme-accent)] font-bold uppercase tracking-widest hover:underline">Forgot?</Link>
+                        </div>
+                        <input 
+                            name="password" 
+                            type="password" 
+                            placeholder="••••••••" 
+                            value={formData.password} 
+                            onChange={handleChange} 
+                            className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
+                        />
                     </div>
 
-                    <Button type="submit" loading={loading}>{loading ? "Đang đăng nhập..." : "Đăng Nhập"}</Button>
-                    <Message text={msg} type={msgType} />
+                    <button 
+                        type="submit" 
+                        disabled={loading}
+                        className="mt-2 w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70"
+                    >
+                        <span className="text-[15px] leading-tight tracking-widest uppercase">
+                            {loading ? "PROCESSING..." : "SIGN IN"}
+                        </span>
+                    </button>
                 </form>
 
-                <div className="mt-8 pt-6 border-t border-gray-100 text-center space-y-3">
-                    <p className="text-gray-600">
-                        Chưa có tài khoản?{" "}
-                        <Link to={`/register${window.location.search}`} className="text-primary font-semibold hover:underline">Đăng ký tại đây</Link>
-                    </p>
-                    <p className="text-sm text-gray-500">
-                        Bạn muốn mở gian hàng?{" "}
-                        <Link to="/login?redirect=%2Fvendor%2Fsetup" className="text-[#00b14f] font-semibold hover:underline">Đăng ký trang bán hàng</Link>
+                <div className="mt-8 pt-6 border-t-2 border-black/10 text-center space-y-4">
+                    <p className="text-xs font-bold text-black uppercase tracking-widest">
+                        New here?{" "}
+                        <Link to={`/register${window.location.search}`} className="text-[var(--theme-accent)] hover:underline ml-1">Create Account</Link>
                     </p>
                 </div>
-            </Card>
-        </PageWrapper>
+            </div>
+        </div>
     );
 };
 
