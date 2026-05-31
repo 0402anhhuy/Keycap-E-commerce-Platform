@@ -39,165 +39,170 @@ const CartPage = () => {
     const finalTotal = subtotal + tax;
 
     if (loading) return (
-        <div className="min-h-screen bg-[var(--theme-bg)] flex flex-col text-[var(--theme-text)]">
+        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative">
             <Header />
-            <Breadcrumb align="viewport"/>
-            <div className="flex-1 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00b14f]"></div>
+            <div className="flex-1 flex flex-col max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
+                <Breadcrumb />
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div>
+                </div>
             </div>
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-[var(--theme-bg)] flex flex-col text-[var(--theme-text)]">
+        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative text-black">
             <Header />
-            <main className="flex-1 max-w-7xl mx-auto px-6 py-10 w-full">
-                <h1 className="text-3xl font-black uppercase tracking-[0.18em] mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>Your Cart</h1>
-                <p className="text-white/55 text-sm mb-8">
+            <main className="flex-1 max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
+                <Breadcrumb />
+                <h1 className="text-4xl lg:text-5xl font-anton uppercase tracking-widest text-black mb-2 mt-4">GIỎ HÀNG</h1>
+                <p className="text-xs font-bold uppercase tracking-widest text-black/50 mb-8">
                     {items.length > 0
-                        ? `${items.length} item${items.length > 1 ? "s" : ""} are waiting for your build.`
-                        : "Your cart is empty."}
+                        ? `BẠN ĐANG CÓ ${items.length} SẢN PHẨM TRONG GIỎ.`
+                        : "GIỎ HÀNG CỦA BẠN ĐANG TRỐNG."}
                 </p>
 
                 {items.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 text-center">
-                        <svg className="w-24 h-24 text-gray-200 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <div className="flex flex-col items-center justify-center py-24 text-center bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-12">
+                        <svg className="w-24 h-24 text-black/20 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <h2 className="text-xl font-bold text-gray-700 mb-2">Giỏ hàng trống</h2>
-                        <p className="text-gray-400 mb-6">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục.</p>
-                        <Link to="/products" className="bg-[#00b14f] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#009943] transition-colors">
-                            Khám phá sản phẩm
+                        <h2 className="font-anton text-2xl uppercase tracking-widest text-black mb-2">GIỎ HÀNG TRỐNG</h2>
+                        <p className="text-sm font-bold uppercase tracking-widest text-black/50 mb-8">HÃY THÊM SẢN PHẨM VÀO GIỎ HÀNG ĐỂ TIẾP TỤC.</p>
+                        <Link to="/products" className="px-8 py-4 bg-[var(--theme-accent)] border-2 border-black text-black font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all">
+                            KHÁM PHÁ SẢN PHẨM
                         </Link>
                     </div>
                 ) : (
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items */}
                         <div className="flex-1">
-                            <div className="rounded-[28px] bg-[rgba(255,255,255,0.04)] shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-white/10 overflow-hidden">
+                            <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] flex flex-col relative z-10">
                                 {/* Table Header */}
-                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-white/10 text-[10px] font-black text-white/40 uppercase tracking-[0.22em]">
-                                    <div className="col-span-5">Sản phẩm</div>
-                                    <div className="col-span-2 text-center">Giá</div>
-                                    <div className="col-span-3 text-center">Số lượng</div>
-                                    <div className="col-span-2 text-right">Tổng</div>
+                                <div className="hidden md:grid grid-cols-12 gap-4 px-8 py-4 bg-black border-b-2 border-black text-xs font-bold text-white uppercase tracking-widest">
+                                    <div className="col-span-5">SẢN PHẨM</div>
+                                    <div className="col-span-2 text-center">ĐƠN GIÁ</div>
+                                    <div className="col-span-3 text-center">SỐ LƯỢNG</div>
+                                    <div className="col-span-2 text-right">TỔNG</div>
                                 </div>
 
                                 {/* Items */}
-                                {items.map((item) => {
-                                    const imgSrc = item.product?.image
-                                        ? (item.product.image.startsWith("http")
-                                            ? item.product.image
-                                            : `${API_URL}${item.product.image}`)
-                                        : null;
-                                    return (
-                                        <div key={item.id} className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-white/5 hover:bg-white/5 transition-colors items-center">
-                                            {/* Product */}
-                                            <div className="col-span-5 flex items-center gap-4">
-                                                <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100">
-                                                    {imgSrc
-                                                        ? <img src={imgSrc} alt={item.product?.title} className="w-full h-full object-cover" />
-                                                        : <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
-                                                    }
+                                <div className="divide-y-2 divide-black/10">
+                                    {items.map((item) => {
+                                        const imgSrc = item.product?.image
+                                            ? (item.product.image.startsWith("http")
+                                                ? item.product.image
+                                                : `${API_URL}${item.product.image}`)
+                                            : null;
+                                        return (
+                                            <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 md:px-8 py-6 hover:bg-black/5 transition-colors items-center bg-white relative group">
+                                                {/* Product */}
+                                                <div className="md:col-span-5 flex items-center gap-4">
+                                                    <div className="w-20 h-20 border-2 border-black overflow-hidden bg-[#f8f8f8] flex-shrink-0 flex items-center justify-center">
+                                                        {imgSrc
+                                                            ? <img src={imgSrc} alt={item.product?.title} className="w-full h-full object-cover" />
+                                                            : <div className="w-full h-full bg-[#e5e5e5]" />
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-black text-sm uppercase tracking-widest line-clamp-2">{item.product?.title || "KEYCAP"}</p>
+                                                        {item.color && <p className="text-[10px] font-bold uppercase tracking-widest text-black/50 mt-1">MÀU: {item.color}</p>}
+                                                        <button
+                                                            onClick={() => handleRemove(item.id)}
+                                                            disabled={actionLoading[item.id]}
+                                                            className="text-[10px] font-bold uppercase tracking-widest text-[#ff4d4f] hover:text-[#ff4d4f]/80 mt-2 flex items-center gap-1 transition-colors cursor-pointer"
+                                                        >
+                                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                            XÓA
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="font-semibold text-white text-sm leading-tight">{item.product?.title || "Keycap"}</p>
-                                                    {item.color && <p className="text-xs text-white/45 mt-0.5">{item.color}</p>}
-                                                    <button
-                                                        onClick={() => handleRemove(item.id)}
-                                                        disabled={actionLoading[item.id]}
-                                                        className="text-xs text-[var(--theme-accent-2)] hover:text-[var(--theme-accent)] mt-1 flex items-center gap-1 transition-colors"
-                                                    >
-                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                        Remove
-                                                    </button>
+
+                                                {/* Price */}
+                                                <div className="md:col-span-2 text-left md:text-center text-sm font-bold uppercase tracking-widest text-black mt-2 md:mt-0">
+                                                    <span className="md:hidden text-[10px] text-black/50 mr-2">ĐƠN GIÁ:</span>
+                                                    {fmt(item.product?.price || 0)}
+                                                </div>
+
+                                                {/* Quantity */}
+                                                <div className="md:col-span-3 flex justify-start md:justify-center mt-2 md:mt-0">
+                                                    <div className="flex items-center border-2 border-black bg-white">
+                                                        <button
+                                                            onClick={() => handleQtyChange(item.id, item.quantity - 1)}
+                                                            disabled={actionLoading[item.id] || item.quantity <= 1}
+                                                            className="w-8 h-8 flex items-center justify-center text-black hover:bg-black/10 transition-colors disabled:opacity-40 font-black cursor-pointer"
+                                                        >−</button>
+                                                        <span className="w-10 text-center text-sm font-bold text-black border-x-2 border-black bg-[#f8f8f8] py-1">{item.quantity}</span>
+                                                        <button
+                                                            onClick={() => handleQtyChange(item.id, item.quantity + 1)}
+                                                            disabled={actionLoading[item.id]}
+                                                            className="w-8 h-8 flex items-center justify-center text-black hover:bg-black/10 transition-colors disabled:opacity-40 font-black cursor-pointer"
+                                                        >+</button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Total */}
+                                                <div className="md:col-span-2 text-left md:text-right font-anton text-xl tracking-wider text-[var(--theme-accent)] mt-2 md:mt-0">
+                                                    <span className="md:hidden text-xs font-oswald text-black mr-2">TỔNG:</span>
+                                                    {fmt(item.lineTotal || 0)}
                                                 </div>
                                             </div>
-
-                                            {/* Price */}
-                                            <div className="col-span-2 text-center text-sm text-gray-700 font-medium">
-                                                {fmt(item.product?.price || 0)}
-                                            </div>
-
-                                            {/* Quantity */}
-                                            <div className="col-span-3 flex justify-center">
-                                                <div className="flex items-center border border-white/10 rounded-lg overflow-hidden bg-white/5">
-                                                    <button
-                                                        onClick={() => handleQtyChange(item.id, item.quantity - 1)}
-                                                        disabled={actionLoading[item.id] || item.quantity <= 1}
-                                                        className="w-8 h-8 flex items-center justify-center text-white/60 hover:bg-white/10 transition-colors disabled:opacity-40 font-medium"
-                                                    >−</button>
-                                                    <span className="w-8 text-center text-sm font-semibold text-white">{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => handleQtyChange(item.id, item.quantity + 1)}
-                                                        disabled={actionLoading[item.id]}
-                                                        className="w-8 h-8 flex items-center justify-center text-white/60 hover:bg-white/10 transition-colors disabled:opacity-40 font-medium"
-                                                    >+</button>
-                                                </div>
-                                            </div>
-
-                                            {/* Total */}
-                                            <div className="col-span-2 text-right text-sm font-bold text-[var(--theme-accent)]">
-                                                {fmt(item.lineTotal || 0)}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
 
                             {/* Bottom Actions */}
-                            <div className="flex justify-between items-center mt-4">
-                                <Link to="/products" className="flex items-center gap-2 text-sm text-white/55 hover:text-white transition-colors font-medium">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-                                    Continue Shopping
+                            <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
+                                <Link to="/products" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors">
+                                    <svg className="w-4 h-4 border-2 border-black bg-white rounded-full p-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+                                    TIẾP TỤC MUA SẮM
                                 </Link>
-                                <div className="flex gap-3">
-                                    <button onClick={handleClear} className="px-4 py-2 text-sm border border-white/10 rounded-lg text-white/55 hover:bg-white/10 hover:text-[var(--theme-accent)] transition-colors font-medium">
-                                        Clear Cart
+                                <div className="flex gap-4 w-full sm:w-auto">
+                                    <button onClick={handleClear} className="w-full sm:w-auto px-6 py-3 border-2 border-black bg-white text-black text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer">
+                                        XÓA TẤT CẢ
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         {/* Order Summary */}
-                        <div className="lg:w-80 flex-shrink-0">
-                            <div className="bg-[rgba(255,255,255,0.04)] rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-white/10 p-6 sticky top-6 backdrop-blur-sm">
-                                <h2 className="font-black uppercase tracking-[0.18em] text-white text-lg mb-5" style={{ fontFamily: 'Anton, sans-serif' }}>Order Summary</h2>
+                        <div className="w-full lg:w-96 flex-shrink-0 z-20">
+                            <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-8 sticky top-6">
+                                <h2 className="font-anton text-2xl uppercase tracking-widest text-black mb-8">THÔNG TIN THANH TOÁN</h2>
 
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between text-white/60">
-                                        <span>Subtotal</span>
-                                        <span className="font-medium text-white">{fmt(subtotal)}</span>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold uppercase tracking-widest text-black/50">Tạm tính</span>
+                                        <span className="text-sm font-bold uppercase tracking-widest text-black">{fmt(subtotal)}</span>
                                     </div>
-                                    <div className="flex justify-between text-white/60">
-                                        <span>Shipping</span>
-                                        <span className="text-[var(--theme-accent)] font-semibold">Free</span>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold uppercase tracking-widest text-black/50">Vận chuyển</span>
+                                        <span className="text-sm font-bold uppercase tracking-widest text-[#52c41a]">MIỄN PHÍ</span>
                                     </div>
-                                    <div className="flex justify-between text-white/60">
-                                        <span>Estimated Tax (8%)</span>
-                                        <span className="font-medium text-white">{fmt(tax)}</span>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold uppercase tracking-widest text-black/50">VAT (8%)</span>
+                                        <span className="text-sm font-bold uppercase tracking-widest text-black">{fmt(tax)}</span>
                                     </div>
-                                    <div className="border-t border-white/10 pt-3 flex justify-between">
-                                        <span className="font-bold text-white text-base">Total</span>
-                                        <span className="font-extrabold text-white text-xl">{fmt(finalTotal)}</span>
+                                    <div className="border-t-2 border-black/10 pt-6 mt-6 flex items-end justify-between">
+                                        <span className="text-sm font-bold uppercase tracking-widest text-black">Tổng cộng</span>
+                                        <span className="font-anton text-4xl tracking-widest text-[var(--theme-accent)] leading-none">{fmt(finalTotal)}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={() => navigate("/checkout")}
-                                    className="w-full mt-6 bg-[var(--theme-accent)] hover:brightness-110 text-black font-black py-3.5 rounded-xl transition-colors text-sm tracking-[0.18em] uppercase shadow-sm"
+                                    className="w-full mt-8 bg-[var(--theme-accent)] border-2 border-black text-black font-bold py-4 text-sm tracking-widest uppercase hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
                                 >
-                                    Proceed to Checkout
+                                    TIẾN HÀNH THANH TOÁN
                                 </button>
 
-
-
                                 {/* Shipping Info */}
-                                <div className="mt-5 p-3.5 bg-white/5 rounded-xl flex items-start gap-3 border border-white/10">
-                                    <svg className="w-5 h-5 text-[var(--theme-accent)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                                <div className="mt-8 p-4 bg-[#f8f8f8] border-2 border-black flex items-start gap-4">
+                                    <span className="text-2xl mt-1">🚚</span>
                                     <div>
-                                        <p className="text-sm font-semibold text-white">Fast shipping</p>
-                                        <p className="text-xs text-white/50 mt-0.5">Dự kiến giao trong 3–5 ngày.</p>
+                                        <p className="text-sm font-bold uppercase tracking-widest text-black">GIAO HÀNG SIÊU TỐC</p>
+                                        <p className="text-xs font-bold uppercase tracking-widest text-black/50 mt-1">DỰ KIẾN GIAO TRONG 3–5 NGÀY.</p>
                                     </div>
                                 </div>
                             </div>
