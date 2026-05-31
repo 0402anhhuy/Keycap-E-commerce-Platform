@@ -60,6 +60,10 @@ const ProductDetail = () => {
     const [submittingReview, setSubmittingReview] = useState(false);
     const [reviewMessage, setReviewMessage] = useState("");
 
+    // UI states
+    const [expandedSpec, setExpandedSpec] = useState("Product Details");
+    const [ratingFilter, setRatingFilter] = useState("4.8");
+
     const fetchProductReviews = async () => {
         try {
             setLoadingReviews(true);
@@ -405,703 +409,897 @@ const ProductDetail = () => {
     if (!product) return <div className="p-4">Not found</div>;
 
     return (
-        <div className="min-h-screen bg-[var(--theme-bg)] text-[var(--theme-text)]">
+        <div className="min-h-screen text-black relative">
             <Header />
 
-            <Breadcrumb
-                align="viewport"
-                items={[
-                    { label: "Homepage", to: "/" },
-                    { label: "Product", to: "/products" },
-                    { label: product.title },
-                ]}
-            />
-            <main className="max-w-6xl mx-auto p-4 pt-10">
-                <div className="flex gap-10">
-                    {/* Left: Images */}
-                    <div className="w-1/2">
-                        {images.length ? (
-                            <div className="flex flex-col gap-8 relative">
-                                <div className="absolute -top-10 -left-10 w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent -z-10 pointer-events-none rounded-full blur-3xl"></div>
-                                <div className="w-full aspect-[4/4] bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
-                                    <img
-                                        src={images[activeImage]}
-                                        className="w-full h-auto max-h-full object-contain cursor-zoom-in hover:scale-105 transition-transform duration-500"
-                                        alt={product.title}
-                                        onClick={() => setShowCarousel(true)}
-                                    />
-                                </div>
-                                <div className="flex gap-4 overflow-x-auto pb-2 justify-start">
+            <div className="max-w-[1400px] mx-auto px-6 pt-32 pb-8">
+                <Breadcrumb
+                    align="viewport"
+                    items={[
+                        { label: "Homepage", to: "/" },
+                        { label: "Product", to: "/products" },
+                        { label: product.title },
+                    ]}
+                />
+            </div>
+
+            <div className="relative z-20 flex flex-col min-h-screen">
+                <main className="max-w-[1400px] mx-auto px-6 pb-24 w-full flex-1">
+                    <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-16">
+                        {/* Left: Images & Details */}
+                        <div className="flex-1 min-w-0 flex flex-col">
+                            {/* Main Image */}
+                            <div
+                                className="w-full bg-[#f8f8f8] aspect-[4/3] relative flex items-center justify-center p-8 mb-4 border-2 border-black cursor-pointer shadow-[8px_8px_0_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:translate-x-1"
+                                onClick={() => setShowCarousel(true)}
+                            >
+                                <img
+                                    src={images[activeImage] || images[0]}
+                                    alt={product.title}
+                                    className="w-full h-full object-contain drop-shadow-2xl"
+                                />
+                            </div>
+
+                            {/* Thumbnails */}
+                            {images.length > 1 && (
+                                <div
+                                    className="flex gap-4 overflow-x-auto pb-4 pt-2 justify-start"
+                                    style={{ scrollbarWidth: "none" }}
+                                >
                                     {images.map((img, idx) => (
                                         <div
                                             key={idx}
-                                            onClick={() => {
-                                                setActiveImage(idx);
-                                                if (
-                                                    product &&
-                                                    Array.isArray(product.colors) &&
-                                                    product.colors.length === images.length
-                                                ) {
-                                                    const colorLabel = product.colors[idx]?.label;
-                                                    if (colorLabel) setSelectedColor(colorLabel);
-                                                }
-                                            }}
-                                            className={`w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden cursor-pointer border-[3px] transition-all ${activeImage === idx ? "border-white" : "border-white/10 hover:border-white/30"}`}
+                                            onClick={() => setActiveImage(idx)}
+                                            className={`relative w-24 h-24 flex-shrink-0 bg-[#f8f8f8] overflow-hidden cursor-pointer border-2 transition-all hover:shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-1 ${activeImage === idx ? "border-black shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "border-black/20"}`}
                                         >
                                             <img
                                                 src={img}
                                                 alt={`Thumbnail ${idx}`}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-contain p-2"
                                             />
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="w-full aspect-[4/4] bg-white/5 rounded-xl flex items-center justify-center text-white/40 border border-white/10">
-                                Không có hình ảnh
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Right: Info */}
-                    <div className="w-1/2">
-                        <div className="flex items-start justify-between gap-4">
-                            <h1
-                                className="text-3xl font-black leading-tight flex-1 uppercase tracking-[0.12em]"
-                                style={{ fontFamily: "Anton, sans-serif" }}
-                            >
-                                {product.title}
-                            </h1>
-                            <button
-                                onClick={toggleFavorite}
-                                className={`p-3 rounded-full border transition-all cursor-pointer ${
-                                    isFavorite
-                                        ? "bg-[var(--theme-accent)]/10 border-[var(--theme-accent)] text-[var(--theme-accent)] shadow-sm"
-                                        : "bg-white/5 border-white/10 text-white/45 hover:text-[var(--theme-accent)] hover:border-[var(--theme-accent)] hover:bg-white/10"
-                                }`}
-                                title={
-                                    isFavorite ? "Bỏ yêu thích" : "Yêu thích"
-                                }
-                            >
-                                <svg
-                                    className="w-6 h-6 fill-current"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 text-xs text-white/55 border-b border-white/10 pb-4">
-                            <span className="flex items-center gap-1 text-orange-400 text-sm">
-                                {"★".repeat(Math.round(product.rating || 5)) +
-                                    "☆".repeat(
-                                        5 - Math.round(product.rating || 5),
-                                    )}
-                                <span className="text-gray-500 ml-1 text-xs font-semibold">
-                                    {product.rating
-                                        ? Number(product.rating).toFixed(1)
-                                        : "5.0"}
-                                </span>
-                            </span>
-                            <span className="text-gray-300">|</span>
-                            <span className="flex items-center gap-1 text-white/65 font-medium">
-                                👥 <strong>{product.buyersCount || 0}</strong>{" "}
-                                khách mua
-                            </span>
-                            <span className="text-gray-300">|</span>
-                            <span className="flex items-center gap-1 text-white/65 font-medium">
-                                💬{" "}
-                                <strong>{product.commentersCount || 0}</strong>{" "}
-                                lượt bình luận
-                            </span>
-                        </div>
-
-                        <div className="text-2xl font-semibold text-gray-200 mt-2">
-                            {Number(product.price).toLocaleString()}đ
-                            {product.originalPrice &&
-                                product.originalPrice > product.price && (
-                                    <span className="text-xl text-white/35 line-through ml-3 font-medium">
-                                        {Number(
-                                            product.originalPrice,
-                                        ).toLocaleString()}
-                                        đ
-                                    </span>
-                                )}
-                        </div>
-
-                        <p className="mt-5 text-white/65 leading-relaxed text-sm hidden">
-                            {product.description ||
-                                "Chưa có mô tả cho sản phẩm này."}
-                        </p>
-
-                        {/* Colors / Skin */}
-                        <div className="mt-10 border-t border-white/10 pt-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <div className="text-xl font-medium text-white">
-                                    Skin
-                                </div>
-                                <div className="text-sm text-gray-400">
-                                    {product.colors ? product.colors.length : 0} skins
-                                </div>
-                            </div>
-                            <div className="flex gap-4">
-                                {product.colors && product.colors.length > 0 ? (
-                                    product.colors.map((c, i) => (
-                                        <div
-                                            key={i}
-                                            title={c.label}
-                                            onClick={() => {
-                                                setSelectedColor(c.label);
-                                                if (images[i]) setActiveImage(i);
-                                            }}
-                                            className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex items-center justify-center ${selectedColor === c.label ? "border-white" : "border-white/10 hover:border-white/30"}`}
-                                            style={{ backgroundColor: images[i] ? "transparent" : c.value }}
-                                        >
-                                            {images[i] ? (
-                                                <img src={images[i]} alt={c.label} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <div className="text-[10px] text-white/80 font-bold text-center p-1">{c.label}</div>
-                                            )}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="text-sm text-gray-400">
-                                        Không có phân loại màu sắc
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Quantity and Buttons in a row */}
-                        <div className="mt-10 p-6 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-6 shadow-xl">
-                            <div className="flex items-center border border-white/20 rounded-md h-12 bg-transparent overflow-hidden w-32 shrink-0">
-                                <button
-                                    onClick={() => handleQuantityChange(quantity - 1)}
-                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg"
-                                >
-                                    −
-                                </button>
-                                <div className="w-px h-full bg-white/20"></div>
-                                <input
-                                    type="text"
-                                    value={quantity}
-                                    readOnly
-                                    className="flex-1 h-full text-center border-none bg-transparent focus:outline-none text-base font-semibold text-white w-10"
-                                />
-                                <div className="w-px h-full bg-white/20"></div>
-                                <button
-                                    onClick={() => handleQuantityChange(quantity + 1)}
-                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg"
-                                >
-                                    +
-                                </button>
-                            </div>
-                            
-                            <div className="flex-1">
-                                <button
-                                    onClick={handleAddToCart}
-                                    disabled={adding}
-                                    className="w-full bg-[#F17336] hover:bg-[#D55F2A] text-white font-black py-3.5 h-12 rounded flex items-center justify-center gap-3 uppercase tracking-wider transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100 relative overflow-hidden"
-                                    style={{ clipPath: "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 98% 30%, 100% 40%, 98% 50%, 100% 60%, 98% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 2% 70%, 0% 60%, 2% 50%, 0% 40%, 2% 30%, 0% 20%, 2% 10%)" }}
-                                >
-                                    {adding ? "ĐANG THÊM..." : success ? "ĐÃ THÊM ✓" : "ADD TO CART"}
-                                    {!adding && !success && (
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 flex flex-col gap-3 text-sm text-gray-600">
-                            <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500 bg-white">
-                                    <svg
-                                        className="w-3 h-3"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="3"
-                                            d="M5 13l4 4L19 7"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                Miễn phí vận chuyển toàn quốc cho đơn từ
-                                500.000đ
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500 bg-white">
-                                    <svg
-                                        className="w-3 h-3"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="3"
-                                            d="M5 13l4 4L19 7"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                Bảo hành chính hãng 2 năm
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500 bg-white">
-                                    <svg
-                                        className="w-3 h-3"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="3"
-                                            d="M5 13l4 4L19 7"
-                                        ></path>
-                                    </svg>
-                                </div>
-                                Đổi trả miễn phí trong vòng 30 ngày
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Shop Profile Card */}
-                {product?.shop && (
-                    <div className="mt-8 bg-[rgba(255,255,255,0.04)] p-6 rounded-[28px] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.28)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div className="flex items-center gap-4 text-left">
-                            <div className="w-16 h-16 rounded-full bg-white/5 text-[var(--theme-accent)] flex items-center justify-center font-bold text-2xl border border-white/10 overflow-hidden shrink-0">
-                                {product.shop.logo ? (
-                                    <img
-                                        src={
-                                            product.shop.logo.startsWith("http")
-                                                ? product.shop.logo
-                                                : `${API_BASE}${product.shop.logo}`
-                                        }
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    "🏪"
-                                )}
-                            </div>
-                            <div>
-                                <h3 className="font-extrabold text-white text-base">
-                                    {product.shop.name}
-                                </h3>
-                                <p className="text-xs text-white/50 mt-1">
-                                    {product.shop.description ||
-                                        "Chưa có mô tả cửa hàng."}
-                                </p>
-                                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-white/45 font-semibold">
-                                    <span className="text-[var(--theme-accent-2)]">
-                                        ⭐{" "}
-                                        {Number(
-                                            product.shop.rating || 0,
-                                        ).toFixed(1)}{" "}
-                                        / 5 ({product.shop.reviewCount || 0}{" "}
-                                        đánh giá)
-                                    </span>
-                                    <span>📍 {product.shop.address}</span>
-                                    <span>📞 {product.shop.phone}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() =>
-                                navigate(`/products?shopId=${product.shop.id}`)
-                            }
-                            className="px-5 py-2.5 bg-[var(--theme-accent)] border border-transparent text-black hover:brightness-110 font-black text-sm rounded-xl transition-all whitespace-nowrap cursor-pointer uppercase tracking-[0.18em]"
-                        >
-                            Xem Cửa Hàng
-                        </button>
-                    </div>
-                )}
-                <div className="mt-10 mb-16 relative">
-                    <div className="flex items-center justify-between border-b pb-3 border-white/10 mb-6">
-                        <h2
-                            className="font-black text-xl text-white uppercase tracking-[0.18em]"
-                            style={{ fontFamily: "Anton, sans-serif" }}
-                        >
-                            Sản phẩm tương tự
-                        </h2>
-                        {similarProducts.length > 3 && (
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={handlePrevSimilar}
-                                    disabled={similarStartIndex === 0}
-                                    className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm cursor-pointer"
-                                >
-                                    <svg
-                                        className="w-5 h-5"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M15 19l-7-7 7-7"
-                                        />
-                                    </svg>
-                                </button>
-                                <button
-                                    onClick={handleNextSimilar}
-                                    disabled={
-                                        similarStartIndex + 3 >=
-                                        similarProducts.length
-                                    }
-                                    className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm cursor-pointer"
-                                >
-                                    <svg
-                                        className="w-5 h-5"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M9 5l7 7-7 7"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                    {similarProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300">
-                            {similarProducts
-                                .slice(similarStartIndex, similarStartIndex + 3)
-                                .map((p) => (
-                                    <div
-                                        key={p.id}
-                                        onClick={() =>
-                                            navigate(`/product/${p.id}`)
-                                        }
-                                        className="cursor-pointer h-full"
-                                    >
-                                        <ProductCard product={p} />
-                                    </div>
-                                ))}
-                        </div>
-                    ) : (
-                        <p className="text-gray-400 text-sm italic">
-                            Chưa có sản phẩm tương tự.
-                        </p>
-                    )}
-                </div>
-
-                {/* Product Reviews Section */}
-                <div className="mt-12 mb-16 bg-white p-8 rounded-3xl border border-gray-100 shadow-sm text-left">
-                    <h2 className="font-extrabold text-xl mb-6 text-gray-900 border-b pb-3 border-gray-100 flex items-center justify-between">
-                        <span>Đánh giá sản phẩm ({reviews.length})</span>
-                        {product?.rating && (
-                            <span className="text-sm font-semibold text-amber-500">
-                                Trung bình: ⭐{" "}
-                                {Number(product.rating).toFixed(1)} / 5
-                            </span>
-                        )}
-                    </h2>
-
-                    {/* Review Form (if eligible) */}
-                    {eligibleOrder && (
-                        <div className="bg-green-50/30 border border-green-100/50 p-6 rounded-2xl mb-8">
-                            <h3 className="font-extrabold text-sm text-gray-900 mb-1">
-                                Gửi đánh giá của bạn
-                            </h3>
-                            <p className="text-xs text-gray-400 mb-4">
-                                Bạn đã nhận được sản phẩm từ đơn hàng #
-                                {eligibleOrder.id}. Chia sẻ cảm nhận để nhận ưu
-                                đãi tích điểm nhé!
-                            </p>
-
-                            {reviewMessage && (
-                                <div className="mb-4 p-3 bg-white border border-gray-100 text-xs font-semibold rounded-xl">
-                                    {reviewMessage}
-                                </div>
                             )}
 
-                            <form
-                                onSubmit={handleReviewSubmit}
-                                className="space-y-4"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        Điểm đánh giá:
-                                    </span>
-                                    <div className="flex gap-1.5 text-xl">
-                                        {[1, 2, 3, 4, 5].map((star) => (
+                            {/* SPECIFICATION SECTION */}
+                            <div className="mt-16 pt-10 pb-8 lg:pr-10">
+                                <h2
+                                    className="text-4xl md:text-[44px] font-black uppercase mb-6 tracking-wide"
+                                    style={{ fontFamily: "Anton, sans-serif" }}
+                                >
+                                    Specification
+                                </h2>
+                                <div className="border-t border-black/20">
+                                    {[
+                                        "Product Details",
+                                        "Inside the package",
+                                        "Delivery & shipping",
+                                    ].map((spec) => (
+                                        <div
+                                            key={spec}
+                                            className="border-b border-black/20"
+                                        >
                                             <button
-                                                key={star}
-                                                type="button"
                                                 onClick={() =>
-                                                    setRatingInput(star)
+                                                    setExpandedSpec(
+                                                        expandedSpec === spec
+                                                            ? null
+                                                            : spec,
+                                                    )
                                                 }
-                                                className={`transition-transform active:scale-95 cursor-pointer ${star <= ratingInput ? "text-amber-400" : "text-gray-200"}`}
+                                                className="w-full py-4 flex items-center text-left uppercase font-bold text-sm tracking-widest hover:bg-black/5 transition-colors cursor-pointer"
                                             >
-                                                ★
+                                                <span className="text-xl font-normal w-6 leading-none inline-block">
+                                                    {expandedSpec === spec
+                                                        ? "−"
+                                                        : "+"}
+                                                </span>{" "}
+                                                {spec}
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
-                                        Bình luận của bạn
-                                    </label>
-                                    <textarea
-                                        value={commentInput}
-                                        onChange={(e) =>
-                                            setCommentInput(e.target.value)
-                                        }
-                                        placeholder="Sản phẩm rất tốt, giao hàng nhanh, phục vụ chu đáo..."
-                                        rows={3}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#00b14f] bg-white resize-none"
-                                        required
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
-                                        Hình ảnh (URLs cách nhau bởi dấu phẩy -
-                                        tùy chọn)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={imagesInput}
-                                        onChange={(e) =>
-                                            setImagesInput(e.target.value)
-                                        }
-                                        placeholder="https://example.com/image.jpg"
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#00b14f] bg-white"
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={submittingReview}
-                                    className="px-5 py-2.5 bg-[#00b14f] hover:bg-green-600 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
-                                >
-                                    {submittingReview
-                                        ? "Đang gửi..."
-                                        : "Gửi đánh giá"}
-                                </button>
-                            </form>
-                        </div>
-                    )}
-
-                    {loadingReviews ? (
-                        <div className="flex justify-center py-6">
-                            <div className="animate-spin w-6 h-6 border-2 border-[#00b14f] border-t-transparent rounded-full" />
-                        </div>
-                    ) : reviews.length === 0 ? (
-                        <p className="text-gray-400 text-sm italic py-4">
-                            Chưa có đánh giá nào cho sản phẩm này.
-                        </p>
-                    ) : (
-                        <div className="space-y-6 divide-y divide-gray-150">
-                            {reviews.map((rev, idx) => (
-                                <div
-                                    key={rev.id}
-                                    className={`pt-6 ${idx === 0 ? "pt-0" : ""}`}
-                                >
-                                    <div className="flex justify-between items-start gap-4 text-left">
-                                        <div>
-                                            <span className="font-extrabold text-sm text-gray-900">
-                                                {rev.user?.name ||
-                                                    "Người mua ẩn danh"}
-                                            </span>
-                                            <div className="text-amber-400 text-xs mt-0.5">
-                                                {"★".repeat(rev.rating)}
+                                            <div
+                                                className={`overflow-hidden transition-all duration-300 ${expandedSpec === spec ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+                                            >
+                                                <div className="p-4 pt-0 text-sm text-black/70 leading-relaxed pl-6">
+                                                    {spec ===
+                                                        "Product Details" && (
+                                                        <ul className="list-disc pl-5 space-y-1">
+                                                            <li>
+                                                                Chất liệu: Resin
+                                                                cao cấp
+                                                            </li>
+                                                            <li>
+                                                                Profile: SA R1
+                                                            </li>
+                                                            <li>
+                                                                Stem: Cherry MX
+                                                            </li>
+                                                            <li>
+                                                                Sơn thủ công với
+                                                                độ chi tiết cao
+                                                            </li>
+                                                        </ul>
+                                                    )}
+                                                    {spec ===
+                                                        "Inside the package" && (
+                                                        <ul className="list-disc pl-5 space-y-1">
+                                                            <li>
+                                                                1x Keycap
+                                                                Artisan
+                                                            </li>
+                                                            <li>
+                                                                1x Hộp đựng bảo
+                                                                vệ
+                                                            </li>
+                                                            <li>
+                                                                Thẻ chứng nhận
+                                                                (nếu có)
+                                                            </li>
+                                                        </ul>
+                                                    )}
+                                                    {spec ===
+                                                        "Delivery & shipping" && (
+                                                        <p>
+                                                            Thời gian chuẩn bị:
+                                                            1-2 ngày làm việc.
+                                                            <br />
+                                                            Thời gian vận
+                                                            chuyển: 2-4 ngày tùy
+                                                            khu vực.
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                        <span className="text-[10px] text-gray-400 font-semibold">
-                                            {new Date(
-                                                rev.createdAt,
-                                            ).toLocaleDateString()}
-                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* HAPPY OWNERS SECTION */}
+                            <div className="mt-12 mb-20 pr-10">
+                                <h2
+                                    className="text-4xl md:text-[44px] font-black uppercase mb-6 tracking-wide"
+                                    style={{ fontFamily: "Anton, sans-serif" }}
+                                >
+                                    Happy Owners
+                                </h2>
+
+                                {/* Rating filter */}
+                                <div className="relative mb-8">
+                                    <div className="absolute right-0 top-0 flex -space-x-2 -mt-10 mr-4">
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-30">
+                                            🦊
+                                        </div>
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-20">
+                                            🦊
+                                        </div>
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-10">
+                                            🦊
+                                        </div>
                                     </div>
-                                    <p className="text-sm text-gray-600 mt-2.5 leading-relaxed text-left">
-                                        {rev.comment}
-                                    </p>
+                                    <button className="w-full border border-black/20 bg-black/5 py-3 px-4 flex justify-between items-center text-sm font-bold uppercase tracking-widest cursor-pointer hover:bg-black/10 transition-colors">
+                                        <span>
+                                            Rating Filter: {ratingFilter}{" "}
+                                            <span className="text-[#F17336] text-lg leading-none align-middle ml-1">
+                                                ★
+                                            </span>
+                                        </span>
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M19 9l-7 7-7-7"
+                                            ></path>
+                                        </svg>
+                                    </button>
+                                </div>
 
-                                    {rev.images && rev.images.length > 0 && (
-                                        <div className="flex gap-2.5 mt-3">
-                                            {rev.images.map((img, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="w-16 h-16 rounded-lg overflow-hidden border border-gray-100"
-                                                >
-                                                    <img
-                                                        src={
-                                                            img.startsWith(
-                                                                "http",
-                                                            )
-                                                                ? img
-                                                                : `${API_BASE}${img}`
-                                                        }
-                                                        className="w-full h-full object-cover"
-                                                    />
+                                {/* Review Form (if eligible) */}
+                                {eligibleOrder && (
+                                    <div className="border border-black/10 p-6 mb-8 relative bg-white/40 backdrop-blur-sm">
+                                        <h3 className="font-black text-lg text-black mb-1 uppercase tracking-wider">
+                                            Gửi đánh giá của bạn
+                                        </h3>
+                                        <p className="text-xs text-black/60 mb-4">
+                                            Bạn đã nhận được sản phẩm từ đơn
+                                            hàng #{eligibleOrder.id}. Chia sẻ
+                                            cảm nhận để nhận ưu đãi tích điểm
+                                            nhé!
+                                        </p>
+
+                                        {reviewMessage && (
+                                            <div className="mb-4 p-3 bg-black/5 border border-black/10 text-xs font-semibold">
+                                                {reviewMessage}
+                                            </div>
+                                        )}
+
+                                        <form
+                                            onSubmit={handleReviewSubmit}
+                                            className="space-y-4"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-xs font-bold text-black/60 uppercase tracking-wider">
+                                                    Điểm đánh giá:
+                                                </span>
+                                                <div className="flex gap-1.5 text-xl">
+                                                    {[1, 2, 3, 4, 5].map(
+                                                        (star) => (
+                                                            <button
+                                                                key={star}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setRatingInput(
+                                                                        star,
+                                                                    )
+                                                                }
+                                                                className={`transition-transform active:scale-95 cursor-pointer ${star <= ratingInput ? "text-[#F17336]" : "text-black/20"}`}
+                                                            >
+                                                                ★
+                                                            </button>
+                                                        ),
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                            </div>
 
-                                    {rev.vendorReply && (
-                                        <div className="mt-3.5 bg-gray-50/50 p-4 rounded-xl border border-gray-100 text-xs text-left">
-                                            <p className="font-bold text-[#00b14f]">
-                                                Phản hồi từ người bán:
-                                            </p>
-                                            <p className="text-gray-600 mt-1 leading-relaxed">
-                                                {rev.vendorReply}
-                                            </p>
+                                            <div>
+                                                <label className="block text-xs font-bold text-black/60 mb-1 uppercase tracking-wider">
+                                                    Bình luận của bạn
+                                                </label>
+                                                <textarea
+                                                    value={commentInput}
+                                                    onChange={(e) =>
+                                                        setCommentInput(
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="Sản phẩm rất tốt, giao hàng nhanh, phục vụ chu đáo..."
+                                                    rows={3}
+                                                    className="w-full border border-black/20 px-4 py-2 text-sm focus:outline-none focus:border-black bg-transparent resize-none"
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-black/60 mb-1 uppercase tracking-wider">
+                                                    Hình ảnh (URLs cách nhau bởi
+                                                    dấu phẩy - tùy chọn)
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={imagesInput}
+                                                    onChange={(e) =>
+                                                        setImagesInput(
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="https://example.com/image.jpg"
+                                                    className="w-full border border-black/20 px-4 py-2 text-sm focus:outline-none focus:border-black bg-transparent"
+                                                />
+                                            </div>
+
+                                            <button
+                                                type="submit"
+                                                disabled={submittingReview}
+                                                className="px-6 py-2.5 bg-[#F17336] hover:bg-[#D55F2A] text-white font-bold text-xs shadow-xs transition-colors cursor-pointer uppercase tracking-wider"
+                                            >
+                                                {submittingReview
+                                                    ? "Đang gửi..."
+                                                    : "Gửi đánh giá"}
+                                            </button>
+                                        </form>
+                                    </div>
+                                )}
+
+                                {/* Reviews List */}
+                                {loadingReviews ? (
+                                    <div className="flex justify-center py-6">
+                                        <div className="animate-spin w-6 h-6 border-2 border-[#F17336] border-t-transparent rounded-full" />
+                                    </div>
+                                ) : reviews.length === 0 ? (
+                                    <p className="text-black/50 text-sm italic py-4">
+                                        Chưa có đánh giá nào cho sản phẩm này.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-8">
+                                        {reviews.map((rev) => (
+                                            <div
+                                                key={rev.id}
+                                                className="flex gap-4 border-b border-black/10 pb-8"
+                                            >
+                                                <div className="w-10 h-10 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] flex items-center justify-center text-lg shrink-0 mt-1 shadow-sm">
+                                                    🦊
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <h4 className="font-bold text-black text-[15px]">
+                                                                {rev.user
+                                                                    ?.name ||
+                                                                    "Người mua ẩn danh"}
+                                                            </h4>
+                                                            <p className="text-black/60 text-xs mt-1 leading-relaxed max-w-[80%]">
+                                                                {rev.comment}
+                                                            </p>
+
+                                                            {rev.vendorReply && (
+                                                                <div className="mt-3.5 bg-black/5 p-3 text-xs text-left">
+                                                                    <p className="font-bold text-black/80 uppercase tracking-wider mb-1">
+                                                                        Phản hồi
+                                                                        từ người
+                                                                        bán:
+                                                                    </p>
+                                                                    <p className="text-black/60 leading-relaxed">
+                                                                        {
+                                                                            rev.vendorReply
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            )}
+
+                                                            <p className="text-[9px] text-black/40 mt-2 font-bold uppercase tracking-wider">
+                                                                {new Date(
+                                                                    rev.createdAt,
+                                                                ).toLocaleDateString(
+                                                                    "en-US",
+                                                                    {
+                                                                        month: "short",
+                                                                        day: "numeric",
+                                                                        year: "numeric",
+                                                                    },
+                                                                )}{" "}
+                                                                {new Date(
+                                                                    rev.createdAt,
+                                                                ).toLocaleTimeString(
+                                                                    "en-US",
+                                                                    {
+                                                                        hour: "numeric",
+                                                                        minute: "2-digit",
+                                                                    },
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-[2px] text-[#F17336] text-sm">
+                                                            {[
+                                                                1, 2, 3, 4, 5,
+                                                            ].map((star) => (
+                                                                <span
+                                                                    key={star}
+                                                                    className={
+                                                                        star <=
+                                                                        rev.rating
+                                                                            ? "opacity-100"
+                                                                            : "opacity-30"
+                                                                    }
+                                                                >
+                                                                    ★
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {rev.images &&
+                                                        rev.images.length >
+                                                            0 && (
+                                                            <div className="flex gap-3 mt-4">
+                                                                {rev.images.map(
+                                                                    (
+                                                                        img,
+                                                                        i,
+                                                                    ) => (
+                                                                        <div
+                                                                            key={
+                                                                                i
+                                                                            }
+                                                                            className="w-24 h-24 bg-black/10"
+                                                                        >
+                                                                            <img
+                                                                                src={
+                                                                                    img.startsWith(
+                                                                                        "http",
+                                                                                    )
+                                                                                        ? img
+                                                                                        : `${API_BASE}${img}`
+                                                                                }
+                                                                                className="w-full h-full object-cover"
+                                                                            />
+                                                                        </div>
+                                                                    ),
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Right: Info */}
+                        <div className="w-full lg:w-[420px] flex flex-col items-end shrink-0 relative h-full">
+                            <button
+                                onClick={toggleFavorite}
+                                className={`mb-4 px-5 py-2 border-2 flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest ${
+                                    isFavorite
+                                        ? "bg-black text-white border-black"
+                                        : "bg-transparent text-black border-black hover:bg-black hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
+                                }`}
+                            >
+                                <span className="text-lg leading-none">
+                                    {isFavorite ? "−" : "+"}
+                                </span>{" "}
+                                WISHLIST
+                            </button>
+
+                            <div className="w-full bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] relative flex flex-col text-left sticky top-24 z-30">
+                                <div className="p-8 pb-6">
+                                    <h1
+                                        className="text-[32px] font-black leading-tight tracking-wide text-black"
+                                        style={{
+                                            fontFamily: "Anton, sans-serif",
+                                        }}
+                                    >
+                                        {product.title}
+                                    </h1>
+
+                                    <div className="text-2xl font-bold text-black mt-2">
+                                        $
+                                        {Number(product.price).toLocaleString()}
+                                        {product.originalPrice &&
+                                            product.originalPrice >
+                                                product.price && (
+                                                <span className="text-xl text-black/40 line-through ml-3 font-medium">
+                                                    $
+                                                    {Number(
+                                                        product.originalPrice,
+                                                    ).toLocaleString()}
+                                                </span>
+                                            )}
+                                    </div>
+
+                                    {/* Colors / Skin */}
+                                    <div className="mt-10 border-t-2 border-black/10 pt-6">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <div className="text-xl font-bold text-black">
+                                                Skin
+                                            </div>
+                                            <div className="text-sm text-black/60">
+                                                {product.colors
+                                                    ? product.colors.length
+                                                    : 0}{" "}
+                                                skins
+                                            </div>
                                         </div>
+                                        <div className="text-sm text-black/60 mb-2">
+                                            {selectedColor || "--"}
+                                        </div>
+                                        <div className="flex gap-4">
+                                            {product.colors &&
+                                            product.colors.length > 0 ? (
+                                                product.colors.map((c, i) => (
+                                                    <div
+                                                        key={i}
+                                                        title={c.label}
+                                                        onClick={() => {
+                                                            setSelectedColor(
+                                                                c.label,
+                                                            );
+                                                            if (images[i])
+                                                                setActiveImage(
+                                                                    i,
+                                                                );
+                                                        }}
+                                                        className={`w-16 h-16 overflow-hidden transition-all cursor-pointer flex items-center justify-center border-2 ${selectedColor === c.label ? "border-black shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "border-black/20 hover:border-black hover:-translate-y-1"}`}
+                                                        style={{
+                                                            backgroundColor:
+                                                                images[i]
+                                                                    ? "transparent"
+                                                                    : c.value,
+                                                        }}
+                                                    >
+                                                        {images[i] ? (
+                                                            <img
+                                                                src={images[i]}
+                                                                alt={c.label}
+                                                                className="w-full h-full object-cover p-1"
+                                                            />
+                                                        ) : (
+                                                            <div className="text-[10px] text-black font-bold text-center p-1">
+                                                                {c.label}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="text-sm text-black/40">
+                                                    Không có phân loại màu sắc
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bottom bar with Quantity and Add to Cart */}
+                                <div className="bg-[#f8f8f8] p-8 pt-6 pb-8 border-t-2 border-black">
+                                    <div className="flex items-center gap-4 relative">
+                                        <div className="text-[var(--theme-accent)] text-[11px] font-bold mb-2 absolute -top-5 tracking-widest uppercase whitespace-nowrap">
+                                            {product.stock > 0
+                                                ? `${product.stock} INSTOCKS`
+                                                : "10 INSTOCKS"}
+                                        </div>
+                                        <div className="flex items-center border-2 border-black h-[52px] bg-white w-24 shrink-0 relative mt-1">
+                                            <button
+                                                onClick={() =>
+                                                    handleQuantityChange(
+                                                        quantity - 1,
+                                                    )
+                                                }
+                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/5 transition-colors text-lg"
+                                            >
+                                                −
+                                            </button>
+                                            <div className="w-[2px] h-[100%] bg-black"></div>
+                                            <input
+                                                type="text"
+                                                value={quantity}
+                                                readOnly
+                                                className="flex-1 h-full text-center border-none bg-transparent focus:outline-none text-base font-bold text-black w-8"
+                                            />
+                                            <div className="w-[2px] h-[100%] bg-black"></div>
+                                            <button
+                                                onClick={() =>
+                                                    handleQuantityChange(
+                                                        quantity + 1,
+                                                    )
+                                                }
+                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/5 transition-colors text-lg"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+
+                                        <div className="flex-1 relative top-[2px]">
+                                            <button
+                                                onClick={handleAddToCart}
+                                                disabled={adding}
+                                                className="w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)]"
+                                            >
+                                                <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                                    {adding
+                                                        ? "ĐANG THÊM..."
+                                                        : success
+                                                          ? "ĐÃ THÊM ✓"
+                                                          : "ADD TO CART"}
+                                                </span>
+                                                {!adding && !success && (
+                                                    <svg
+                                                        className="w-5 h-5 ml-1"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2.5"
+                                                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                                        ></path>
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Shop Profile Card */}
+                    {product?.shop && (
+                        <div className="mt-8 bg-[rgba(255,255,255,0.04)] p-6 rounded-[28px] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.28)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                            <div className="flex items-center gap-4 text-left">
+                                <div className="w-16 h-16 rounded-full bg-white/5 text-[var(--theme-accent)] flex items-center justify-center font-bold text-2xl border border-white/10 overflow-hidden shrink-0">
+                                    {product.shop.logo ? (
+                                        <img
+                                            src={
+                                                product.shop.logo.startsWith(
+                                                    "http",
+                                                )
+                                                    ? product.shop.logo
+                                                    : `${API_BASE}${product.shop.logo}`
+                                            }
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        "🏪"
                                     )}
                                 </div>
-                            ))}
+                                <div>
+                                    <h3 className="font-extrabold text-white text-base">
+                                        {product.shop.name}
+                                    </h3>
+                                    <p className="text-xs text-white/50 mt-1">
+                                        {product.shop.description ||
+                                            "Chưa có mô tả cửa hàng."}
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-white/45 font-semibold">
+                                        <span className="text-[var(--theme-accent-2)]">
+                                            ⭐{" "}
+                                            {Number(
+                                                product.shop.rating || 0,
+                                            ).toFixed(1)}{" "}
+                                            / 5 ({product.shop.reviewCount || 0}{" "}
+                                            đánh giá)
+                                        </span>
+                                        <span>📍 {product.shop.address}</span>
+                                        <span>📞 {product.shop.phone}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() =>
+                                    navigate(
+                                        `/products?shopId=${product.shop.id}`,
+                                    )
+                                }
+                                className="px-5 py-2.5 bg-[var(--theme-accent)] border border-transparent text-black hover:brightness-110 font-black text-sm rounded-xl transition-all whitespace-nowrap cursor-pointer uppercase tracking-[0.18em]"
+                            >
+                                Xem Cửa Hàng
+                            </button>
                         </div>
                     )}
-                </div>
-            </main>
+                    <div className="mt-10 mb-16 relative">
+                        <div className="flex items-center justify-between border-b pb-3 border-white/10 mb-6">
+                            <h2
+                                className="font-black text-xl text-white uppercase tracking-[0.18em]"
+                                style={{ fontFamily: "Anton, sans-serif" }}
+                            >
+                                Sản phẩm tương tự
+                            </h2>
+                            {similarProducts.length > 3 && (
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handlePrevSimilar}
+                                        disabled={similarStartIndex === 0}
+                                        className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm cursor-pointer"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M15 19l-7-7 7-7"
+                                            />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={handleNextSimilar}
+                                        disabled={
+                                            similarStartIndex + 3 >=
+                                            similarProducts.length
+                                        }
+                                        className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm cursor-pointer"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M9 5l7 7-7 7"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        {similarProducts.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300">
+                                {similarProducts
+                                    .slice(
+                                        similarStartIndex,
+                                        similarStartIndex + 3,
+                                    )
+                                    .map((p) => (
+                                        <div
+                                            key={p.id}
+                                            onClick={() =>
+                                                navigate(`/product/${p.id}`)
+                                            }
+                                            className="cursor-pointer h-full"
+                                        >
+                                            <ProductCard product={p} />
+                                        </div>
+                                    ))}
+                            </div>
+                        ) : (
+                            <p className="text-gray-400 text-sm italic">
+                                Chưa có sản phẩm tương tự.
+                            </p>
+                        )}
+                    </div>
+
+                    {/* (Product Reviews moved to Happy Owners section) */}
+                </main>
+                <Footer />
+            </div>
 
             {/* Carousel Modal */}
             {showCarousel && (
-                <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center backdrop-blur-md">
-                    {/* Header */}
-                    <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-10">
-                        <div className="flex-1"></div>
-                        <h2 className="text-white text-2xl font-bold tracking-widest uppercase text-center">
-                            {product.title.split(":")[1]?.trim() || product.title}
-                        </h2>
-                        <div className="flex-1 flex justify-end">
-                            <button
-                                onClick={() => setShowCarousel(false)}
-                                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition cursor-pointer border border-white/20"
+                <div className="fixed inset-0 z-[9999] bg-black/95 flex flex-col backdrop-blur-sm">
+                    {/* Top Controls */}
+                    <div className="absolute top-6 left-6 z-50">
+                        <button
+                            onClick={() => setShowCarousel(false)}
+                            className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer group"
+                        >
+                            <svg
+                                className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Main Image View */}
-                    <div className="w-full flex-1 flex items-center justify-center relative px-20 max-h-[70vh] mt-10">
-                        <button
-                            onClick={() => setActiveImage((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
-                            className="absolute left-8 w-12 h-12 flex items-center justify-center text-white bg-white/5 border border-white/20 hover:bg-white/20 rounded-full transition z-10 cursor-pointer"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                                ></path>
                             </svg>
-                        </button>
-                        
-                        <div className="w-full h-full flex items-center justify-center py-4 relative">
-                            <img
-                                src={images[activeImage]}
-                                alt={product.title}
-                                className="max-w-full max-h-full object-contain"
-                            />
-                        </div>
-
-                        <button
-                            onClick={() => setActiveImage((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
-                            className="absolute right-8 w-12 h-12 flex items-center justify-center text-white bg-white/5 border border-white/20 hover:bg-white/20 rounded-full transition z-10 cursor-pointer"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
+                            <span className="font-oswald tracking-widest uppercase font-bold text-lg mt-0.5">
+                                BACK
+                            </span>
                         </button>
                     </div>
 
-                    {/* Footer Controls */}
-                    <div className="w-full max-w-4xl pb-8 px-6 flex flex-col items-center mt-6">
-                        <div className="flex gap-4 mb-6 overflow-x-auto max-w-full pb-2">
-                            {images.map((img, idx) => (
-                                <div key={idx} className="flex flex-col items-center gap-2">
+                    {/* Main Image View - Gallery */}
+                    <div className="flex-1 min-h-0 w-full flex items-center justify-center relative overflow-hidden">
+                        {/* Left Arrow */}
+                        <button
+                            onClick={() =>
+                                setActiveImage((prev) =>
+                                    prev > 0 ? prev - 1 : images.length - 1,
+                                )
+                            }
+                            className="absolute left-4 md:left-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all z-30 cursor-pointer"
+                        >
+                            <svg
+                                className="w-10 h-10"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M15 19l-7-7 7-7"
+                                ></path>
+                            </svg>
+                        </button>
+
+                        {/* Right Arrow */}
+                        <button
+                            onClick={() =>
+                                setActiveImage((prev) =>
+                                    prev < images.length - 1 ? prev + 1 : 0,
+                                )
+                            }
+                            className="absolute right-4 md:right-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all z-30 cursor-pointer"
+                        >
+                            <svg
+                                className="w-10 h-10"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 5l7 7-7 7"
+                                ></path>
+                            </svg>
+                        </button>
+
+                        {/* Images Container */}
+                        <div className="w-full max-w-7xl h-full relative flex items-center justify-center">
+                            {images.map((img, idx) => {
+                                const total = images.length;
+                                let offset = idx - activeImage;
+                                if (offset > Math.floor(total / 2))
+                                    offset -= total;
+                                if (offset < -Math.floor(total / 2))
+                                    offset += total;
+
+                                const isCenter = offset === 0;
+                                const isVisible = Math.abs(offset) <= 2;
+
+                                if (!isVisible) return null;
+
+                                return (
                                     <div
+                                        key={idx}
                                         onClick={() => {
-                                            setActiveImage(idx);
-                                            if (product && Array.isArray(product.colors) && product.colors.length === images.length) {
-                                                const colorLabel = product.colors[idx]?.label;
-                                                if (colorLabel) setSelectedColor(colorLabel);
+                                            if (!isCenter) {
+                                                setActiveImage(idx);
+                                                if (
+                                                    product &&
+                                                    Array.isArray(
+                                                        product.colors,
+                                                    ) &&
+                                                    product.colors.length ===
+                                                        images.length
+                                                ) {
+                                                    const colorLabel =
+                                                        product.colors[idx]
+                                                            ?.label;
+                                                    if (colorLabel)
+                                                        setSelectedColor(
+                                                            colorLabel,
+                                                        );
+                                                }
                                             }
                                         }}
-                                        className={`w-16 h-16 rounded-xl overflow-hidden cursor-pointer transition-all border-2 ${activeImage === idx ? "border-[#F17336]" : "border-white/20 hover:border-white/50"}`}
+                                        className={`absolute w-[75%] sm:w-[60%] md:w-[45%] lg:w-[40%] aspect-square transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] flex items-center justify-center rounded-2xl overflow-hidden bg-white ${isCenter ? "cursor-default shadow-[0_0_40px_rgba(0,0,0,0.5)]" : "cursor-pointer"}`}
+                                        style={{
+                                            transform: `translateX(${offset * 110}%) scale(${isCenter ? 1 : 0.85})`,
+                                            opacity: isCenter ? 1 : 0.3,
+                                            zIndex: isCenter
+                                                ? 20
+                                                : 10 - Math.abs(offset),
+                                        }}
                                     >
-                                        <img src={img} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
+                                        <img
+                                            src={img}
+                                            className="w-full h-full object-cover"
+                                            alt={`Slide ${idx}`}
+                                        />
                                     </div>
-                                    <span className={`text-[10px] font-bold ${activeImage === idx ? "text-white" : "text-white/50"}`}>
-                                        {product.colors && product.colors[idx] ? product.colors[idx].label : `Style ${idx + 1}`}
-                                    </span>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
+                    </div>
 
-                        <div className="flex items-center gap-6 bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl">
-                            <div className="text-xl font-bold text-white mr-4">
-                                {Number(product.price).toLocaleString()}đ
-                                {product.stock > 0 && (
-                                    <span className="ml-3 text-xs bg-[#F17336] text-white px-2 py-1 rounded font-bold tracking-wider">
-                                        {product.stock} IN STOCK
-                                    </span>
-                                )}
-                            </div>
-                            
-                            <div className="flex items-center border border-white/20 rounded-md h-12 bg-transparent overflow-hidden w-32 shrink-0">
-                                <button
-                                    onClick={() => handleQuantityChange(quantity - 1)}
-                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg cursor-pointer"
-                                >
-                                    −
-                                </button>
-                                <div className="w-px h-full bg-white/20"></div>
-                                <input
-                                    type="text"
-                                    value={quantity}
-                                    readOnly
-                                    className="flex-1 h-full text-center border-none bg-transparent focus:outline-none text-base font-semibold text-white w-10"
-                                />
-                                <div className="w-px h-full bg-white/20"></div>
-                                <button
-                                    onClick={() => handleQuantityChange(quantity + 1)}
-                                    className="w-10 h-full flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-colors text-lg cursor-pointer"
-                                >
-                                    +
-                                </button>
-                            </div>
-
+                    {/* Pagination Indicators */}
+                    <div className="shrink-0 w-full flex justify-center items-center gap-2 p-8 z-20">
+                        {images.map((_, idx) => (
                             <button
-                                onClick={handleAddToCart}
-                                disabled={adding}
-                                className="w-48 bg-[#F17336] hover:bg-[#D55F2A] text-white font-black py-3 h-12 rounded flex items-center justify-center gap-2 uppercase tracking-wider transition-all disabled:opacity-70 cursor-pointer"
-                                style={{ clipPath: "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 98% 30%, 100% 40%, 98% 50%, 100% 60%, 98% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 2% 70%, 0% 60%, 2% 50%, 0% 40%, 2% 30%, 0% 20%, 2% 10%)" }}
-                            >
-                                {adding ? "THÊM..." : success ? "ĐÃ THÊM ✓" : "ADD TO CART"}
-                                {!adding && !success && (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
+                                key={idx}
+                                onClick={() => {
+                                    setActiveImage(idx);
+                                    if (
+                                        product &&
+                                        Array.isArray(product.colors) &&
+                                        product.colors.length === images.length
+                                    ) {
+                                        const colorLabel =
+                                            product.colors[idx]?.label;
+                                        if (colorLabel)
+                                            setSelectedColor(colorLabel);
+                                    }
+                                }}
+                                className={`h-[3px] transition-all duration-300 cursor-pointer ${activeImage === idx ? "w-10 bg-[var(--theme-accent)]" : "w-6 bg-white/30 hover:bg-white/60"}`}
+                            ></button>
+                        ))}
                     </div>
                 </div>
             )}
-
-            <Footer />
         </div>
     );
 };
