@@ -35,22 +35,25 @@ const Header = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const isHome = location.pathname === '/';
+    const isHome = location.pathname === '/' || location.pathname === '/home' || location.pathname === '';
     
     // Dynamic styles based on route & scroll
-    const headerBg = isScrolled 
-        ? 'bg-white border-b-2 border-black shadow-[0_4px_0_rgba(0,0,0,0.1)]' 
-        : (isHome ? 'bg-transparent border-transparent' : 'bg-white border-b-2 border-black');
-    const logoBg = 'bg-black text-white';
-    const logoText = 'text-black';
-    const iconColor = 'text-black';
-    const inputBorder = 'border-black/30 text-black placeholder:text-black/40';
-    const logoutText = 'text-black/50 hover:text-black';
+    const isAtTop = !isScrolled && isHome;
+    
+    const headerBg = isAtTop 
+        ? 'bg-transparent border-transparent' 
+        : `bg-white border-b-2 border-black ${isScrolled ? 'shadow-[0_4px_0_rgba(0,0,0,0.1)]' : ''}`;
+        
+    const logoBg = isAtTop ? 'bg-white text-black' : 'bg-black text-white';
+    const logoText = isAtTop ? '!text-white' : 'text-black';
+    const iconColor = isAtTop ? '!text-white' : 'text-black';
+    const inputBorder = isAtTop ? 'border-white/50 !text-white placeholder:!text-white/60' : 'border-black/30 text-black placeholder:text-black/40';
+    const logoutText = isAtTop ? '!text-white/80 hover:!text-white' : 'text-black/50 hover:text-black';
 
     const getNavClass = (path) => {
         const active = isActive(path);
-        if (active) return 'text-[var(--theme-accent)] border-[var(--theme-accent)] hover:text-[var(--theme-accent)] pb-1 border-b-2 transition-colors';
-        return `pb-1 border-b-2 border-transparent transition-colors text-black/70 hover:text-black`;
+        if (active) return `pb-1 border-b-2 transition-colors ${isAtTop ? 'border-white !text-white hover:!text-white/80' : 'border-[var(--theme-accent)] text-[var(--theme-accent)] hover:text-[var(--theme-accent)]/80'}`;
+        return `pb-1 border-b-2 border-transparent transition-colors ${isAtTop ? '!text-white hover:!text-white/80' : 'text-black/70 hover:text-black'}`;
     };
 
     return (
@@ -78,9 +81,9 @@ const Header = () => {
                 </nav>
 
                 {/* Right Icons */}
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-3">
                     {/* Search Icon/Input */}
-                    <form onSubmit={handleSearch} className={`hidden xl:flex items-center border-b pb-1 mr-4 ${inputBorder.split(' ')[0]}`}>
+                    <form onSubmit={handleSearch} className={`hidden xl:flex items-center border-b pb-1 mr-2 ${inputBorder.split(' ')[0]}`}>
                         <input
                             type="text"
                             placeholder="Search..."
@@ -89,20 +92,20 @@ const Header = () => {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <button type="submit" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors`}>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" /></svg>
                         </button>
                     </form>
 
-                    {/* Wishlist */}
-                    <Link to="/wishlist" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors`}>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    {/* Notification (Bell) */}
+                    <Link to="/notifications" className={`relative ${iconColor} hover:text-[var(--theme-accent)] transition-colors`}>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9a2.25 2.25 0 104.496 0 25.057 25.057 0 01-4.496 0z" clipRule="evenodd" /></svg>
+                        {/* Red dot for unread notifications (static for now, just to show) */}
+                        <span className="absolute top-0 right-0 w-2 h-2 bg-[var(--theme-accent)] rounded-full border border-black"></span>
                     </Link>
 
                     {/* Cart */}
                     <Link to="/cart" className={`relative ${iconColor} hover:text-[var(--theme-accent)] transition-colors`}>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 004.25 22.5h15.5a1.875 1.875 0 001.865-2.071l-1.263-12a1.875 1.875 0 00-1.865-1.679H16.5V6a4.5 4.5 0 10-9 0zM12 3a3 3 0 00-3 3v.75h6V6a3 3 0 00-3-3zm-3 8.25a3 3 0 106 0v-.75a.75.75 0 011.5 0v.75a4.5 4.5 0 11-9 0v-.75a.75.75 0 011.5 0v.75z" clipRule="evenodd" /></svg>
                         {itemCount > 0 && (
                             <span className="absolute -top-1.5 -right-2 bg-[var(--theme-accent)] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
                                 {itemCount > 99 ? '99+' : itemCount}
@@ -111,7 +114,7 @@ const Header = () => {
                     </Link>
 
                     {/* User */}
-                    <div className="relative ml-2">
+                    <div className="relative">
                         {localStorage.getItem('accessToken') ? (
                             <div className="relative">
                                 <button 
@@ -119,9 +122,7 @@ const Header = () => {
                                     onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
                                     className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center cursor-pointer`}
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" /></svg>
                                 </button>
                                 
                                 {showUserMenu && (
@@ -143,7 +144,7 @@ const Header = () => {
                             </div>
                         ) : (
                             <Link to="/login" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center`}>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" /></svg>
                             </Link>
                         )}
                     </div>
