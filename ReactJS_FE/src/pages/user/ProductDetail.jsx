@@ -412,9 +412,8 @@ const ProductDetail = () => {
         <div className="min-h-screen text-black relative">
             <Header />
 
-            <div className="max-w-[1400px] mx-auto px-6 pt-32 pb-8">
+            <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-4">
                 <Breadcrumb
-                    align="viewport"
                     items={[
                         { label: "Homepage", to: "/" },
                         { label: "Product", to: "/products" },
@@ -1167,6 +1166,14 @@ const ProductDetail = () => {
                         </button>
                     </div>
 
+                    {/* Title */}
+                    <div className="absolute top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+                        <h2 className="text-white text-3xl font-oswald tracking-widest text-center uppercase drop-shadow-lg">
+                            {product.title.split(":")[1]?.trim() ||
+                                product.title}
+                        </h2>
+                    </div>
+
                     {/* Main Image View - Gallery */}
                     <div className="flex-1 min-h-0 w-full flex items-center justify-center relative overflow-hidden">
                         {/* Left Arrow */}
@@ -1176,20 +1183,14 @@ const ProductDetail = () => {
                                     prev > 0 ? prev - 1 : images.length - 1,
                                 )
                             }
-                            className="absolute left-4 md:left-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all z-30 cursor-pointer"
+                            className="absolute left-4 md:left-12 w-16 h-16 flex items-center justify-center text-white/50 hover:text-white hover:scale-110 transition-all z-40 cursor-pointer drop-shadow-xl"
                         >
                             <svg
-                                className="w-10 h-10"
-                                fill="none"
-                                stroke="currentColor"
+                                className="w-12 h-12"
+                                fill="currentColor"
                                 viewBox="0 0 24 24"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M15 19l-7-7 7-7"
-                                ></path>
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                             </svg>
                         </button>
 
@@ -1200,20 +1201,14 @@ const ProductDetail = () => {
                                     prev < images.length - 1 ? prev + 1 : 0,
                                 )
                             }
-                            className="absolute right-4 md:right-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all z-30 cursor-pointer"
+                            className="absolute right-4 md:right-12 w-16 h-16 flex items-center justify-center text-white/50 hover:text-white hover:scale-110 transition-all z-40 cursor-pointer drop-shadow-xl"
                         >
                             <svg
-                                className="w-10 h-10"
-                                fill="none"
-                                stroke="currentColor"
+                                className="w-12 h-12"
+                                fill="currentColor"
                                 viewBox="0 0 24 24"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 5l7 7-7 7"
-                                ></path>
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                             </svg>
                         </button>
 
@@ -1256,10 +1251,10 @@ const ProductDetail = () => {
                                                 }
                                             }
                                         }}
-                                        className={`absolute w-[75%] sm:w-[60%] md:w-[45%] lg:w-[40%] aspect-square transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] flex items-center justify-center rounded-2xl overflow-hidden bg-white ${isCenter ? "cursor-default shadow-[0_0_40px_rgba(0,0,0,0.5)]" : "cursor-pointer"}`}
+                                        className={`absolute w-[80vw] sm:w-[50vw] lg:w-[calc(33.333%-1rem)] max-w-[400px] aspect-square transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform flex items-center justify-center bg-[#f8f8f8] border-2 border-black ${isCenter ? "cursor-default" : "cursor-pointer"}`}
                                         style={{
-                                            transform: `translateX(${offset * 110}%) scale(${isCenter ? 1 : 0.85})`,
-                                            opacity: isCenter ? 1 : 0.3,
+                                            transform: `translateX(calc(${offset * 100}% + ${offset * 24}px)) translateZ(0)`,
+                                            opacity: 1,
                                             zIndex: isCenter
                                                 ? 20
                                                 : 10 - Math.abs(offset),
