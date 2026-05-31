@@ -25,6 +25,7 @@ const Header = () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     const [isScrolled, setIsScrolled] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -110,20 +111,42 @@ const Header = () => {
                     </Link>
 
                     {/* User */}
-                    {localStorage.getItem('accessToken') ? (
-                        <div className="flex items-center gap-3 ml-2">
-                            <button onClick={handleLogout} className={`text-xs font-oswald uppercase tracking-widest transition-colors cursor-pointer ${logoutText}`}>
-                                Logout
-                            </button>
-                            <Link to="/profile" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors`}>
+                    <div className="relative ml-2">
+                        {localStorage.getItem('accessToken') ? (
+                            <div className="relative">
+                                <button 
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                    onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
+                                    className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center cursor-pointer`}
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </button>
+                                
+                                {showUserMenu && (
+                                    <div className="absolute right-0 mt-6 w-48 bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] flex flex-col z-[100] animate-fade-in-down py-2">
+                                        <Link 
+                                            to="/profile" 
+                                            className="px-4 py-2 text-sm font-oswald font-bold uppercase tracking-widest text-black hover:bg-black/5 hover:text-[var(--theme-accent)] transition-colors text-left"
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <button 
+                                            onClick={handleLogout} 
+                                            className="px-4 py-2 text-sm font-oswald font-bold uppercase tracking-widest text-red-500 hover:bg-black/5 transition-colors text-left w-full"
+                                        >
+                                            Log Out
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link to="/login" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center`}>
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             </Link>
-                        </div>
-                    ) : (
-                        <Link to="/login" className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors ml-2`}>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </Link>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </header>
