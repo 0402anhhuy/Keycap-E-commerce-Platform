@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
+import Breadcrumb from "../../components/Breadcrumb";
 import { fetchAllProducts } from "../../utils/productApi";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -283,14 +284,11 @@ const ProductPage = () => {
             {/* Global background handles the texture */}
             <Header />
 
-            <div className="max-w-[1400px] mx-auto px-6 pt-12 md:pt-25 pb-20 relative z-10">
+            <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-20 relative z-10">
+                <Breadcrumb />
                 {/* Header Title Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-6 border-b border-black/30 gap-4">
                     <div>
-                        <div className="text-[10px] font-oswald uppercase font-bold tracking-widest text-black mb-1">
-                            HOME <span className="text-black/30 mx-1">/</span>{" "}
-                            STORE
-                        </div>
                         <h1
                             className="text-6xl font-anton uppercase tracking-wider text-black m-0 leading-none"
                             style={{
@@ -301,7 +299,9 @@ const ProductPage = () => {
                         </h1>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-[11px] font-oswald font-bold uppercase tracking-widest text-black mt-1">SORT BY:</span>
+                        <span className="text-[11px] font-oswald font-bold uppercase tracking-widest text-black mt-1">
+                            SORT BY:
+                        </span>
                         <div className="relative border-2 border-black bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_rgba(0,0,0,1)] transition-all">
                             <select
                                 value={sortBy}
@@ -309,7 +309,11 @@ const ProductPage = () => {
                                 className="bg-transparent border-none focus:outline-none cursor-pointer uppercase font-bold text-black text-xs font-oswald tracking-widest appearance-none px-4 py-2 pr-10 w-full h-full z-10 relative"
                             >
                                 {SORT_OPTIONS.map((o) => (
-                                    <option key={o.value} value={o.value} className="text-black bg-white uppercase font-bold tracking-widest">
+                                    <option
+                                        key={o.value}
+                                        value={o.value}
+                                        className="text-black bg-white uppercase font-bold tracking-widest"
+                                    >
                                         {o.label}
                                     </option>
                                 ))}
