@@ -98,3 +98,5 @@ export const PageWrapper = ({ children, center = true }) => (
         {children}
     </div>
 );
+
+export { default as Toast } from "./Toast";
