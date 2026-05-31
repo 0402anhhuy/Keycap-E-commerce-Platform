@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, InputField, OtpInput, Message, StepIndicator, Card, PageWrapper } from "../components";
+import { OtpInput } from "../components";
+import Header from "../components/user/Header";
 
-const STEPS = ["Email", "Xác thực OTP", "Mật khẩu mới"];
+const STEPS = ["Email", "Verify", "New Password"];
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
@@ -103,89 +104,130 @@ const ForgotPassword = () => {
     };
 
     return (
-        <PageWrapper>
-            <Card>
-                <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-2xl mb-4">
-                        <svg className="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                    </div>
-                    <h2 className="text-2xl font-extrabold text-gray-900">Quên mật khẩu?</h2>
-                    <p className="text-gray-500 text-sm mt-1">Đừng lo, chúng tôi sẽ giúp bạn khôi phục</p>
+        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col items-center justify-center pt-24 pb-12 px-4 relative">
+            <Header />
+
+            <div className="w-full max-w-lg bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] p-8 md:p-10 z-10 relative">
+                <div className="text-center mb-8">
+                    <h2 className="text-4xl font-anton uppercase tracking-wider text-black mb-2">Reset Password</h2>
+                    <p className="text-black/60 font-bold uppercase tracking-widest text-xs">Recover your access</p>
                 </div>
 
-                <StepIndicator steps={STEPS} current={step} />
+                <div className="flex justify-center mb-8 gap-2">
+                    {STEPS.map((s, i) => (
+                        <div key={i} className={`flex-1 text-center py-2 border-2 ${step >= i ? 'border-black bg-black text-white' : 'border-black/20 text-black/40'} text-xs font-bold uppercase tracking-widest transition-colors`}>
+                            {s}
+                        </div>
+                    ))}
+                </div>
 
                 {step === 0 && (
-                    <>
-                        <InputField
-                            label="Email đã đăng ký"
-                            type="email"
-                            name="email"
-                            placeholder="example@hcmute.edu.vn"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            error={errors.email}
-                        />
-                        <Button loading={loading} onClick={sendOtp}>Gửi mã OTP</Button>
-                    </>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
+                                Email Address {errors.email && <span className="text-red-500">{errors.email}</span>}
+                            </label>
+                            <input 
+                                name="email" 
+                                type="email" 
+                                placeholder="example@email.com" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent" 
+                            />
+                        </div>
+
+                        <button onClick={sendOtp} disabled={loading} className="mt-4 w-full bg-black text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-70">
+                            <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                {loading ? "PROCESSING..." : "SEND OTP"}
+                            </span>
+                        </button>
+                    </div>
                 )}
 
                 {step === 1 && (
-                    <>
-                        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 mb-4 text-sm text-blue-600 text-center">
-                            Đã gửi OTP đến <strong>{email}</strong>
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-transparent border-2 border-black p-4 text-sm font-bold uppercase tracking-widest text-center">
+                            OTP Sent to <br/><span className="text-[var(--theme-accent)]">{email}</span>
                         </div>
-                        <OtpInput value={otp} onChange={setOtp} />
-                        {errors.otp && <p className="text-xs text-red-500 -mt-3 mb-3 text-center">{errors.otp}</p>}
-                        <Button loading={loading} onClick={verifyOtp}>Xác nhận OTP</Button>
-                        <Button
-                            variant="secondary"
-                            className="mt-2"
-                            loading={loading}
-                            onClick={() => { setStep(0); setOtp(""); setMessage(null); }}
-                        >
-                            Đổi email khác
-                        </Button>
-                        <p className="text-center text-sm text-gray-500 mt-3">
-                            Không nhận được?{" "}
-                            <button onClick={sendOtp} className="text-primary font-semibold hover:underline">Gửi lại</button>
+
+                        <div className="flex flex-col gap-1.5 mt-4">
+                            <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-center text-center">
+                                Enter 6-digit OTP
+                            </label>
+                            <div className="flex justify-center">
+                                <OtpInput value={otp} onChange={(val) => { setOtp(val); setErrors((prev) => ({ ...prev, otp: "" })); }} />
+                            </div>
+                            {errors.otp && <p className="text-xs text-red-500 text-center font-bold mt-2">{errors.otp}</p>}
+                        </div>
+
+                        <div className="flex gap-4 mt-6">
+                            <button onClick={verifyOtp} disabled={loading} className="flex-[2] bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70">
+                                <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                    {loading ? "VERIFYING..." : "CONFIRM OTP"}
+                                </span>
+                            </button>
+                            <button onClick={() => { setStep(0); setOtp(""); setMessage(null); }} disabled={loading} className="flex-1 bg-white text-black font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70">
+                                <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                    CHANGE
+                                </span>
+                            </button>
+                        </div>
+                        <p className="text-center text-xs font-bold text-black/50 mt-2 uppercase tracking-widest">
+                            Didn't receive?{" "}
+                            <button onClick={sendOtp} className="text-black hover:text-[var(--theme-accent)] hover:underline ml-1">Resend</button>
                         </p>
-                    </>
+                    </div>
                 )}
 
                 {step === 2 && (
-                    <>
-                        <InputField
-                            label="Mật khẩu mới"
-                            type="password"
-                            placeholder="Tối thiểu 6 ký tự"
-                            value={passwords.newPassword}
-                            onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-                            error={errors.newPassword}
-                        />
-                        <InputField
-                            label="Xác nhận mật khẩu mới"
-                            type="password"
-                            placeholder="Nhập lại mật khẩu"
-                            value={passwords.confirmPassword}
-                            onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
-                            error={errors.confirmPassword}
-                        />
-                        <Button loading={loading} onClick={resetPassword}>Đặt lại mật khẩu</Button>
-                    </>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
+                                New Password {errors.newPassword && <span className="text-red-500">{errors.newPassword}</span>}
+                            </label>
+                            <input 
+                                type="password" 
+                                placeholder="••••••••" 
+                                value={passwords.newPassword} 
+                                onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} 
+                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent" 
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
+                                Confirm Password {errors.confirmPassword && <span className="text-red-500">{errors.confirmPassword}</span>}
+                            </label>
+                            <input 
+                                type="password" 
+                                placeholder="••••••••" 
+                                value={passwords.confirmPassword} 
+                                onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} 
+                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent" 
+                            />
+                        </div>
+
+                        <button onClick={resetPassword} disabled={loading} className="mt-4 w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70">
+                            <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                {loading ? "PROCESSING..." : "RESET PASSWORD"}
+                            </span>
+                        </button>
+                    </div>
                 )}
 
-                <Message text={msg} type={msgType} />
+                {msg && (
+                    <div className={`mt-6 p-3 border-2 border-black text-xs font-bold uppercase tracking-widest text-center ${msgType === 'error' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                        {msg}
+                    </div>
+                )}
 
-                <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-                    <Link to="/login" className="text-sm text-gray-500 hover:text-primary transition-colors">
-                        ← Quay lại đăng nhập
+                <div className="mt-8 pt-6 border-t-2 border-black/10 text-center">
+                    <Link to="/login" className="text-xs font-bold text-black/60 hover:text-black uppercase tracking-widest transition-colors hover:underline">
+                        ← BACK TO LOGIN
                     </Link>
                 </div>
-            </Card>
-        </PageWrapper>
+            </div>
+        </div>
     );
 };
 
