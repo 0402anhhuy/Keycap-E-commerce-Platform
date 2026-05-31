@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { OtpInput } from "../components";
+import Toast from "../components/Toast";
 
 const STEPS = ["Thông tin", "Xác thực OTP"];
 
@@ -144,7 +144,7 @@ const Register = () => {
 
             setStep(1);
 
-            setMsg(data.message || "OTP đã được gửi tới email.");
+            setMsg(data.message || "OTP đã được gửi tới email");
 
             setMsgType("success");
         } catch (err) {
@@ -443,13 +443,7 @@ const Register = () => {
                     </div>
                 )}
 
-                {msg && (
-                    <div
-                        className={`mt-6 p-3 border-2 border-black text-xs font-bold uppercase tracking-widest text-center ${msgType === "error" ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"}`}
-                    >
-                        {msg}
-                    </div>
-                )}
+
 
                 <div className="mt-8 pt-6 border-t-2 border-black/10 text-center">
                     <p className="text-xs font-bold text-black uppercase tracking-widest">
@@ -463,6 +457,13 @@ const Register = () => {
                     </p>
                 </div>
             </div>
+            
+            <Toast 
+                show={!!msg} 
+                message={msg} 
+                type={msgType} 
+                onClose={() => setMsg(null)} 
+            />
         </div>
     );
 };
