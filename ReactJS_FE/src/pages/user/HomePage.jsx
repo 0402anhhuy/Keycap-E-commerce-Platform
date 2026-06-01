@@ -17,7 +17,7 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
         const container = document.getElementById(sliderId);
         if (!container) return;
         // Add 24px (gap-6) to ensure we scroll past the snap threshold
-        const scrollAmount = container.clientWidth + 24; 
+        const scrollAmount = container.clientWidth + 24;
         const target =
             direction === "left"
                 ? container.scrollLeft - scrollAmount
@@ -78,7 +78,7 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
                 {/* Scrollable Container */}
                 <div
                     id={sliderId}
-                    className="overflow-x-auto scroll-smooth pb-4"
+                    className="scroll-smooth pb-4"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                 >
                     <div className="flex gap-6 snap-x snap-mandatory px-4 lg:px-0">
@@ -188,10 +188,14 @@ const HomePage = () => {
 
                         <div className="flex border-b-2 border-black min-h-[60px]">
                             <div className="w-[50%] p-2 border-r-2 border-black flex items-center justify-center text-center">
-                                WORLDWIDE<br />DELIVERY
+                                WORLDWIDE
+                                <br />
+                                DELIVERY
                             </div>
                             <div className="w-[50%] p-2 flex items-center justify-center text-center">
-                                PREMIUM<br />QUALITY
+                                PREMIUM
+                                <br />
+                                QUALITY
                             </div>
                         </div>
 
