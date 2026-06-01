@@ -157,6 +157,48 @@ const getProductById = async (id) => {
     return normalized;
 };
 
+const getProductBySlug = async (slug) => {
+    const product = await Product.findOne({
+        where: { slug, status: "active" },
+        include: [
+            {
+                model: Category,
+                as: "category",
+            },
+            {
+                model: Collection,
+                as: "collection",
+            },
+        ],
+    });
+    if (!product)
+        throw Object.assign(new Error("Sản phẩm không tồn tại."), {
+            status: 404,
+        });
+
+    const buyersCount = await Order.count({
+        include: [
+            {
+                model: OrderItem,
+                as: "items",
+                where: { productId: product.id },
+            },
+        ],
+        where: {
+            status: { [Op.ne]: "cancelled" },
+        },
+    });
+
+    const commentersCount = await ProductReview.count({
+        where: { productId: product.id },
+    });
+
+    const normalized = normalizeProduct(product);
+    normalized.buyersCount = buyersCount;
+    normalized.commentersCount = commentersCount;
+    return normalized;
+};
+
 const createProduct = async (data) => {
     let {
         sku,
@@ -283,6 +325,7 @@ module.exports = {
     normalizeProduct,
     getProducts,
     getProductById,
+    getProductBySlug,
     createProduct,
     updateProduct,
     deleteProduct,
