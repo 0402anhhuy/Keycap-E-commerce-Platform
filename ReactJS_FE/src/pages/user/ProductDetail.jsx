@@ -16,7 +16,7 @@ const normalizeArray = (data) => {
 };
 
 const ProductDetail = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
 
@@ -112,7 +112,7 @@ const ProductDetail = () => {
                 setQuantity(1);
                 setSuccess(false);
 
-                const res = await fetch(`${API_BASE}/api/products/${id}`, {
+                const res = await fetch(`${API_BASE}/api/products/${slug}`, {
                     signal: controller.signal,
                 });
 
@@ -131,7 +131,7 @@ const ProductDetail = () => {
                 // Fetch similar products recommendation from custom endpoint
                 try {
                     const r = await fetch(
-                        `${API_BASE}/api/products/${id}/similar`,
+                        `${API_BASE}/api/products/${slug}/similar`,
                         { signal: controller.signal },
                     );
                     if (r.ok) {
@@ -160,7 +160,7 @@ const ProductDetail = () => {
 
         load();
         return () => controller.abort();
-    }, [id]);
+    }, [slug]);
 
     const [activeImage, setActiveImage] = useState(0);
     const [showCarousel, setShowCarousel] = useState(false);
@@ -168,7 +168,7 @@ const ProductDetail = () => {
     useEffect(() => {
         setActiveImage(0);
         setShowCarousel(false);
-    }, [id]);
+    }, [slug]);
 
     const images = useMemo(() => {
         if (!product) return [];
@@ -1142,7 +1142,7 @@ const ProductDetail = () => {
             {showCarousel && (
                 <div className="fixed inset-0 z-[9999] bg-black/95 flex flex-col backdrop-blur-sm">
                     {/* Top Controls */}
-                    <div className="absolute top-6 left-6 z-50">
+                    <div className="absolute top-5 left-6 z-50">
                         <button
                             onClick={() => setShowCarousel(false)}
                             className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer group"
@@ -1167,7 +1167,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Title */}
-                    <div className="absolute top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+                    <div className="absolute top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
                         <h2 className="text-white text-3xl font-oswald tracking-widest text-center uppercase drop-shadow-lg">
                             {product.title.split(":")[1]?.trim() ||
                                 product.title}
