@@ -655,9 +655,6 @@ const ProductPage = () => {
                     </div>
                 </div>
             </div>
-
-            {/* The footer is dark, but this page is light. Let's use the torn-paper-bottom effect on the main container to transition to the dark footer */}
-            <div className="torn-paper-bottom"></div>
             <Footer />
         </div>
     );
