@@ -78,7 +78,7 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
                 {/* Scrollable Container */}
                 <div
                     id={sliderId}
-                    className="scroll-smooth pb-4"
+                    className="overflow-x-auto scroll-smooth pt-4 pb-8 -mt-4 [&::-webkit-scrollbar]:hidden"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                 >
                     <div className="flex gap-6 snap-x snap-mandatory px-4 lg:px-0">
