@@ -5,8 +5,9 @@ const ProfileNav = () => {
 
     const tabs = [
         { name: "PROFILE", path: "/profile" },
+        { name: "ORDERS", path: "/orders" },
         { name: "WISHLIST", path: "/wishlist" },
-        { name: "AVAILABLE REWARDS", path: "/rewards" },
+        { name: "REWARDS", path: "/rewards" },
     ];
 
     return (
