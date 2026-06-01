@@ -16,6 +16,8 @@ import VendorDashboard from "./pages/vendor/VendorDashboard";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { CartProvider } from "./context/CartContext";
+import NotificationPage from "./pages/user/NotificationPage";
+import RewardsPage from "./pages/user/RewardsPage";
 
 function App() {
     return (
@@ -39,7 +41,7 @@ function App() {
                         }
                     />
                     <Route path="/products" element={<ProductPage />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/product/:slug" element={<ProductDetail />} />
                     <Route
                         path="/cart"
                         element={
@@ -53,6 +55,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <CheckoutPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/notifications"
+                        element={
+                            <ProtectedRoute>
+                                <NotificationPage />
                             </ProtectedRoute>
                         }
                     />
@@ -77,6 +87,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <WishlistPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/rewards"
+                        element={
+                            <ProtectedRoute>
+                                <RewardsPage />
                             </ProtectedRoute>
                         }
                     />
