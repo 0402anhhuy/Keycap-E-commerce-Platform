@@ -103,7 +103,7 @@ const ProductPage = () => {
         setState((prev) =>
             prev.includes(value)
                 ? prev.filter((item) => item !== value)
-                : [...prev, value]
+                : [...prev, value],
         );
     };
 
@@ -135,7 +135,10 @@ const ProductPage = () => {
         const collectionParam = queryParams.get("collection");
         if (collectionParam) {
             setSelectedCollection([collectionParam]);
-            setAppliedFilters((prev) => ({ ...prev, collection: [collectionParam] }));
+            setAppliedFilters((prev) => ({
+                ...prev,
+                collection: [collectionParam],
+            }));
         }
     }, [location.search]);
 
@@ -228,25 +231,32 @@ const ProductPage = () => {
         }
 
         if (appliedFilters.category.length > 0) {
-            list = list.filter((p) => appliedFilters.category.includes(p.category));
+            list = list.filter((p) =>
+                appliedFilters.category.includes(p.category),
+            );
         }
 
         if (appliedFilters.collection.length > 0) {
-            list = list.filter(
-                (p) =>
-                    appliedFilters.collection.includes(p.collection?.name || p.collection),
+            list = list.filter((p) =>
+                appliedFilters.collection.includes(
+                    p.collection?.name || p.collection,
+                ),
             );
         }
 
         if (appliedFilters.color.length > 0) {
-            list = list.filter(
-                (p) => appliedFilters.color.includes(p.color?.toLowerCase()),
+            list = list.filter((p) =>
+                appliedFilters.color.includes(p.color?.toLowerCase()),
             );
         }
 
         if (appliedFilters.customMin || appliedFilters.customMax) {
-            const cMin = appliedFilters.customMin ? Number(appliedFilters.customMin) : 0;
-            const cMax = appliedFilters.customMax ? Number(appliedFilters.customMax) : 999999999;
+            const cMin = appliedFilters.customMin
+                ? Number(appliedFilters.customMin)
+                : 0;
+            const cMax = appliedFilters.customMax
+                ? Number(appliedFilters.customMax)
+                : 999999999;
             list = list.filter(
                 (p) => Number(p.price) >= cMin && Number(p.price) <= cMax,
             );
@@ -329,7 +339,7 @@ const ProductPage = () => {
     }
 
     return (
-        <div className="min-h-screen text-black relative z-0">
+        <div className="min-h-screen text-black relative z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
             {/* Global background handles the texture */}
             <Header />
             {/* Overlay */}
@@ -407,7 +417,12 @@ const ProductPage = () => {
                             {categories.map((cat) => (
                                 <button
                                     key={cat}
-                                    onClick={() => toggleFilterItem(setSelectedCategory, cat)}
+                                    onClick={() =>
+                                        toggleFilterItem(
+                                            setSelectedCategory,
+                                            cat,
+                                        )
+                                    }
                                     className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory.includes(cat) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
                                 >
                                     {cat}
@@ -447,7 +462,12 @@ const ProductPage = () => {
                             {collectionsList.map((col) => (
                                 <button
                                     key={col}
-                                    onClick={() => toggleFilterItem(setSelectedCollection, col)}
+                                    onClick={() =>
+                                        toggleFilterItem(
+                                            setSelectedCollection,
+                                            col,
+                                        )
+                                    }
                                     className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCollection.includes(col) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
                                 >
                                     {col}
@@ -488,7 +508,10 @@ const ProductPage = () => {
                                 <button
                                     key={pr.value}
                                     onClick={() => {
-                                        toggleFilterItem(setPriceRange, pr.value);
+                                        toggleFilterItem(
+                                            setPriceRange,
+                                            pr.value,
+                                        );
                                         setCustomMin("");
                                         setCustomMax("");
                                     }}
@@ -529,7 +552,12 @@ const ProductPage = () => {
                             {COLORS.map((color) => (
                                 <button
                                     key={color.value}
-                                    onClick={() => toggleFilterItem(setSelectedColor, color.value)}
+                                    onClick={() =>
+                                        toggleFilterItem(
+                                            setSelectedColor,
+                                            color.value,
+                                        )
+                                    }
                                     className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${color.bg} ${color.text} ${selectedColor.includes(color.value) ? "shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1 ring-2 ring-black ring-offset-2" : "hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] opacity-90 hover:opacity-100"} text-center min-h-[60px] flex items-center justify-center`}
                                 >
                                     {color.label}
@@ -559,10 +587,10 @@ const ProductPage = () => {
                 </div>
             </aside>
 
-            <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-20 relative z-10">
+            <div className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12 relative z-10">
                 <Breadcrumb />
                 {/* Header Title Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-6 border-b border-black/30 gap-4">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mt-8 mb-6 pb-6 border-b border-black/30 gap-4">
                     <div>
                         <h1
                             className="text-6xl font-anton uppercase tracking-wider text-black m-0 leading-none"
@@ -669,13 +697,12 @@ const ProductPage = () => {
                     <div className="flex-1 min-w-0">
                         {filtered.length === 0 ? (
                             <div className="text-center py-20">
-                                <div className="text-5xl mb-4">⌁</div>
                                 <p className="font-anton text-2xl text-black mb-4 uppercase tracking-widest">
                                     No keycap matches
                                 </p>
                                 <button
                                     onClick={clearFilters}
-                                    className="bg-[var(--theme-accent)] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
+                                    className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
                                 >
                                     Clear filters
                                 </button>
