@@ -53,14 +53,19 @@ const CartPage = () => {
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative text-black">
             <Header />
-            <main className="flex-1 max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
-                <Breadcrumb />
-                <h1 className="text-4xl lg:text-5xl font-anton uppercase tracking-widest text-black mb-2 mt-4">GIỎ HÀNG</h1>
-                <p className="text-xs font-bold uppercase tracking-widest text-black/50 mb-8">
-                    {items.length > 0
-                        ? `BẠN ĐANG CÓ ${items.length} SẢN PHẨM TRONG GIỎ.`
-                        : "GIỎ HÀNG CỦA BẠN ĐANG TRỐNG."}
-                </p>
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12 relative z-10">
+                <div>
+                    <Breadcrumb />
+                </div>
+                
+                <div className="mt-8 mb-8">
+                    <h1 className="text-5xl font-anton uppercase tracking-widest text-black">GIỎ HÀNG</h1>
+                    <p className="text-black/60 font-bold uppercase tracking-widest text-xs mt-2">
+                        {items.length > 0
+                            ? `BẠN ĐANG CÓ ${items.length} SẢN PHẨM TRONG GIỎ.`
+                            : "GIỎ HÀNG CỦA BẠN ĐANG TRỐNG."}
+                    </p>
+                </div>
 
                 {items.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-24 text-center bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-12">
