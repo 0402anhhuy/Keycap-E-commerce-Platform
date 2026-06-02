@@ -43,12 +43,12 @@ const NotificationPage = () => {
         <div className="min-h-screen text-black relative z-0 flex flex-col bg-white">
             <Header />
 
-            <main className="flex-grow pt-[90px] md:pt-[100px] pb-20 relative z-10">
-                <div className="max-w-[1400px] mx-auto px-6">
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12 relative z-10">
+                <div>
                     <Breadcrumb />
 
-                    <div className="mt-6 mb-10 flex items-center gap-4">
-                        <h1 className="text-5xl md:text-6xl font-anton uppercase tracking-wider text-black m-0 leading-none" style={{ textShadow: '1px 1px 0 rgba(255,255,255,0.5)' }}>
+                    <div className="mt-8 mb-10 flex items-center gap-4">
+                        <h1 className="text-5xl font-anton uppercase tracking-wider text-black m-0 leading-none" style={{ textShadow: '1px 1px 0 rgba(255,255,255,0.5)' }}>
                             NOTIFICATIONS
                         </h1>
                         <span className="bg-black text-white font-oswald font-bold text-xl px-4 py-1.5 shadow-[4px_4px_0_var(--theme-accent)]">
