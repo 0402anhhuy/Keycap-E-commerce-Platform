@@ -55,15 +55,14 @@ const CollectionsPage = () => {
             <Header />
 
             {/* Main Content */}
-            <main className="flex-grow pt-[120px] pb-24 px-6 md:px-12 xl:px-24">
-                <div className="max-w-[1400px] mx-auto">
-                    <div className="mb-6">
-                        <Breadcrumb paths={breadcrumbPaths} />
-                    </div>
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12">
+                <div>
+                    <Breadcrumb paths={breadcrumbPaths} />
+                </div>
 
-                    {/* Top Bar */}
-                    <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 gap-4">
-                        <h1 className="text-4xl md:text-5xl font-anton uppercase tracking-wider">
+                {/* Top Bar */}
+                <div className="flex flex-col md:flex-row justify-between items-end md:items-center mt-8 mb-8 gap-4">
+                    <h1 className="text-4xl md:text-5xl font-anton uppercase tracking-wider text-black">
                             Collections
                         </h1>
 
@@ -202,7 +201,6 @@ const CollectionsPage = () => {
                             No collections found.
                         </div>
                     )}
-                </div>
             </main>
 
             <Footer />
