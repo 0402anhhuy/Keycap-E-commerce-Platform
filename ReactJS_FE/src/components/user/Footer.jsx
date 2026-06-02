@@ -1,31 +1,33 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
 const Footer = () => {
     return (
-        <footer className="w-full bg-white text-black pt-16 pb-12 border-t-2 border-black">
-            <div className="max-w-[1200px] mx-auto px-6">
-                {/* CONTINUE EXPLORE */}
+        <footer className="relative w-full text-black pt-16 pb-12 border-t-3 border-black overflow-hidden z-20">
+            {/* Lớp nền 1 (dưới cùng) */}
+            <div className="absolute inset-0 z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/dark.jpg')] bg-contain"></div>
+            {/* Lớp nền 2 (nằm trên lớp 1) */}
+            <div className="absolute inset-0 z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/art.png')] bg-contain pointer-events-none"></div>
+
+            <div className="relative z-10 max-w-[1200px] mx-auto px-6">
+                {/* Title */}
                 <div className="text-center mb-10">
-                    <h2 className="text-[12px] text-black/50 tracking-[0.2em] uppercase font-bold mb-2">
+                    <h2 className="text-[12px] text-white tracking-[0.2em] uppercase font-bold mb-2">
                         Are you looking for
                     </h2>
-                    <h3 className="text-5xl font-anton text-black uppercase tracking-wider">
+                    <h3 className="text-5xl font-anton text-[var(--theme-accent)] uppercase tracking-wider">
                         Continue Explore
                     </h3>
                 </div>
 
                 {/* Explore Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {/* Card 1 */}
+                    {/* Membership Card */}
                     <div className="relative group overflow-hidden rounded-[4px] aspect-[16/9] border-2 border-black">
                         <img
                             src="https://dwarf-factory.com/assets/images/footer/membership.jpg"
                             alt="Membership"
-                            className="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                            className="w-full h-full object-cover group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                         />
                         <div className="absolute inset-0 bg-black/20"></div>
-                        <div className="absolute bottom-4 left-4 bg-[var(--theme-accent)] px-4 py-2 ragged-edge inline-flex items-center gap-2 text-white font-oswald text-lg uppercase tracking-wider font-bold">
+                        <div className="absolute bottom-4 left-4 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] px-4 py-2 inline-flex items-center gap-2 text-white font-oswald text-lg uppercase tracking-wider font-bold">
                             KF MEMBERSHIP
                             <svg
                                 className="w-4 h-4"
@@ -42,15 +44,16 @@ const Footer = () => {
                             </svg>
                         </div>
                     </div>
-                    {/* Card 2 */}
+
+                    {/* News Card */}
                     <div className="relative group overflow-hidden rounded-[4px] aspect-[16/9] border-2 border-black">
                         <img
                             src="https://dwarf-factory.com/assets/images/footer/news.jpg"
                             alt="News"
-                            className="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                            className="w-full h-full object-cover group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                         />
                         <div className="absolute inset-0 bg-black/20"></div>
-                        <div className="absolute bottom-4 left-4 bg-[var(--theme-accent)] px-4 py-2 ragged-edge inline-flex items-center gap-2 text-white font-oswald text-lg uppercase tracking-wider font-bold">
+                        <div className="absolute bottom-4 left-4 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] px-4 py-2 inline-flex items-center gap-2 text-white font-oswald text-lg uppercase tracking-wider font-bold">
                             NEWS
                             <svg
                                 className="w-4 h-4"
@@ -69,7 +72,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Grid Footer Block */}
+                {/* Footer Block */}
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px_350px] border-4 border-black text-black bg-[#ccc] font-oswald rounded-[4px] overflow-hidden">
                     {/* Column 1: Links */}
                     <div className="flex flex-col border-b-4 lg:border-b-0 lg:border-r-4 border-black">
@@ -122,7 +125,7 @@ const Footer = () => {
                         </div>
                         <div className="flex border-t-4 border-black">
                             <div className="w-1/3 p-2 font-bold text-sm uppercase flex items-center justify-center border-r-4 border-black">
-                                Support:
+                                SUPPORT
                             </div>
                             <div className="w-2/3 p-2 font-bold text-sm uppercase flex items-center justify-center">
                                 SUPPORT@KEYCAPFORGE.COM
