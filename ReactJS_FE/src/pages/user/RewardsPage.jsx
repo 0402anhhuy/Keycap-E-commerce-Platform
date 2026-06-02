@@ -57,7 +57,6 @@ const RewardsPage = () => {
                             <div className="bg-[#e5e5e5] border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] overflow-hidden h-full flex flex-col">
                                 <div className="bg-[var(--theme-accent)] px-6 py-4 flex items-center justify-between border-b-2 border-black text-black">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-xl">🪙</span>
                                         <h3 className="font-anton uppercase tracking-widest text-xl">
                                             Wallet & Vouchers
                                         </h3>
@@ -114,29 +113,42 @@ const RewardsPage = () => {
                                                         <div className="flex-1 min-w-0 pr-3">
                                                             <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                                 <span className="bg-black text-[var(--theme-accent)] text-[10px] font-black px-2 py-0.5 uppercase tracking-widest border border-black">
-                                                                    {coupon.type === "percent"
+                                                                    {coupon.type ===
+                                                                    "percent"
                                                                         ? `-${Math.round(coupon.value)}%`
                                                                         : `-${Number(coupon.value).toLocaleString("vi-VN")}đ`}
                                                                 </span>
                                                                 <span className="text-sm font-oswald font-black text-black tracking-widest">
-                                                                    {coupon.code}
+                                                                    {
+                                                                        coupon.code
+                                                                    }
                                                                 </span>
                                                             </div>
                                                             <p className="text-[11px] text-black font-bold uppercase tracking-widest truncate">
                                                                 Shop:{" "}
                                                                 <span className="text-[var(--theme-accent)]">
-                                                                    {coupon.shop?.name || `Shop #${coupon.shopId}`}
+                                                                    {coupon.shop
+                                                                        ?.name ||
+                                                                        `Shop #${coupon.shopId}`}
                                                                 </span>
                                                             </p>
                                                             <p className="text-[10px] text-black/60 font-bold mt-1 uppercase tracking-wider">
                                                                 Exp:{" "}
-                                                                {new Date(coupon.expiresAt).toLocaleDateString("vi-VN")}
+                                                                {new Date(
+                                                                    coupon.expiresAt,
+                                                                ).toLocaleDateString(
+                                                                    "vi-VN",
+                                                                )}
                                                             </p>
                                                         </div>
                                                         <button
                                                             onClick={() => {
-                                                                navigator.clipboard.writeText(coupon.code);
-                                                                alert("Đã sao chép mã giảm giá!");
+                                                                navigator.clipboard.writeText(
+                                                                    coupon.code,
+                                                                );
+                                                                alert(
+                                                                    "Đã sao chép mã giảm giá!",
+                                                                );
                                                             }}
                                                             className="text-[10px] font-black uppercase tracking-widest text-black bg-white border-2 border-black px-3 py-2 hover:bg-black hover:text-white transition-colors"
                                                         >
