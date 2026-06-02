@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
+import ProfileNav from "../../components/user/ProfileNav";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const fmt = (n) => Number(n).toLocaleString("vi-VN") + "đ";
@@ -112,10 +113,11 @@ const OrdersPage = () => {
         .reduce((s, o) => s + Number(o.total), 0);
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative">
+        <div className="min-h-screen bg-white flex flex-col font-oswald text-black">
             <Header />
-            <main className="flex-1 max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12">
                 <Breadcrumb />
+                <ProfileNav />
                 {/* Success Banner */}
                 {successBanner && (
                     <div className="mb-8 p-4 bg-[#52c41a] border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] flex items-center gap-3 text-white">
@@ -133,10 +135,6 @@ const OrdersPage = () => {
                         <p className="text-black/60 font-bold uppercase tracking-widest text-xs mt-2">Track your recent purchases and manage your orders.</p>
                     </div>
                     <div className="flex gap-4">
-                        <button className="flex items-center gap-2 px-5 py-3 border-2 border-black bg-white text-black text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            Export
-                        </button>
                         <button onClick={() => navigate("/products")} className="flex items-center gap-2 px-5 py-3 bg-[var(--theme-accent)] border-2 border-black text-black text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all">
                             + New
                         </button>
@@ -287,14 +285,6 @@ const OrdersPage = () => {
                             <h3 className="text-xs font-bold text-black/50 uppercase tracking-widest mb-2">Annual Spend</h3>
                             <p className="text-4xl font-anton uppercase tracking-wider text-black">{fmt(annualSpend)}</p>
                             <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest mt-2">{orders.filter(o => o.status === "delivered").length} ĐƠN ĐÃ GIAO TRONG NĂM NAY</p>
-                            
-                            <div className="w-full bg-[#e5e5e5] border-2 border-black h-4 mt-6 overflow-hidden">
-                                <div className="bg-[var(--theme-accent)] h-full border-r-2 border-black" style={{ width: "60%" }} />
-                            </div>
-                            
-                            <button className="mt-6 w-full text-center px-4 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_var(--theme-accent)] transition-all border-2 border-black">
-                                VIEW REPORT
-                            </button>
                         </div>
                     </div>
                 </div>
