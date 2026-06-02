@@ -169,46 +169,78 @@ const Product = sequelize.define(
             afterCreate: async (product, options) => {
                 const { Category, Collection } = sequelize.models;
                 if (product.categoryId && Category) {
-                    await Category.increment("productCount", { by: 1, where: { id: product.categoryId }, transaction: options.transaction });
+                    await Category.increment("productCount", {
+                        by: 1,
+                        where: { id: product.categoryId },
+                        transaction: options.transaction,
+                    });
                 }
                 if (product.collectionId && Collection) {
-                    await Collection.increment("productCount", { by: 1, where: { id: product.collectionId }, transaction: options.transaction });
+                    await Collection.increment("productCount", {
+                        by: 1,
+                        where: { id: product.collectionId },
+                        transaction: options.transaction,
+                    });
                 }
             },
             afterDestroy: async (product, options) => {
                 const { Category, Collection } = sequelize.models;
                 if (product.categoryId && Category) {
-                    await Category.decrement("productCount", { by: 1, where: { id: product.categoryId }, transaction: options.transaction });
+                    await Category.decrement("productCount", {
+                        by: 1,
+                        where: { id: product.categoryId },
+                        transaction: options.transaction,
+                    });
                 }
                 if (product.collectionId && Collection) {
-                    await Collection.decrement("productCount", { by: 1, where: { id: product.collectionId }, transaction: options.transaction });
+                    await Collection.decrement("productCount", {
+                        by: 1,
+                        where: { id: product.collectionId },
+                        transaction: options.transaction,
+                    });
                 }
             },
             afterUpdate: async (product, options) => {
                 const { Category, Collection } = sequelize.models;
-                
+
                 if (product.changed("categoryId") && Category) {
                     const oldCategoryId = product.previous("categoryId");
                     if (oldCategoryId) {
-                        await Category.decrement("productCount", { by: 1, where: { id: oldCategoryId }, transaction: options.transaction });
+                        await Category.decrement("productCount", {
+                            by: 1,
+                            where: { id: oldCategoryId },
+                            transaction: options.transaction,
+                        });
                     }
                     if (product.categoryId) {
-                        await Category.increment("productCount", { by: 1, where: { id: product.categoryId }, transaction: options.transaction });
+                        await Category.increment("productCount", {
+                            by: 1,
+                            where: { id: product.categoryId },
+                            transaction: options.transaction,
+                        });
                     }
                 }
 
                 if (product.changed("collectionId") && Collection) {
                     const oldCollectionId = product.previous("collectionId");
                     if (oldCollectionId) {
-                        await Collection.decrement("productCount", { by: 1, where: { id: oldCollectionId }, transaction: options.transaction });
+                        await Collection.decrement("productCount", {
+                            by: 1,
+                            where: { id: oldCollectionId },
+                            transaction: options.transaction,
+                        });
                     }
                     if (product.collectionId) {
-                        await Collection.increment("productCount", { by: 1, where: { id: product.collectionId }, transaction: options.transaction });
+                        await Collection.increment("productCount", {
+                            by: 1,
+                            where: { id: product.collectionId },
+                            transaction: options.transaction,
+                        });
                     }
                 }
-            }
+            },
         },
-    }
+    },
 );
 
 module.exports = Product;
