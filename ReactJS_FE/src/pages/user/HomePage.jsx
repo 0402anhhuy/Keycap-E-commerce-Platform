@@ -173,11 +173,11 @@ const HomePage = () => {
             <Header />
 
             {/* Hero Section */}
-            <div className="w-full relative min-h-[700px] flex items-center border-b-2 border-black z-20 bg-[#e5e5e5]">
+            <div className="w-full relative min-h-[700px] flex items-center border-b-2 border-black z-20">
                 <img
                     src="https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/685e097bf8734a1154e57a98"
                     alt="Keycap showcase"
-                    className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-80"
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
                 />
 
                 <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-end items-center">
@@ -224,7 +224,7 @@ const HomePage = () => {
             </div>
 
             {/* Main content slider sections */}
-            <main className="pt-12 pb-20 z-20 relative overflow-hidden">
+            <main className="pt-12 pb-20 z-20 relative overflow-hidden bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
                 <HorizontalProductSlider
                     title="FEATURED"
                     products={bestsellers}
@@ -233,10 +233,10 @@ const HomePage = () => {
             </main>
 
             {/* Collaborations Section */}
-            <section className="py-20 relative z-10 overflow-hidden">
+            <section className="py-20 relative z-10 overflow-hidden bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
                 <div className="max-w-[1400px] mx-auto px-6">
                     <h2 className="text-5xl md:text-6xl font-anton uppercase text-center text-black mb-16">
-                        COLLABORATIONS
+                        COLLECTIONS
                     </h2>
 
                     {/* Logos Grid */}
@@ -329,16 +329,16 @@ const HomePage = () => {
                         </div>
                         <button
                             onClick={() => navigate("/products")}
-                            className="bg-[var(--theme-accent)] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2"
+                            className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2"
                         >
-                            EXPLORE NOW <span className="text-lg">→</span>
+                            EXPLORE NOW
                         </button>
                     </div>
                 </div>
             </section>
 
             {/* Happy Owners Section */}
-            <section className="pt-8 pb-28 z-20 relative overflow-hidden">
+            <section className="pt-8 pb-28 z-20 relative overflow-hidden bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
                 <div className="max-w-[1400px] mx-auto px-6">
                     <h2 className="text-5xl md:text-6xl font-anton uppercase text-center text-black mb-12">
                         HAPPY OWNERS
