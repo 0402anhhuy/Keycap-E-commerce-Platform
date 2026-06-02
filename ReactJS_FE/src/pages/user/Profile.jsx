@@ -522,29 +522,76 @@ const Profile = () => {
                             <div className="relative">
                                 <div
                                     className="w-24 h-24 overflow-hidden border-2 border-black bg-white flex items-center justify-center"
-                                    style={{ background: avatarPreview ? "transparent" : "#fff" }}
+                                    style={{
+                                        background: avatarPreview
+                                            ? "transparent"
+                                            : "#fff",
+                                    }}
                                 >
                                     {avatarPreview ? (
-                                        <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
+                                        <img
+                                            src={avatarPreview}
+                                            alt="avatar"
+                                            className="w-full h-full object-cover"
+                                        />
                                     ) : (
-                                        <svg className="w-12 h-12 text-black/20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                        <svg
+                                            className="w-12 h-12 text-black/20"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
                                     )}
                                 </div>
-                                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[var(--theme-accent)] border-2 border-black flex items-center justify-center text-white cursor-pointer hover:bg-black transition-colors" onClick={() => fileInputRef.current?.click()}>
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                <div
+                                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-[var(--theme-accent)] border-2 border-black flex items-center justify-center text-white cursor-pointer hover:bg-black transition-colors"
+                                    onClick={() =>
+                                        fileInputRef.current?.click()
+                                    }
+                                >
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                        />
+                                    </svg>
                                 </div>
-                                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleAvatarChange}
+                                />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-anton uppercase tracking-widest text-black mb-1">{user.name}</h2>
-                                <p className="text-black/60 text-xs font-bold uppercase tracking-widest">{user.email}</p>
+                                <h2 className="text-3xl font-anton uppercase tracking-widest text-black mb-1">
+                                    {user.name}
+                                </h2>
+                                <p className="text-black/60 text-xs font-bold uppercase tracking-widest">
+                                    {user.email}
+                                </p>
                             </div>
                         </div>
                         <div className="flex gap-4">
-                            <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 bg-[var(--theme-accent)] text-white text-xs font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all">
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="px-6 py-3 bg-[var(--theme-accent)] text-white text-xs font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
+                            >
                                 Upload Photo
                             </button>
-                            <button onClick={handleRemoveAvatar} className="px-6 py-3 bg-white text-black text-xs font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all">
+                            <button
+                                onClick={handleRemoveAvatar}
+                                className="px-6 py-3 bg-white text-black text-xs font-black uppercase tracking-widest border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all"
+                            >
                                 Remove
                             </button>
                         </div>
@@ -556,8 +603,19 @@ const Profile = () => {
                             <div className="bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] overflow-hidden h-full">
                                 <div className="bg-black px-6 py-4 flex items-center justify-between border-b-2 border-black">
                                     <div className="flex items-center gap-3">
+                                        <h3 className="font-anton uppercase tracking-widest text-white text-xl">
+                                            Personal Info
+                                        </h3>
+                                    </div>
+                                    <button
+                                        onClick={() =>
+                                            setIsEditingPersonal(true)
+                                        }
+                                        className="text-[var(--theme-accent)] hover:text-white transition-colors"
+                                        title="Chỉnh sửa thông tin"
+                                    >
                                         <svg
-                                            className="w-5 h-5 text-white"
+                                            className="w-5 h-5"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -566,20 +624,8 @@ const Profile = () => {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 strokeWidth="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                                             />
-                                        </svg>
-                                        <h3 className="font-anton uppercase tracking-widest text-white text-xl">
-                                            Personal Info
-                                        </h3>
-                                    </div>
-                                    <button 
-                                        onClick={() => setIsEditingPersonal(true)}
-                                        className="text-[var(--theme-accent)] hover:text-white transition-colors"
-                                        title="Chỉnh sửa thông tin"
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                         </svg>
                                     </button>
                                 </div>
@@ -664,25 +710,6 @@ const Profile = () => {
                             <div className="bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] overflow-hidden flex-1 flex flex-col">
                                 <div className="bg-black px-6 py-4 flex items-center justify-between border-b-2 border-black">
                                     <div className="flex items-center gap-3">
-                                        <svg
-                                            className="w-5 h-5 text-white"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                            />
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                        </svg>
                                         <h3 className="font-anton uppercase tracking-widest text-white text-xl">
                                             Addresses
                                         </h3>
@@ -860,7 +887,6 @@ const Profile = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     {/* Bottom Actions */}
