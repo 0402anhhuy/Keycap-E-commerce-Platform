@@ -5,6 +5,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/user/Profile";
 import HomePage from "./pages/user/HomePage";
 import ProductPage from "./pages/user/ProductPage";
+import CollectionsPage from "./pages/user/CollectionsPage";
 import ProductDetail from "./pages/user/ProductDetail";
 import CartPage from "./pages/user/CartPage";
 import CheckoutPage from "./pages/user/CheckoutPage";
@@ -41,6 +42,7 @@ function App() {
                         }
                     />
                     <Route path="/products" element={<ProductPage />} />
+                    <Route path="/collections" element={<CollectionsPage />} />
                     <Route path="/product/:slug" element={<ProductDetail />} />
                     <Route
                         path="/cart"
