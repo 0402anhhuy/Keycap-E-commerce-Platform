@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
+import ScrollToTop from "../../components/user/ScrollToTop";
 import { fetchAllProducts } from "../../utils/productApi";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -117,6 +118,10 @@ const ProductPage = () => {
         sortBy,
         filterShopId,
     ]);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [currentPage]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -339,7 +344,7 @@ const ProductPage = () => {
     }
 
     return (
-        <div className="min-h-screen text-black relative z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
+        <div className="min-h-screen text-black relative z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-fill">
             {/* Global background handles the texture */}
             <Header />
             {/* Overlay */}
@@ -783,6 +788,7 @@ const ProductPage = () => {
                     </div>
                 </div>
             </div>
+            <ScrollToTop />
             <Footer />
         </div>
     );
