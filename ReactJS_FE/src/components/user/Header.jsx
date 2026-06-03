@@ -91,26 +91,15 @@ const Header = () => {
                     <Link to="/products" className={getNavClass("/products")}>
                         Store
                     </Link>
-                    <Link to="/orders" className={getNavClass("/orders")}>
-                        Orders
-                    </Link>
                     <Link
                         to="/collections"
                         className={getNavClass("/collections")}
                     >
                         Collections
                     </Link>
-                    <Link to="/profile" className={getNavClass("/profile")}>
-                        Profile
+                    <Link to="/orders" className={getNavClass("/orders")}>
+                        Orders
                     </Link>
-                    {(user?.role === "manager" || user?.role === "admin") && (
-                        <Link
-                            to="/manager/dashboard"
-                            className={getNavClass("/manager/dashboard")}
-                        >
-                            Manage
-                        </Link>
-                    )}
                 </nav>
 
                 {/* Right Icons */}
@@ -204,17 +193,13 @@ const Header = () => {
                                     }
                                     className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center cursor-pointer`}
                                 >
-                                    <svg
-                                        className="w-5 h-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                                            clipRule="evenodd"
+                                    <div className={`w-7 h-7 rounded-full border-2 overflow-hidden bg-white ${isHome && !isScrolled ? 'border-white' : 'border-black'}`}>
+                                        <img 
+                                            src={user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${user.avatar}`) : "https://i.pravatar.cc/150?img=11"} 
+                                            alt="Avatar" 
+                                            className="w-full h-full object-cover" 
                                         />
-                                    </svg>
+                                    </div>
                                 </button>
 
                                 {showUserMenu && (
