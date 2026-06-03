@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
+import ScrollToTop from "../../components/user/ScrollToTop";
 import { useCart } from "../../context/CartContext";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -1135,6 +1136,7 @@ const ProductDetail = () => {
 
                     {/* (Product Reviews moved to Happy Owners section) */}
                 </main>
+                <ScrollToTop />
                 <Footer />
             </div>
 
