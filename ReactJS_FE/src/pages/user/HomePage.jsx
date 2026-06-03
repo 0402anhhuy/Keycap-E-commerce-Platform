@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import Header from "../../components/user/Header";
 import Footer from "../../components/user/Footer";
+import ScrollToTop from "../../components/user/ScrollToTop";
 import { fetchAllProducts } from "../../utils/productApi";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -373,6 +374,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
+            <ScrollToTop />
             <Footer />
         </div>
     );
