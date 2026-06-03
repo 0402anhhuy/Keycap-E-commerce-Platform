@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
-import Header from "../../components/user/Header";
-import Footer from "../../components/user/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
-import ScrollToTop from "../../components/user/ScrollToTop";
+import ScrollToTop from "../../components/ScrollToTop";
 import { useCart } from "../../context/CartContext";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";

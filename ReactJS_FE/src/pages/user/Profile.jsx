@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Message, PageWrapper } from "../../components";
-import Header from "../../components/user/Header";
-import Footer from "../../components/user/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
-import ProfileNav from "../../components/user/ProfileNav";
+import ProfileNav from "../../components/ProfileNav";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
