@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/user/Header";
-import Footer from "../../components/user/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
-import ScrollToTop from "../../components/user/ScrollToTop";
+import ScrollToTop from "../../components/ScrollToTop";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
 
