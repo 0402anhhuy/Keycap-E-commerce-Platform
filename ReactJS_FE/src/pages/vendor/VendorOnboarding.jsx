@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/user/Header";
-import Footer from "../../components/user/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -17,7 +17,7 @@ const VendorOnboarding = () => {
         description: "",
         address: "",
         phone: "",
-        logo: ""
+        logo: "",
     });
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const VendorOnboarding = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleNext = () => {
@@ -45,12 +45,12 @@ const VendorOnboarding = () => {
             }
         }
         setError(null);
-        setStep(prev => prev + 1);
+        setStep((prev) => prev + 1);
     };
 
     const handlePrev = () => {
         setError(null);
-        setStep(prev => prev - 1);
+        setStep((prev) => prev - 1);
     };
 
     const handleSubmit = async (e) => {
@@ -68,19 +68,20 @@ const VendorOnboarding = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     name: form.name.trim(),
                     description: form.description.trim(),
                     address: form.address.trim(),
                     phone: form.phone.trim(),
-                    logo: form.logo.trim() || null
-                })
+                    logo: form.logo.trim() || null,
+                }),
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Đăng ký shop thất bại.");
+            if (!res.ok)
+                throw new Error(data.message || "Đăng ký shop thất bại.");
 
             // Update user in localStorage to be vendor
             const userRaw = localStorage.getItem("user");
@@ -109,11 +110,27 @@ const VendorOnboarding = () => {
 
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-4 mb-8">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 1 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}>1</div>
-                        <div className={`h-1 w-12 rounded-full transition-colors ${step >= 2 ? "bg-[#00b14f]" : "bg-gray-100"}`} />
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 2 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}>2</div>
-                        <div className={`h-1 w-12 rounded-full transition-colors ${step >= 3 ? "bg-[#00b14f]" : "bg-gray-100"}`} />
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 3 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}>3</div>
+                        <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 1 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}
+                        >
+                            1
+                        </div>
+                        <div
+                            className={`h-1 w-12 rounded-full transition-colors ${step >= 2 ? "bg-[#00b14f]" : "bg-gray-100"}`}
+                        />
+                        <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 2 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}
+                        >
+                            2
+                        </div>
+                        <div
+                            className={`h-1 w-12 rounded-full transition-colors ${step >= 3 ? "bg-[#00b14f]" : "bg-gray-100"}`}
+                        />
+                        <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${step >= 3 ? "bg-[#00b14f] text-white" : "bg-gray-100 text-gray-400"}`}
+                        >
+                            3
+                        </div>
                     </div>
 
                     {error && (
@@ -126,13 +143,20 @@ const VendorOnboarding = () => {
                     {step === 1 && (
                         <div className="space-y-6">
                             <div className="text-center">
-                                <h1 className="text-2xl font-extrabold text-gray-900">Bắt đầu kinh doanh trên UTEShop</h1>
-                                <p className="text-sm text-gray-500 mt-2">Điền thông tin thương hiệu để tạo gian hàng của riêng bạn</p>
+                                <h1 className="text-2xl font-extrabold text-gray-900">
+                                    Bắt đầu kinh doanh trên UTEShop
+                                </h1>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Điền thông tin thương hiệu để tạo gian hàng
+                                    của riêng bạn
+                                </p>
                             </div>
 
                             <div className="space-y-4 text-left">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Tên cửa hàng *</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                        Tên cửa hàng *
+                                    </label>
                                     <input
                                         type="text"
                                         name="name"
@@ -144,7 +168,9 @@ const VendorOnboarding = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Mô tả gian hàng *</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                        Mô tả gian hàng *
+                                    </label>
                                     <textarea
                                         name="description"
                                         value={form.description}
@@ -156,7 +182,9 @@ const VendorOnboarding = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Link Logo Cửa Hàng (Tùy chọn)</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                        Link Logo Cửa Hàng (Tùy chọn)
+                                    </label>
                                     <input
                                         type="text"
                                         name="logo"
@@ -180,13 +208,20 @@ const VendorOnboarding = () => {
                     {step === 2 && (
                         <div className="space-y-6">
                             <div className="text-center">
-                                <h1 className="text-2xl font-extrabold text-gray-900">Thông tin liên lạc & Vận chuyển</h1>
-                                <p className="text-sm text-gray-500 mt-2">Nơi chúng tôi có thể liên hệ và xử lý các vấn đề giao hàng</p>
+                                <h1 className="text-2xl font-extrabold text-gray-900">
+                                    Thông tin liên lạc & Vận chuyển
+                                </h1>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Nơi chúng tôi có thể liên hệ và xử lý các
+                                    vấn đề giao hàng
+                                </p>
                             </div>
 
                             <div className="space-y-4 text-left">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Số điện thoại liên hệ *</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                        Số điện thoại liên hệ *
+                                    </label>
                                     <input
                                         type="text"
                                         name="phone"
@@ -198,7 +233,9 @@ const VendorOnboarding = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Địa chỉ lấy hàng *</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                        Địa chỉ lấy hàng *
+                                    </label>
                                     <input
                                         type="text"
                                         name="address"
@@ -222,7 +259,9 @@ const VendorOnboarding = () => {
                                     disabled={loading}
                                     className="flex-1 py-3.5 bg-[#00b14f] hover:bg-[#009943] text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-60 cursor-pointer"
                                 >
-                                    {loading ? "Đang đăng ký..." : "Hoàn thành đăng ký"}
+                                    {loading
+                                        ? "Đang đăng ký..."
+                                        : "Hoàn thành đăng ký"}
                                 </button>
                             </div>
                         </div>
@@ -234,9 +273,18 @@ const VendorOnboarding = () => {
                                 🎉
                             </div>
                             <div>
-                                <h1 className="text-3xl font-extrabold text-gray-900">Chúc mừng bạn!</h1>
-                                <p className="text-sm text-gray-500 mt-2">Cửa hàng <strong>{form.name}</strong> đã được khởi tạo thành công.</p>
-                                <p className="text-xs text-gray-400 mt-1">Giờ đây bạn đã có quyền truy cập vào Kênh Người Bán để đăng tải sản phẩm và quản lý đơn hàng.</p>
+                                <h1 className="text-3xl font-extrabold text-gray-900">
+                                    Chúc mừng bạn!
+                                </h1>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Cửa hàng <strong>{form.name}</strong> đã
+                                    được khởi tạo thành công.
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    Giờ đây bạn đã có quyền truy cập vào Kênh
+                                    Người Bán để đăng tải sản phẩm và quản lý
+                                    đơn hàng.
+                                </p>
                             </div>
                             <button
                                 onClick={() => navigate("/vendor/dashboard")}
