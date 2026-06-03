@@ -193,25 +193,44 @@ const Header = () => {
                                     }
                                     className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center cursor-pointer`}
                                 >
-                                    <div className={`w-7 h-7 rounded-full border-2 overflow-hidden bg-white ${isHome && !isScrolled ? 'border-white' : 'border-black'}`}>
-                                        <img 
-                                            src={user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${user.avatar}`) : "https://i.pravatar.cc/150?img=11"} 
-                                            alt="Avatar" 
-                                            className="w-full h-full object-cover" 
+                                    <div
+                                        className={`w-7 h-7 rounded-full border-2 overflow-hidden bg-white ${isHome && !isScrolled ? "border-white" : "border-black"}`}
+                                    >
+                                        <img
+                                            src={
+                                                user?.avatar
+                                                    ? user.avatar.startsWith(
+                                                          "http",
+                                                      )
+                                                        ? user.avatar
+                                                        : `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${user.avatar}`
+                                                    : "https://i.pravatar.cc/150?img=11"
+                                            }
+                                            alt="Avatar"
+                                            className="w-full h-full object-cover"
                                         />
                                     </div>
                                 </button>
 
                                 {showUserMenu && (
-                                    <div className="absolute right-0 mt-6 w-48 bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] flex flex-col z-[100] animate-fade-in-down py-2">
+                                    <div
+                                        className="absolute right-0 mt-6 w-48 bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] flex flex-col z-[100] animate-fade-in-down py-2"
+                                        onMouseDown={(e) => e.preventDefault()}
+                                    >
                                         <Link
                                             to="/profile"
+                                            onClick={() =>
+                                                setShowUserMenu(false)
+                                            }
                                             className="px-4 py-2 text-sm font-oswald font-bold uppercase tracking-widest text-black hover:bg-black/5 hover:text-[var(--theme-accent)] transition-colors text-left"
                                         >
                                             My Profile
                                         </Link>
                                         <button
-                                            onClick={handleLogout}
+                                            onClick={() => {
+                                                setShowUserMenu(false);
+                                                handleLogout();
+                                            }}
                                             className="px-4 py-2 text-sm font-oswald font-bold uppercase tracking-widest text-red-500 hover:bg-black/5 transition-colors text-left w-full"
                                         >
                                             Log Out
