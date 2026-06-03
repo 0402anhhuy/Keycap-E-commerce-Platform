@@ -194,7 +194,7 @@ const Header = () => {
                                     className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors flex items-center cursor-pointer`}
                                 >
                                     <div
-                                        className={`w-7 h-7 rounded-full border-2 overflow-hidden bg-white ${isHome && !isScrolled ? "border-white" : "border-black"}`}
+                                        className={`w-7 h-7 rounded-full border-2 overflow-hidden bg-[var(--theme-accent)] ${isHome && !isScrolled ? "border-white" : "border-black"} flex items-center justify-center`}
                                     >
                                         <img
                                             src={
@@ -204,10 +204,10 @@ const Header = () => {
                                                       )
                                                         ? user.avatar
                                                         : `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${user.avatar}`
-                                                    : "https://i.pravatar.cc/150?img=11"
+                                                    : "https://dwarf-factory.com/assets/images/logo-square.svg"
                                             }
                                             alt="Avatar"
-                                            className="w-full h-full object-cover"
+                                            className="w-[80%] h-[80%] object-contain"
                                         />
                                     </div>
                                 </button>
