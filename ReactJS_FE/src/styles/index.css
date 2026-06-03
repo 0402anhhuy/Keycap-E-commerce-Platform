@@ -1,19 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #ff7a1a;
+    --color-primary: #f26522;
 }
 
 :root {
-    --theme-bg: #0b0b0f;
-    --theme-surface: #15151a;
-    --theme-surface-2: #1d1d24;
-    --theme-line: rgba(255, 255, 255, 0.08);
-    --theme-text: #f4f0e9;
-    --theme-muted: #a7a0a0;
-    --theme-accent: #ff7a1a;
-    --theme-accent-2: #ffb36b;
+    --theme-bg: #ffffff;
+    --theme-surface: #f8f8f8;
+    --theme-surface-2: #e0e0e0;
+    --theme-line: rgba(0, 0, 0, 0.15);
+    --theme-text: #111111;
+    --theme-muted: #555555;
+    --theme-accent: #f26522;
+    --theme-accent-2: #ff7f40;
 }
 
 html {
@@ -23,12 +23,9 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top left, rgba(255, 122, 26, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(255, 179, 107, 0.10), transparent 24%),
-        linear-gradient(180deg, #111116 0%, #09090c 100%);
+    background-color: var(--theme-bg);
     color: var(--theme-text);
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 #root {
@@ -36,7 +33,7 @@ body {
 }
 
 ::selection {
-    background: rgba(255, 122, 26, 0.28);
+    background: rgba(242, 101, 34, 0.4);
     color: #fff;
 }
 
@@ -49,4 +46,129 @@ input,
 select,
 textarea {
     font: inherit;
+}
+
+/* Custom utility classes for Dwarf Factory aesthetic */
+.font-oswald {
+    font-family: "Oswald", sans-serif;
+}
+
+.font-anton {
+    font-family: "Anton", sans-serif;
+}
+
+.bg-texture-dark {
+    background-color: #151515;
+}
+
+.bg-texture-light {
+    background-color: #d6d6d6;
+    color: #111111;
+}
+
+.btn-2d {
+    transition:
+        transform 0.15s,
+        filter 0.15s;
+    box-shadow: none !important;
+}
+
+.btn-2d:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.btn-2d:active {
+    transform: translateY(1px);
+    filter: brightness(0.95);
+}
+
+.ragged-edge {
+    clip-path: polygon(
+        0% 2%,
+        5% 0%,
+        10% 3%,
+        15% 0%,
+        20% 4%,
+        25% 1%,
+        30% 3%,
+        35% 0%,
+        40% 4%,
+        45% 1%,
+        50% 3%,
+        55% 0%,
+        60% 4%,
+        65% 1%,
+        70% 3%,
+        75% 0%,
+        80% 4%,
+        85% 1%,
+        90% 3%,
+        95% 0%,
+        100% 2%,
+        100% 98%,
+        95% 100%,
+        90% 97%,
+        85% 100%,
+        80% 96%,
+        75% 100%,
+        70% 97%,
+        65% 100%,
+        60% 96%,
+        55% 100%,
+        50% 97%,
+        45% 100%,
+        40% 96%,
+        35% 100%,
+        30% 97%,
+        25% 100%,
+        20% 96%,
+        15% 100%,
+        10% 97%,
+        5% 100%,
+        0% 98%
+    );
+}
+
+.torn-paper-bottom {
+    position: relative;
+}
+
+.torn-paper-bottom::after {
+    content: "";
+    position: absolute;
+    bottom: -14px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L0,10 L5,15 L10,8 L15,17 L20,10 L25,14 L30,5 L35,12 L40,8 L45,16 L50,6 L55,13 L60,9 L65,15 L70,7 L75,14 L80,6 L85,11 L90,8 L95,16 L100,10 L100,0 Z' fill='%23d6d6d6'/%3E%3C/svg%3E")
+        repeat-x;
+    background-size: 50px 15px;
+    z-index: 10;
+}
+
+.torn-paper-white::after {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L0,10 L5,15 L10,8 L15,17 L20,10 L25,14 L30,5 L35,12 L40,8 L45,16 L50,6 L55,13 L60,9 L65,15 L70,7 L75,14 L80,6 L85,11 L90,8 L95,16 L100,10 L100,0 Z' fill='%23f4f4f4'/%3E%3C/svg%3E")
+        repeat-x;
+    background-size: 50px 15px;
+}
+
+.torn-paper-dark::after {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L0,10 L5,15 L10,8 L15,17 L20,10 L25,14 L30,5 L35,12 L40,8 L45,16 L50,6 L55,13 L60,9 L65,15 L70,7 L75,14 L80,6 L85,11 L90,8 L95,16 L100,10 L100,0 Z' fill='%23151515'/%3E%3C/svg%3E")
+        repeat-x;
+    background-size: 50px 15px;
+}
+
+div.background-line--to-body.mx--container {
+    width: 895px;
+    height: 1607px;
+    display: block;
+    position: relative;
+    color: rgb(0, 0, 0);
+    font-family: "Big Shoulders Display", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    padding: 0px 24px 72px 24px;
+    margin: -72px -24px 0px -24px;
 }
