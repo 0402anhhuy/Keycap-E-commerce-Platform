@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-const Header = () => {
+const Header = ({ isHidden = false }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
@@ -67,7 +67,7 @@ const Header = () => {
 
     return (
         <header
-            className={`fixed top-0 z-50 w-full transition-all duration-300 ${headerBg}`}
+            className={`fixed top-0 z-50 w-full transition-all duration-300 ${headerBg} ${isHidden ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"}`}
         >
             <div className="max-w-[1400px] mx-auto px-6 h-[72px] flex items-center justify-between gap-6">
                 {/* Logo Section */}
