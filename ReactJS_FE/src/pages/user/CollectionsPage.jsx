@@ -56,7 +56,7 @@ const CollectionsPage = () => {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col font-oswald bg-[#e2e2e2] text-black">
+        <div className="min-h-screen flex flex-col font-oswald bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] text-black">
             <Header />
 
             {/* Main Content */}
@@ -106,15 +106,12 @@ const CollectionsPage = () => {
                             <Link
                                 to={`/products?collection=${encodeURIComponent(col.name)}`}
                                 key={col.id}
-                                className="group relative border-2 border-black p-8 md:p-12 flex flex-col items-center justify-center min-h-[300px] hover:bg-black/5 transition-colors cursor-pointer"
+                                className="group relative border-2 border-black p-8 md:p-12 flex flex-col items-center justify-center min-h-[300px] bg-[#e2e2e2] transition-colors cursor-pointer"
                             >
                                 {/* Circular Logo Container */}
                                 <div className="w-48 h-48 md:w-48 md:h-48 rounded-full bg-white flex items-center justify-center mb-8 shadow-sm border-2 border-transparent group-hover:border-black transition-all group-hover:-translate-y-2 group-hover:shadow-[4px_4px_0_rgba(0,0,0,1)] overflow-hidden">
                                     <img
-                                        src={
-                                            col.image ||
-                                            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68da10e9662dec5f2da9828e"
-                                        }
+                                        src={col.logo}
                                         alt={col.name}
                                         className="w-[90%] h-[90%] object-contain mix-blend-multiply"
                                     />
@@ -123,28 +120,6 @@ const CollectionsPage = () => {
                                 {/* Name */}
                                 <div className="font-oswald text-sm md:text-base font-bold tracking-widest uppercase flex items-center gap-2 group-hover:text-[var(--theme-accent)] transition-colors">
                                     {col.name}
-                                    <svg
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        fit=""
-                                        preserveAspectRatio="xMidYMid meet"
-                                        focusable="false"
-                                    >
-                                        <path
-                                            d="M4 12H20"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="square"
-                                        ></path>
-                                        <path
-                                            d="M14 5L21 12L14 19"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="square"
-                                        ></path>
-                                    </svg>
                                 </div>
 
                                 {/* Optional Item Count */}
