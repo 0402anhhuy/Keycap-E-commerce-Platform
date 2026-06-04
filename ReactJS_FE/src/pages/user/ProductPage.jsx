@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import Header from "../../components/Header";
@@ -107,6 +107,29 @@ const ProductPage = () => {
                 : [...prev, value],
         );
     };
+
+    // Sticky toolbar state
+    const [isSticky, setIsSticky] = useState(false);
+    const toolbarRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (toolbarRef.current) {
+                const rect = toolbarRef.current.getBoundingClientRect();
+                // When the placeholder hits the top of the viewport (or goes above), make it sticky
+                if (rect.top <= 0) {
+                    setIsSticky(true);
+                } else {
+                    setIsSticky(false);
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Check on mount
+        
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -346,7 +369,7 @@ const ProductPage = () => {
     return (
         <div className="min-h-screen text-black relative z-0 bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-fill">
             {/* Global background handles the texture */}
-            <Header />
+            <Header isHidden={isSticky} />
             {/* Overlay */}
             {sidebarOpen && (
                 <div
@@ -644,57 +667,62 @@ const ProductPage = () => {
                 </div>
 
                 {/* Toolbar */}
-                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mb-10 gap-4">
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="border-2 border-black bg-white px-5 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all"
-                    >
-                        <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                            ></path>
-                        </svg>
-                        Filter
-                    </button>
-
-                    <form
-                        onSubmit={handleSearch}
-                        className="flex border-2 border-black w-full md:w-96 bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] transition-transform focus-within:-translate-y-[2px]"
-                    >
-                        <input
-                            type="text"
-                            placeholder="Pokemon, Gummy Pet..."
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                            className="flex-1 px-4 py-2 text-sm bg-transparent focus:outline-none text-black font-semibold placeholder-black/40"
-                        />
-                        <button
-                            type="submit"
-                            className="px-4 text-black hover:bg-black hover:text-white transition-colors"
-                        >
-                            <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                <div ref={toolbarRef} className="w-full relative z-[60]">
+                    <div className={`flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full px-4 md:px-8 py-3 bg-white border-b-2 border-black shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-[60]" : "mb-10 z-[60]"}`}>
+                        <div className={isSticky ? "max-w-6xl w-full mx-auto flex flex-col md:flex-row justify-between gap-4" : "w-full flex flex-col md:flex-row justify-between gap-4"}>
+                            <button
+                                onClick={() => setSidebarOpen(!sidebarOpen)}
+                                className="border-2 border-black bg-white px-5 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2.5"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                ></path>
-                            </svg>
-                        </button>
-                    </form>
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                                    ></path>
+                                </svg>
+                                Filter
+                            </button>
+
+                            <form
+                                onSubmit={handleSearch}
+                                className="flex border-2 border-black w-full md:w-96 bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] transition-transform focus-within:-translate-y-[2px]"
+                            >
+                                <input
+                                    type="text"
+                                    placeholder="Pokemon, Gummy Pet..."
+                                    value={searchInput}
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    className="flex-1 px-4 py-2 text-sm bg-transparent focus:outline-none text-black font-semibold placeholder-black/40"
+                                />
+                                <button
+                                    type="submit"
+                                    className="px-4 text-black hover:bg-black hover:text-white transition-colors"
+                                >
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2.5"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        ></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {isSticky && <div className="h-[104px] md:h-[52px] mb-10"></div>}
                 </div>
 
                 <div className="flex gap-8 items-start">
