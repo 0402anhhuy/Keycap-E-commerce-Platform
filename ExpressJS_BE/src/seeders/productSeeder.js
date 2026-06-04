@@ -110,7 +110,7 @@ const PRODUCT_DATA = [
         height: 16.5,
         profile: "SA",
         material: "Resin",
-        color: "green",
+        color: "yellow",
         designer: "Dwarf Factory",
         images: [
             "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/66cd92b618e43b3d2dd6638a",
@@ -141,7 +141,7 @@ const PRODUCT_DATA = [
         height: 16.5,
         profile: "SA",
         material: "Resin",
-        color: "red",
+        color: "blue",
         designer: "Dwarf Factory",
         images: [
             "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/66cd927a936f465e5aa881cb",
@@ -203,7 +203,7 @@ const PRODUCT_DATA = [
         height: 16.5,
         profile: "SA",
         material: "Resin",
-        color: "pink",
+        color: "purple",
         designer: "Dwarf Factory",
         images: [
             "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68a4386412f5e05d004f00cb",
@@ -235,7 +235,7 @@ const PRODUCT_DATA = [
         height: 16.5,
         profile: "SA",
         material: "Resin",
-        color: "gray",
+        color: "brown",
         designer: "Dwarf Factory",
         images: [
             "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68a4386412f5e05d004f00bf",
@@ -362,7 +362,7 @@ const PRODUCT_DATA = [
         height: 16.5,
         profile: "SA",
         material: "Resin",
-        color: "red",
+        color: "blue",
         designer: "Dwarf Factory",
         images: [
             "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68da111c12f5e05d00523914",
@@ -534,6 +534,650 @@ const PRODUCT_DATA = [
         rating: 4.5,
         reviewCount: 32,
     },
+
+    // Naruto Collection
+    // Kurama
+    {
+        sku: "KUR-NAR-001",
+        slug: "naruto-collection-1-kurama-keycap",
+        title: "Naruto Collection 1: Kurama Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Kurama trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 65,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773baf4e26a82825c8a7e3",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773baf4e26a82825c8a7e4",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773baf4e26a82825c8a7e5",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7e6",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7e7",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7e8",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Seal Scroll
+    {
+        sku: "SEAL-NAR-001",
+        slug: "naruto-collection-1-seal-scroll-keycap",
+        title: "Naruto Collection 1: Seal Scroll Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Seal Scroll trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 65,
+        discountPercent: 0,
+        size: "2.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "green",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7e9",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7eb",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb14e26a82825c8a7f2",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Toad Sage
+    {
+        sku: "TOAD-NAR-001",
+        slug: "naruto-collection-1-toad-sage-keycap",
+        title: "Naruto Collection 1: Toad Sage Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Toad Sage trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 65,
+        discountPercent: 0,
+        size: "6.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb04e26a82825c8a7ec",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb14e26a82825c8a7ed",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb14e26a82825c8a7ee",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63773bb14e26a82825c8a7ef",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Susanoo
+    {
+        sku: "SUS-NAR-001",
+        slug: "naruto-collection-1-susanoo-keycap",
+        title: "Naruto Collection 1: Susanoo Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Susanoo trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "purple",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9528b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9528c",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9528d",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9527f",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95280",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Mark Scroll
+    {
+        sku: "MARK-NAR-001",
+        slug: "naruto-collection-1-mark-scroll-keycap",
+        title: "Naruto Collection 1: Mark Scroll Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Mark Scroll trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 90,
+        discountPercent: 0,
+        size: "2.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "purple",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9528e",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9528f",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9527d",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95282",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95281",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95284",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Snake
+    {
+        sku: "SNA-NAR-001",
+        slug: "naruto-collection-1-snake-keycap",
+        title: "Naruto Collection 1: Snake Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Snake trong Naruto. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 3,
+        price: 90,
+        discountPercent: 0,
+        size: "6.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "purple",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95291",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95290",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95286",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c95283",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/63803dcf4e26a82825c9527e",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Yu-Gi-Oh! Collection
+    // Blue eye dragon
+    {
+        sku: "BED-YGO-001",
+        slug: "yugioh-collection-1-blue-eye-dragon-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Blue Eye Dragon Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Blue Eye Dragon trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc57",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc58",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc59",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc5a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc5b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc5c",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6736fbca5d146a3762b607aa",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6736fa9341cba57c286f7a25",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6734443d5d146a3762b5dc5d",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Dark magician
+    {
+        sku: "DM-YGO-001",
+        slug: "yugioh-collection-1-dark-magician-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Dark Magician Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Dark Magician trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "green",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444d06df41770ae353cd2",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444f05d146a3762b5dc66",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444f05d146a3762b5dc67",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444f05d146a3762b5dc68",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444f05d146a3762b5dc6a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444f05d146a3762b5dc6b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6736fbb05d146a3762b607a7",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6737535141cba57c286f7fd3",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Dark magician girl
+    {
+        sku: "DMG-YGO-001",
+        slug: "yugioh-collection-1-dark-magician-girl-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Dark Magician Girl Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Dark Magician Girl trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "pink",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353ccd",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353cc7",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353cc8",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353cc9",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353cca",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353ccb",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6736fbb05d146a3762b607a6",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/673444836df41770ae353ccc",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Summoned Skull
+    {
+        sku: "SS-YGO-001",
+        slug: "yugioh-collection-1-summoned-skull-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Summoned Skull Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Summoned Skull trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "pink",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08e836f9ef32d9b67038",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08e836f9ef32d9b67039",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08e836f9ef32d9b6703a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08e836f9ef32d9b6703b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08e836f9ef32d9b6703c",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08f536f9ef32d9b6703d",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Kuriboh
+    {
+        sku: "KB-YGO-002",
+        slug: "yugioh-collection-1-kuriboh-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Kuriboh Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Kuriboh trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "green",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd0844e8d1550191b71546",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd0844e8d1550191b71547",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd0844e8d1550191b71548",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd0844e8d1550191b71549",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd0844e8d1550191b7154a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd086b36f9ef32d9b67028",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Red-Eyes Black Dragon
+    {
+        sku: "REBD-YGO-003",
+        slug: "yugioh-collection-1-red-eyes-black-dragon-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Red-Eyes Black Dragon Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Red-Eyes Black Dragon trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 80,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "red",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08bd36f9ef32d9b67030",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08bd36f9ef32d9b67031",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08bd36f9ef32d9b67032",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08bd36f9ef32d9b67033",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08bd36f9ef32d9b67034",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd08d809fbe23dfdc08e1a",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Exodia
+    {
+        sku: "EXO-YGO-001",
+        slug: "yugioh-collection-1-exodia-keycap",
+        title: "Yu-Gi-Oh! Collection 1: Exodia Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Exodia trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 90,
+        discountPercent: 10,
+        size: "2.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd081409fbe23dfdc08e07",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd081409fbe23dfdc08e08",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd081509fbe23dfdc08e09",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd081509fbe23dfdc08e0a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd081509fbe23dfdc08e0b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/67dd082009fbe23dfdc08e0c",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Obelisk The Tormentor
+    {
+        sku: "OBS-YGO-001",
+        slug: "yugioh-collection-2-obelisk-the-tormentor-keycap",
+        title: "Yu-Gi-Oh! Collection 2: Obelisk The Tormentor Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Obelisk The Tormentor trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 60,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "blue",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99818",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99819",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9981a",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9981b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9981d",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9981e",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Winged Dragon of Ra
+    {
+        sku: "WDR-YGO-001",
+        slug: "yugioh-collection-2-winged-dragon-of-ra-keycap",
+        title: "Yu-Gi-Oh! Collection 2: Winged Dragon of Ra Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Winged Dragon of Ra trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 60,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99826",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99827",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99828",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99829",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9982b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9982c",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Slifer the Sky Dragon
+    {
+        sku: "STS-YGO-001",
+        slug: "yugioh-collection-2-slifer-the-sky-dragon-keycap",
+        title: "Yu-Gi-Oh! Collection 2: Slifer the Sky Dragon Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện nhân vật Slifer the Sky Dragon trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 60,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "red",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b9981f",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99820",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99821",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99822",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99824",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99825",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Millennium items
+    {
+        sku: "MIL-YGO-001",
+        slug: "yugioh-collection-2-millennium-items-keycap",
+        title: "Yu-Gi-Oh! Collection 2: Millennium Items Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện các vật phẩm Millennium trong Yu-Gi-Oh!. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 5,
+        price: 100,
+        discountPercent: 0,
+        size: "6.25U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "orange",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99812",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99813",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99814",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99815",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99816",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/6890342c93f15d2139b99817",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // G2 Collection
+    // Elite
+    {
+        sku: "ELT-G2-001",
+        slug: "g2-esports-collection-1-elite-keycap",
+        title: "G2 Esports Collection 1: Elite Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện G2 Esports trong League of Legends. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 6,
+        price: 50,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "gray",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23a85d1985b324ebf3b40",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23d4d3a1e97449f957a7c",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23d4d3a1e97449f957a78",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23d4d3a1e97449f957a79",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23d4d3a1e97449f957a7b",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23d4d3a1e97449f957a7d",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    //Shadow
+    {
+        sku: "SHD-G2-001",
+        slug: "g2-esports-collection-1-shadow-keycap",
+        title: "G2 Esports Collection 1: Shadow Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện G2 Esports trong League of Legends. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 6,
+        price: 50,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "black",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23a85d1985b324ebf3b42",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23c7bb2cf7e76f724b280",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23c7bb2cf7e76f724b27c",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23c7bb2cf7e76f724b27d",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23c7bb2cf7e76f724b27f",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23c7bb2cf7e76f724b281",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
+
+    // Outburst
+    {
+        sku: "OUTB-G2-001",
+        slug: "g2-esports-collection-1-outburst-keycap",
+        title: "G2 Esports Collection 1: Outburst Keycap",
+        description:
+            "Mô hình keycap chất lượng cao tái hiện G2 Esports trong League of Legends. Được đổ khuôn resin tỉ mỉ, xuyên led cực tốt.",
+        categoryId: 1,
+        collectionId: 6,
+        price: 50,
+        discountPercent: 0,
+        size: "1U",
+        height: 16.5,
+        profile: "SA",
+        material: "Resin",
+        color: "red",
+        designer: "Dwarf Factory",
+        images: [
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23a85d1985b324ebf3b41",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a73",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a6f",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a70",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a72",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a71",
+            "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/64c23cff3a1e97449f957a74",
+        ],
+        status: "active",
+        stock: 50,
+        sold: 120,
+        rating: 4.5,
+        reviewCount: 32,
+    },
 ];
 
 console.log(`Chuẩn bị seed ${PRODUCT_DATA.length} sản phẩm...`);
@@ -544,22 +1188,28 @@ const seedIfEmpty = async () => {
 
         if (count >= PRODUCT_DATA.length) {
             console.log(`>>> Products đã tồn tại (${count}), bỏ qua seeding.`);
-            
+
             // Recalculate productCounts to sync any existing records
             const Category = require("../models/Category");
             const Collection = require("../models/Collection");
             const categoriesList = await Category.findAll();
             for (const cat of categoriesList) {
-                const cCount = await Product.count({ where: { categoryId: cat.id } });
+                const cCount = await Product.count({
+                    where: { categoryId: cat.id },
+                });
                 await cat.update({ productCount: cCount });
             }
 
             const collectionsList = await Collection.findAll();
             for (const col of collectionsList) {
-                const cCount = await Product.count({ where: { collectionId: col.id } });
+                const cCount = await Product.count({
+                    where: { collectionId: col.id },
+                });
                 await col.update({ productCount: cCount });
             }
-            console.log("Đã cập nhật productCount cho tất cả Category và Collection.");
+            console.log(
+                "Đã cập nhật productCount cho tất cả Category và Collection.",
+            );
             return;
         } else if (count > 0) {
             console.log(
@@ -625,17 +1275,23 @@ const seedIfEmpty = async () => {
         // Recalculate productCounts to sync any existing records
         const categoriesList = await Category.findAll();
         for (const cat of categoriesList) {
-            const count = await Product.count({ where: { categoryId: cat.id } });
+            const count = await Product.count({
+                where: { categoryId: cat.id },
+            });
             await cat.update({ productCount: count });
         }
 
         const collectionsList = await Collection.findAll();
         for (const col of collectionsList) {
-            const count = await Product.count({ where: { collectionId: col.id } });
+            const count = await Product.count({
+                where: { collectionId: col.id },
+            });
             await col.update({ productCount: count });
         }
-        
-        console.log("Đã cập nhật productCount cho tất cả Category và Collection.");
+
+        console.log(
+            "Đã cập nhật productCount cho tất cả Category và Collection.",
+        );
     } catch (err) {
         console.error(">>> Seed error:", err.message);
     }
