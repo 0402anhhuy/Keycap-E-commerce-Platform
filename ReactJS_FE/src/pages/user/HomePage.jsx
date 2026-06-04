@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ScrollToTop from "../../components/ScrollToTop";
 import { fetchAllProducts } from "../../utils/productApi";
+import { fetchAllCollections } from "../../utils/collectionApi";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
 
@@ -13,11 +14,61 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
         () => `slider-${Math.random().toString(36).substr(2, 9)}`,
         [],
     );
+    const [activeDot, setActiveDot] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const handleScroll = (e) => {
+        const container = e.target;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+
+        if (scrollWidth <= clientWidth) {
+            setTotalPages(0);
+            return;
+        }
+
+        const scrollAmount = clientWidth + 24;
+        const pages = Math.ceil((scrollWidth - clientWidth) / scrollAmount) + 1;
+
+        if (pages !== totalPages) setTotalPages(pages);
+
+        const maxScrollLeft = scrollWidth - clientWidth;
+        const isAtEnd = Math.abs(container.scrollLeft - maxScrollLeft) < 10;
+
+        let currentActive;
+        if (isAtEnd) {
+            currentActive = pages - 1;
+        } else {
+            currentActive = Math.round(container.scrollLeft / scrollAmount);
+        }
+
+        setActiveDot(Math.max(0, Math.min(currentActive, pages - 1)));
+    };
+
+    useEffect(() => {
+        const container = document.getElementById(sliderId);
+        if (container) handleScroll({ target: container });
+
+        const onResize = () => {
+            if (container) handleScroll({ target: container });
+        };
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [products, sliderId]);
+
+    const scrollToPage = (pageIndex) => {
+        const container = document.getElementById(sliderId);
+        if (!container) return;
+        const scrollAmount = container.clientWidth + 24;
+        container.scrollTo({
+            left: pageIndex * scrollAmount,
+            behavior: "smooth",
+        });
+    };
 
     const scroll = (direction) => {
         const container = document.getElementById(sliderId);
         if (!container) return;
-        // Add 24px (gap-6) to ensure we scroll past the snap threshold
         const scrollAmount = container.clientWidth + 24;
         const target =
             direction === "left"
@@ -79,6 +130,7 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
                 {/* Scrollable Container */}
                 <div
                     id={sliderId}
+                    onScroll={handleScroll}
                     className="overflow-x-auto scroll-smooth pt-4 pb-8 -mt-4 [&::-webkit-scrollbar]:hidden"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                 >
@@ -96,40 +148,279 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
             </div>
 
             {/* Minimal line indicators */}
-            <div className="flex justify-center gap-2 mt-8">
-                <div className="h-0.5 w-8 bg-black/20"></div>
-                <div className="h-0.5 w-8 bg-[var(--theme-accent)]"></div>
-                <div className="h-0.5 w-8 bg-black/20"></div>
-                <div className="h-0.5 w-8 bg-black/20"></div>
-            </div>
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-8">
+                    {Array.from({ length: totalPages }).map((_, idx) => (
+                        <div
+                            key={idx}
+                            onClick={() => scrollToPage(idx)}
+                            className={`h-0.5 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-black/20 hover:bg-black/40"}`}
+                        ></div>
+                    ))}
+                </div>
+            )}
         </section>
+    );
+};
+
+const CollabSlider = ({ collections, navigate }) => {
+    const sliderId = useMemo(
+        () => `collab-slider-${Math.random().toString(36).substr(2, 9)}`,
+        [],
+    );
+    const [activeDot, setActiveDot] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const getScrollAmount = (clientWidth) => {
+        const paddingLeft = clientWidth >= 768 ? 48 : 16; // md:px-12 is 48px, px-4 is 16px
+        return clientWidth - paddingLeft;
+    };
+
+    const handleScroll = (e) => {
+        const container = e.target;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+
+        if (scrollWidth <= clientWidth) {
+            setTotalPages(0);
+            return;
+        }
+
+        const scrollAmount = getScrollAmount(clientWidth);
+        const pages = Math.ceil((scrollWidth - clientWidth) / scrollAmount) + 1;
+
+        if (pages !== totalPages) setTotalPages(pages);
+
+        const maxScrollLeft = scrollWidth - clientWidth;
+        const isAtEnd = Math.abs(container.scrollLeft - maxScrollLeft) < 10;
+
+        let currentActive;
+        if (isAtEnd) {
+            currentActive = pages - 1;
+        } else {
+            currentActive = Math.round(container.scrollLeft / scrollAmount);
+        }
+
+        setActiveDot(Math.max(0, Math.min(currentActive, pages - 1)));
+    };
+
+    useEffect(() => {
+        const container = document.getElementById(sliderId);
+        if (container) handleScroll({ target: container });
+
+        const onResize = () => {
+            if (container) handleScroll({ target: container });
+        };
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [collections, sliderId]);
+
+    const scrollToPage = (pageIndex) => {
+        const container = document.getElementById(sliderId);
+        if (!container) return;
+        const scrollAmount = getScrollAmount(container.clientWidth);
+        container.scrollTo({
+            left: pageIndex * scrollAmount,
+            behavior: "smooth",
+        });
+    };
+
+    const scroll = (direction) => {
+        const container = document.getElementById(sliderId);
+        if (!container) return;
+        const scrollAmount = getScrollAmount(container.clientWidth);
+        const target =
+            direction === "left"
+                ? container.scrollLeft - scrollAmount
+                : container.scrollLeft + scrollAmount;
+        container.scrollTo({ left: target, behavior: "smooth" });
+    };
+
+    const paddedCollections = useMemo(() => {
+        if (!collections || collections.length === 0) return [];
+        const result = [...collections];
+        const remainder = result.length % 3;
+        if (remainder !== 0) {
+            const paddingNeeded = 3 - remainder;
+            for (let i = 0; i < paddingNeeded; i++) {
+                // Duplicate elements from the start to pad the end
+                result.push({ ...collections[i], _cloneId: `clone-${i}` });
+            }
+        }
+        return result;
+    }, [collections]);
+
+    if (!paddedCollections || paddedCollections.length === 0) return null;
+
+    return (
+        <div className="relative max-w-[1400px] mx-auto">
+            {/* Navigation Arrows */}
+            <button
+                onClick={() => scroll("left")}
+                className="absolute left-0 top-[40%] -translate-y-1/2 w-12 h-12 flex items-center justify-center text-black/30 hover:text-black transition-colors cursor-pointer z-10 hidden md:flex"
+            >
+                <svg
+                    className="w-10 h-10"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="square"
+                        strokeLinejoin="miter"
+                        strokeWidth="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
+            </button>
+
+            <button
+                onClick={() => scroll("right")}
+                className="absolute right-0 top-[40%] -translate-y-1/2 w-12 h-12 flex items-center justify-center text-black/30 hover:text-black transition-colors cursor-pointer z-10 hidden md:flex"
+            >
+                <svg
+                    className="w-10 h-10"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="square"
+                        strokeLinejoin="miter"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
+                    />
+                </svg>
+            </button>
+
+            {/* Scrollable Container */}
+            <div
+                id={sliderId}
+                onScroll={handleScroll}
+                className="flex gap-4 md:gap-12 snap-x snap-mandatory px-4 md:px-12 overflow-x-auto scroll-smooth pb-8 scroll-pl-4 md:scroll-pl-12 [&::-webkit-scrollbar]:hidden"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+                {paddedCollections.map((col) => (
+                    <div
+                        key={
+                            col._cloneId ? `${col.id}-${col._cloneId}` : col.id
+                        }
+                        className="w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(33.334%-2rem)] flex-shrink-0 snap-start bg-white border-[3px] border-transparent hover:border-black transition-colors group flex flex-col shadow-sm animate-fade-in-up"
+                    >
+                        <div className="aspect-[4/3] bg-[#f4f4f4] relative flex items-center justify-center overflow-hidden">
+                            <img
+                                src={col.background}
+                                alt="Collab"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
+                        <div className="p-4 flex items-center gap-3 border-t border-gray-100">
+                            <div className="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center overflow-hidden p-1">
+                                <img
+                                    src="https://dwarf-factory.com/assets/images/logo-square.svg"
+                                    className="w-full h-full object-contain"
+                                    alt="dwaft factory logo"
+                                />
+                            </div>
+                            <span className="text-xs font-bold text-black">
+                                x
+                            </span>
+                            <div className="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center overflow-hidden p-1">
+                                <img
+                                    src={col.logo}
+                                    className="w-full h-full object-contain"
+                                    alt={col.name}
+                                />
+                            </div>
+                            <div className="ml-auto flex flex-col items-end">
+                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                                    COLLAB
+                                </span>
+                                <span className="text-xs font-bold text-black uppercase">
+                                    {col.name}
+                                </span>
+                            </div>
+                        </div>
+                        <div
+                            onClick={() =>
+                                navigate(
+                                    `/products?collection=${encodeURIComponent(col.name)}`,
+                                )
+                            }
+                            className="bg-black text-white p-4 flex justify-between items-center hover:bg-[var(--theme-accent)] transition-colors cursor-pointer"
+                        >
+                            <span className="font-anton uppercase tracking-widest text-[15px]">
+                                VIEW DETAILS
+                            </span>
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="square"
+                                    strokeLinejoin="miter"
+                                    strokeWidth="2"
+                                    d="M5 19L19 5m0 0v14m0-14H5"
+                                ></path>
+                            </svg>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Dots */}
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-4 mb-8">
+                    {Array.from({ length: totalPages }).map((_, idx) => (
+                        <div
+                            key={idx}
+                            onClick={() => scrollToPage(idx)}
+                            className={`h-1 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-gray-300 hover:bg-gray-400"}`}
+                        ></div>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 
 const HomePage = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
         const controller = new AbortController();
 
-        const loadProducts = async () => {
+        const loadData = async () => {
             try {
                 setLoading(true);
                 setError("");
 
                 const token = localStorage.getItem("accessToken");
-                const data = await fetchAllProducts({
-                    apiBase: API_BASE,
-                    signal: controller.signal,
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                    },
-                });
-                setProducts(data);
+                const [productsData, collectionsData] = await Promise.all([
+                    fetchAllProducts({
+                        apiBase: API_BASE,
+                        signal: controller.signal,
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...(token
+                                ? { Authorization: `Bearer ${token}` }
+                                : {}),
+                        },
+                    }),
+                    fetchAllCollections({
+                        apiBase: API_BASE,
+                        signal: controller.signal,
+                    }),
+                ]);
+
+                setProducts(productsData);
+                setCollections(collectionsData);
             } catch (err) {
                 if (err.status === 401) {
                     localStorage.clear();
@@ -144,7 +435,7 @@ const HomePage = () => {
             }
         };
 
-        loadProducts();
+        loadData();
         return () => controller.abort();
     }, [navigate]);
 
@@ -242,135 +533,45 @@ const HomePage = () => {
 
                     {/* Logos Grid */}
                     <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 mb-16 opacity-80">
-                        {[
-                            "DROP",
-                            "STEELSERIES",
-                            "FAZE CLAN",
-                            "G2 ESPORTS",
-                            "FNATIC",
-                            "NZXT",
-                            "EMINENT CRAFTS",
-                        ].map((partner) => (
+                        {collections.map((collection) => (
                             <div
-                                key={partner}
-                                className="flex flex-col items-center gap-3"
+                                key={collection.id}
+                                className="flex flex-col items-center gap-3 cursor-pointer group"
+                                onClick={() =>
+                                    navigate(
+                                        `/products?collection=${encodeURIComponent(collection.name)}`,
+                                    )
+                                }
                             >
-                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center font-bold text-black text-xs md:text-sm text-center p-2 shadow-sm border border-gray-200">
-                                    {partner.split(" ")[0]}
+                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-sm border border-gray-200 overflow-hidden group-hover:border-black group-hover:shadow-[2px_2px_0_rgba(0,0,0,1)] transition-all">
+                                    <img
+                                        src={collection.logo}
+                                        alt={collection.name}
+                                        className="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-300"
+                                    />
                                 </div>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                                    {partner}
+
+                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-hover:text-black transition-colors">
+                                    {collection.name}
                                 </span>
                             </div>
                         ))}
                     </div>
 
                     {/* Collab Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 px-4 md:px-12">
-                        {[1, 2, 3].map((i) => (
-                            <div
-                                key={i}
-                                className="bg-white border-[3px] border-transparent hover:border-black transition-colors cursor-pointer group flex flex-col shadow-sm"
-                            >
-                                <div className="aspect-[4/3] bg-[#f4f4f4] p-6 relative flex items-center justify-center">
-                                    <img
-                                        src="https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/685e097bf8734a1154e57a98"
-                                        alt="Collab"
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                </div>
-                                <div className="p-4 flex items-center gap-3 border-t border-gray-100">
-                                    <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center text-white text-[8px]">
-                                        LOGO
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-400">
-                                        x
-                                    </span>
-                                    <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center text-white text-[8px]">
-                                        LOGO
-                                    </div>
-                                    <div className="ml-auto flex flex-col items-end">
-                                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                                            OF 1 DROP
-                                        </span>
-                                        <span className="text-xs font-bold text-black uppercase">
-                                            LORD OF THE RINGS™
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="bg-black text-white p-4 flex justify-between items-center group-hover:bg-[var(--theme-accent)] transition-colors">
-                                    <span className="font-anton uppercase tracking-widest text-[15px]">
-                                        VIEW DETAILS
-                                    </span>
-                                    <svg
-                                        className="w-5 h-5"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="square"
-                                            strokeLinejoin="miter"
-                                            strokeWidth="2"
-                                            d="M5 19L19 5m0 0v14m0-14H5"
-                                        ></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <CollabSlider
+                        collections={collections}
+                        navigate={navigate}
+                    />
 
-                    {/* Dots & Button */}
-                    <div className="flex flex-col items-center gap-8">
-                        <div className="flex justify-center gap-2">
-                            <div className="h-1 w-8 bg-gray-300"></div>
-                            <div className="h-1 w-8 bg-[var(--theme-accent)]"></div>
-                            <div className="h-1 w-8 bg-gray-300"></div>
-                            <div className="h-1 w-8 bg-gray-300"></div>
-                        </div>
+                    {/* Button */}
+                    <div className="flex flex-col items-center mt-8">
                         <button
                             onClick={() => navigate("/products")}
                             className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2"
                         >
                             EXPLORE NOW
                         </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* Happy Owners Section */}
-            <section className="pt-8 pb-28 z-20 relative overflow-hidden bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] bg-contain">
-                <div className="max-w-[1400px] mx-auto px-6">
-                    <h2 className="text-5xl md:text-6xl font-anton uppercase text-center text-black mb-12">
-                        HAPPY OWNERS
-                    </h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 px-4 md:px-12">
-                        {[1, 2, 3].map((i) => (
-                            <div
-                                key={i}
-                                className="aspect-square relative group cursor-pointer overflow-hidden shadow-lg border-4 border-white"
-                            >
-                                <img
-                                    src={`https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/685e097bf8734a1154e57a98`}
-                                    alt="Happy owner"
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                    <span className="text-white font-oswald text-xs font-bold uppercase tracking-widest border-b-2 border-white pb-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                        VIEW POST
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Dots */}
-                    <div className="flex justify-center gap-2">
-                        <div className="h-0.5 w-8 bg-gray-400"></div>
-                        <div className="h-0.5 w-8 bg-[var(--theme-accent)]"></div>
-                        <div className="h-0.5 w-8 bg-gray-400"></div>
-                        <div className="h-0.5 w-8 bg-gray-400"></div>
                     </div>
                 </div>
             </section>
