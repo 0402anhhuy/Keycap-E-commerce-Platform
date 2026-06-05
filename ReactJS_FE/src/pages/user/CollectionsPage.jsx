@@ -77,7 +77,7 @@ const CollectionsPage = () => {
                             placeholder="SEARCH"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full md:w-64 px-4 py-2 bg-transparent text-sm font-oswald tracking-widest uppercase focus:outline-none placeholder:text-black/50"
+                            className="w-full md:w-64 px-4 py-2 bg-white text-sm font-oswald tracking-widest uppercase focus:outline-none placeholder:text-black/50"
                         />
                         <svg
                             className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black"
