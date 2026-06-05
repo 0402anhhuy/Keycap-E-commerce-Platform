@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
 
-    const hasDiscount =
-        product.originalPrice && product.originalPrice > product.price;
+    let discountPrice = product.price;
+
+    if (product.discountPercent > 0) {
+        discountPrice =
+            product.price - (product.discountPercent * product.price) / 100;
+    }
 
     let image = product.image;
     if (Array.isArray(product.images) && product.images.length > 0)
@@ -14,9 +18,6 @@ const ProductCard = ({ product }) => {
             image = JSON.parse(product.images)[0];
         } catch (e) {}
     }
-
-    const optionsCount =
-        product.colors && product.colors.length > 0 ? product.colors.length : 1;
 
     return (
         <div
@@ -38,16 +39,17 @@ const ProductCard = ({ product }) => {
                         <span className="bg-gray-500 text-white text-[10px] font-oswald font-bold px-2 py-0.5 uppercase tracking-wider">
                             Out of Stock
                         </span>
-                    ) : (
-                        hasDiscount && (
-                            <span className="bg-[var(--theme-accent)] text-white text-[10px] font-oswald font-bold px-2 py-0.5 uppercase tracking-wider">
-                                Sale
-                            </span>
-                        )
-                    )}
-                    {product.stock <= 5 && product.stock > 0 && (
+                    ) : product.stock <= 5 ? (
                         <span className="bg-[var(--theme-accent)] text-white text-[10px] font-oswald font-bold px-2 py-0.5 uppercase tracking-wider">
                             Just a Few Left
+                        </span>
+                    ) : product.discountPercent > 0 ? (
+                        <span className="bg-[var(--theme-accent)] text-white text-[10px] font-oswald font-bold px-2 py-0.5 uppercase tracking-wider">
+                            Sale
+                        </span>
+                    ) : (
+                        <span className="bg-green-600 text-white text-[10px] font-oswald font-bold px-2 py-0.5 uppercase tracking-wider">
+                            In Stock
                         </span>
                     )}
                 </div>
@@ -74,15 +76,25 @@ const ProductCard = ({ product }) => {
                         <h3 className="text-lg font-anton leading-tight uppercase tracking-wide line-clamp-2 text-black mb-1">
                             {product.title}
                         </h3>
-                        <div className="text-[var(--theme-accent)] font-anton text-sm tracking-wider">
-                            {Number(product.price).toLocaleString()}
-                            <span className="text-xs align-top">$</span>
+                        <div className="flex items-baseline gap-2">
+                            <div className="text-[var(--theme-accent)] font-anton text-sm tracking-wider">
+                                {Number(discountPrice).toLocaleString()}
+                                <span className="text-xs align-top">$</span>
+                            </div>
+                            {product.discountPercent > 0 && (
+                                <div className="text-black font-anton text-[11px] tracking-wider line-through opacity-70">
+                                    {Number(product.price).toLocaleString()}
+                                    <span className="text-[9px] align-top">
+                                        $
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     {/* Options */}
                     <div className="bg-[var(--theme-accent)] text-white text-[9px] font-oswald font-bold px-1.5 py-0.5 uppercase tracking-wider whitespace-nowrap mt-1">
-                        {optionsCount} OPTION{optionsCount > 1 ? "S" : ""}
+                        1 OPTION
                     </div>
                 </div>
             </div>
