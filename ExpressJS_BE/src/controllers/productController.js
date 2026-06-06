@@ -71,7 +71,7 @@ const setProductStatus = async (req, res) => {
 
 const getSimilarProducts = async (req, res) => {
     try {
-        const products = await productService.getSimilarProducts(req.params.id);
+        const products = await productService.getSimilarProducts(req.params.identifier);
         return res.json(products);
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
