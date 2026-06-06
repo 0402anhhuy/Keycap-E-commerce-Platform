@@ -62,7 +62,7 @@ const ProductDetail = () => {
     const [reviewMessage, setReviewMessage] = useState("");
 
     // UI states
-    const [expandedSpec, setExpandedSpec] = useState("Product Details");
+    const [expandedSpec, setExpandedSpec] = useState(null);
     const [ratingFilter, setRatingFilter] = useState("4.8");
 
     const fetchProductReviews = async () => {
@@ -410,9 +410,10 @@ const ProductDetail = () => {
     if (!product) return <div className="p-4">Not found</div>;
 
     return (
-        <div className="min-h-screen text-black relative">
+        <div className="min-h-screen text-black relative bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')]">
             <Header />
 
+            {/* Breadcrumb */}
             <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-4">
                 <Breadcrumb
                     items={[
@@ -423,10 +424,11 @@ const ProductDetail = () => {
                 />
             </div>
 
+            {/* Product Info */}
             <div className="relative z-20 flex flex-col min-h-screen">
                 <main className="max-w-[1400px] mx-auto px-6 pb-24 w-full flex-1">
                     <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-16">
-                        {/* Left: Images & Details */}
+                        {/* Left Side: Images & Specification */}
                         <div className="flex-1 min-w-0 flex flex-col">
                             {/* Main Image */}
                             <div
@@ -446,28 +448,54 @@ const ProductDetail = () => {
                                     className="flex gap-4 overflow-x-auto pb-4 pt-2 justify-start"
                                     style={{ scrollbarWidth: "none" }}
                                 >
-                                    {images.map((img, idx) => (
-                                        <div
-                                            key={idx}
-                                            onClick={() => setActiveImage(idx)}
-                                            className={`relative w-24 h-24 flex-shrink-0 bg-[#f8f8f8] overflow-hidden cursor-pointer border-2 transition-all hover:shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-1 ${activeImage === idx ? "border-black shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "border-black/20"}`}
-                                        >
-                                            <img
-                                                src={img}
-                                                alt={`Thumbnail ${idx}`}
-                                                className="w-full h-full object-contain p-2"
-                                            />
-                                        </div>
-                                    ))}
+                                    {images.slice(0, 4).map((img, idx) => {
+                                        const isLast =
+                                            idx === 3 && images.length > 4;
+                                        return (
+                                            <div
+                                                key={idx}
+                                                onClick={() =>
+                                                    isLast
+                                                        ? setShowCarousel(true)
+                                                        : setActiveImage(idx)
+                                                }
+                                                className={`relative w-24 h-24 flex-shrink-0 bg-[#f8f8f8] overflow-hidden cursor-pointer border-2 transition-all hover:shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-1 ${activeImage === idx && !isLast ? "border-black shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "border-black/20"}`}
+                                            >
+                                                <img
+                                                    src={img}
+                                                    alt={`Thumbnail ${idx}`}
+                                                    className={`w-full h-full object-contain p-2 ${isLast ? "opacity-30" : ""}`}
+                                                />
+                                                {isLast && (
+                                                    <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white transition-opacity hover:bg-black/70">
+                                                        <svg
+                                                            className="w-4 h-4 mb-0.5"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="square"
+                                                                strokeLinejoin="miter"
+                                                                strokeWidth="2"
+                                                                d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"
+                                                            />
+                                                        </svg>
+                                                        <span className="font-oswald text-xs md:text-xs font-bold tracking-wider">
+                                                            +{images.length - 3}{" "}
+                                                            images
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             )}
 
-                            {/* SPECIFICATION SECTION */}
+                            {/* Specification */}
                             <div className="mt-16 pt-10 pb-8 lg:pr-10">
-                                <h2
-                                    className="text-4xl md:text-[44px] font-black uppercase mb-6 tracking-wide"
-                                    style={{ fontFamily: "Anton, sans-serif" }}
-                                >
+                                <h2 className="text-4xl font-anton md:text-[44px] font-black uppercase mb-6 tracking-wide">
                                     Specification
                                 </h2>
                                 <div className="border-t border-black/20">
@@ -500,23 +528,77 @@ const ProductDetail = () => {
                                             <div
                                                 className={`overflow-hidden transition-all duration-300 ${expandedSpec === spec ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
                                             >
-                                                <div className="p-4 pt-0 text-sm text-black/70 leading-relaxed pl-6">
+                                                <div className="p-2 pt-0 text-sm text-black leading-relaxed pl-6">
                                                     {spec ===
                                                         "Product Details" && (
-                                                        <ul className="list-disc pl-5 space-y-1">
-                                                            <li>
-                                                                Chất liệu: Resin
-                                                                cao cấp
-                                                            </li>
-                                                            <li>
-                                                                Profile: SA R1
-                                                            </li>
-                                                            <li>
-                                                                Stem: Cherry MX
-                                                            </li>
-                                                            <li>
-                                                                Sơn thủ công với
-                                                                độ chi tiết cao
+                                                        <ul>
+                                                            <li className="font-semibold">
+                                                                {product?.title}
+                                                                <ul className="list-disc pl-5 mt-1 space-y-1 font-normal">
+                                                                    <li>
+                                                                        <b>
+                                                                            Material:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.material
+                                                                        }
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Form:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.form
+                                                                        }
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Size:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.size
+                                                                        }
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Height:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.height
+                                                                        }
+                                                                        {"mm"}
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Stem:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.stem
+                                                                        }
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Special
+                                                                            Effect:
+                                                                        </b>{" "}
+                                                                        LED
+                                                                        transparent
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <b>
+                                                                            Designer:
+                                                                        </b>{" "}
+                                                                        {
+                                                                            product?.designer
+                                                                        }
+                                                                    </li>
+                                                                </ul>
                                                             </li>
                                                         </ul>
                                                     )}
@@ -528,25 +610,31 @@ const ProductDetail = () => {
                                                                 Artisan
                                                             </li>
                                                             <li>
-                                                                1x Hộp đựng bảo
-                                                                vệ
+                                                                1x Protective
+                                                                box
                                                             </li>
+                                                            <li>User guide</li>
                                                             <li>
-                                                                Thẻ chứng nhận
-                                                                (nếu có)
+                                                                Rubber finger
+                                                                gloves
                                                             </li>
                                                         </ul>
                                                     )}
                                                     {spec ===
                                                         "Delivery & shipping" && (
-                                                        <p>
-                                                            Thời gian chuẩn bị:
-                                                            1-2 ngày làm việc.
-                                                            <br />
-                                                            Thời gian vận
-                                                            chuyển: 2-4 ngày tùy
-                                                            khu vực.
-                                                        </p>
+                                                        <ul className="list-disc pl-5 space-y-1">
+                                                            <li>
+                                                                Pre-order time:
+                                                                1-2 business
+                                                                days
+                                                            </li>
+                                                            <li>
+                                                                Delivery time:
+                                                                2-4 days
+                                                                depending on the
+                                                                region
+                                                            </li>
+                                                        </ul>
                                                     )}
                                                 </div>
                                             </div>
@@ -557,24 +645,19 @@ const ProductDetail = () => {
 
                             {/* HAPPY OWNERS SECTION */}
                             <div className="mt-12 mb-20 pr-10">
-                                <h2
-                                    className="text-4xl md:text-[44px] font-black uppercase mb-6 tracking-wide"
-                                    style={{ fontFamily: "Anton, sans-serif" }}
-                                >
+                                <h2 className="text-4xl font-anton md:text-[44px] font-black uppercase mb-6 tracking-wide">
                                     Happy Owners
                                 </h2>
 
                                 {/* Rating filter */}
                                 <div className="relative mb-8">
                                     <div className="absolute right-0 top-0 flex -space-x-2 -mt-10 mr-4">
-                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-30">
-                                            🦊
-                                        </div>
-                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-20">
-                                            🦊
-                                        </div>
-                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] shadow-md flex items-center justify-center text-xl z-10">
-                                            🦊
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-black shadow-md flex items-center justify-center text-xl z-30">
+                                            <img
+                                                src="https://dwarf-factory.com/assets/images/logo-square.svg"
+                                                alt="logo"
+                                                className="w-full h-full object-contain p-2"
+                                            />
                                         </div>
                                     </div>
                                     <button className="w-full border border-black/20 bg-black/5 py-3 px-4 flex justify-between items-center text-sm font-bold uppercase tracking-widest cursor-pointer hover:bg-black/10 transition-colors">
@@ -702,8 +785,8 @@ const ProductDetail = () => {
                                         <div className="animate-spin w-6 h-6 border-2 border-[#F17336] border-t-transparent rounded-full" />
                                     </div>
                                 ) : reviews.length === 0 ? (
-                                    <p className="text-black/50 text-sm italic py-4">
-                                        Chưa có đánh giá nào cho sản phẩm này.
+                                    <p className="text-black text-sm italic py-4">
+                                        Chưa có đánh giá nào cho sản phẩm này
                                     </p>
                                 ) : (
                                     <div className="space-y-8">
@@ -713,7 +796,11 @@ const ProductDetail = () => {
                                                 className="flex gap-4 border-b border-black/10 pb-8"
                                             >
                                                 <div className="w-10 h-10 rounded-full bg-[#F17336] border-2 border-[#d8d8d8] flex items-center justify-center text-lg shrink-0 mt-1 shadow-sm">
-                                                    🦊
+                                                    <img
+                                                        src="https://dwarf-factory.com/assets/images/logo-square.svg"
+                                                        alt="logo"
+                                                        className="w-full h-full object-contain rounded-full"
+                                                    />
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="flex justify-between items-start">
@@ -828,7 +915,7 @@ const ProductDetail = () => {
                                 className={`mb-4 px-5 py-2 border-2 flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest ${
                                     isFavorite
                                         ? "bg-black text-white border-black"
-                                        : "bg-transparent text-black border-black hover:bg-black hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
+                                        : "bg-white text-black border-black hover:bg-black hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
                                 }`}
                             >
                                 <span className="text-lg leading-none">
@@ -933,7 +1020,7 @@ const ProductDetail = () => {
                                                 ? `${product.stock} INSTOCKS`
                                                 : "10 INSTOCKS"}
                                         </div>
-                                        <div className="flex items-center border-2 border-black h-[52px] bg-white w-24 shrink-0 relative mt-1">
+                                        <div className="flex items-center border-2 border-black h-[35px] bg-white w-24 shrink-0 relative mt-1">
                                             <button
                                                 onClick={() =>
                                                     handleQuantityChange(
@@ -1000,70 +1087,17 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    {/* Shop Profile Card */}
-                    {product?.shop && (
-                        <div className="mt-8 bg-[rgba(255,255,255,0.04)] p-6 rounded-[28px] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.28)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                            <div className="flex items-center gap-4 text-left">
-                                <div className="w-16 h-16 rounded-full bg-white/5 text-[var(--theme-accent)] flex items-center justify-center font-bold text-2xl border border-white/10 overflow-hidden shrink-0">
-                                    {product.shop.logo ? (
-                                        <img
-                                            src={
-                                                product.shop.logo.startsWith(
-                                                    "http",
-                                                )
-                                                    ? product.shop.logo
-                                                    : `${API_BASE}${product.shop.logo}`
-                                            }
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        "🏪"
-                                    )}
-                                </div>
-                                <div>
-                                    <h3 className="font-extrabold text-white text-base">
-                                        {product.shop.name}
-                                    </h3>
-                                    <p className="text-xs text-white/50 mt-1">
-                                        {product.shop.description ||
-                                            "Chưa có mô tả cửa hàng."}
-                                    </p>
-                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-xs text-white/45 font-semibold">
-                                        <span className="text-[var(--theme-accent-2)]">
-                                            ⭐{" "}
-                                            {Number(
-                                                product.shop.rating || 0,
-                                            ).toFixed(1)}{" "}
-                                            / 5 ({product.shop.reviewCount || 0}{" "}
-                                            đánh giá)
-                                        </span>
-                                        <span>📍 {product.shop.address}</span>
-                                        <span>📞 {product.shop.phone}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() =>
-                                    navigate(
-                                        `/products?shopId=${product.shop.id}`,
-                                    )
-                                }
-                                className="px-5 py-2.5 bg-[var(--theme-accent)] border border-transparent text-black hover:brightness-110 font-black text-sm rounded-xl transition-all whitespace-nowrap cursor-pointer uppercase tracking-[0.18em]"
-                            >
-                                Xem Cửa Hàng
-                            </button>
-                        </div>
-                    )}
                     <div className="mt-10 mb-16 relative">
                         <div className="flex items-center justify-between border-b pb-3 border-white/10 mb-6">
                             <h2
-                                className="font-black text-xl text-white uppercase tracking-[0.18em]"
+                                className="text-4xl md:text-[44px] font-black uppercase mb-6 tracking-wide"
                                 style={{ fontFamily: "Anton, sans-serif" }}
                             >
-                                Sản phẩm tương tự
+                                Recommend
                             </h2>
                             {similarProducts.length > 3 && (
                                 <div className="flex items-center gap-2">
+                                    {/* Prev Button */}
                                     <button
                                         onClick={handlePrevSimilar}
                                         disabled={similarStartIndex === 0}
@@ -1083,6 +1117,7 @@ const ProductDetail = () => {
                                             />
                                         </svg>
                                     </button>
+                                    {/* Next Button */}
                                     <button
                                         onClick={handleNextSimilar}
                                         disabled={
@@ -1119,7 +1154,7 @@ const ProductDetail = () => {
                                         <div
                                             key={p.id}
                                             onClick={() =>
-                                                navigate(`/product/${p.id}`)
+                                                navigate(`/product/${p.slug}`)
                                             }
                                             className="cursor-pointer h-full"
                                         >
@@ -1129,7 +1164,7 @@ const ProductDetail = () => {
                             </div>
                         ) : (
                             <p className="text-gray-400 text-sm italic">
-                                Chưa có sản phẩm tương tự.
+                                Chưa có sản phẩm tương tự
                             </p>
                         )}
                     </div>
