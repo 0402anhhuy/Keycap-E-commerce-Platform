@@ -1,4 +1,6 @@
 const Product = require("../models/Product");
+const { slugify, syncProductCounts } = require("./collectionSeeder");
+const { seedCategoriesIfEmpty } = require("./categorySeeder");
 
 const PRODUCT_DATA = [
     // Collection 1
@@ -16,7 +18,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -48,7 +50,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -80,7 +82,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -112,7 +114,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "yellow",
@@ -144,7 +146,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -176,7 +178,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "pink",
@@ -208,7 +210,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "purple",
@@ -241,7 +243,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -274,7 +276,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -307,7 +309,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -340,7 +342,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -372,7 +374,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -406,7 +408,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -439,7 +441,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -471,7 +473,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -503,7 +505,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "grey",
@@ -535,7 +537,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "6.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -569,7 +571,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -600,9 +602,9 @@ const PRODUCT_DATA = [
         collectionId: 3,
         price: 65,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -632,7 +634,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "6.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -663,7 +665,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "purple",
@@ -693,9 +695,9 @@ const PRODUCT_DATA = [
         collectionId: 3,
         price: 90,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "purple",
@@ -728,7 +730,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "6.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "purple",
@@ -762,7 +764,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "pink",
@@ -794,7 +796,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "pink",
@@ -826,7 +828,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -857,7 +859,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -889,7 +891,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -921,7 +923,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -953,7 +955,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -985,7 +987,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -1017,7 +1019,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1049,7 +1051,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1083,7 +1085,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1119,7 +1121,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -1154,7 +1156,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "pink",
@@ -1189,7 +1191,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "pink",
@@ -1222,7 +1224,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -1255,7 +1257,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -1286,9 +1288,9 @@ const PRODUCT_DATA = [
         collectionId: 5,
         price: 90,
         discountPercent: 10,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1321,7 +1323,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -1354,7 +1356,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1387,7 +1389,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -1420,7 +1422,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "6.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1455,7 +1457,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "grey",
@@ -1488,7 +1490,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "black",
@@ -1521,7 +1523,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -1557,7 +1559,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "grey",
@@ -1586,7 +1588,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -1617,7 +1619,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "white",
@@ -1646,7 +1648,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "yellow",
@@ -1675,7 +1677,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "black",
@@ -1704,7 +1706,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -1733,9 +1735,9 @@ const PRODUCT_DATA = [
         collectionId: 8,
         price: 90,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -1765,7 +1767,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -1795,7 +1797,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -1823,9 +1825,9 @@ const PRODUCT_DATA = [
         collectionId: 8,
         price: 90,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -1857,7 +1859,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "white",
@@ -1889,7 +1891,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "white",
@@ -1921,7 +1923,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -1953,7 +1955,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -1985,7 +1987,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -2015,9 +2017,9 @@ const PRODUCT_DATA = [
         collectionId: 8,
         price: 70,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -2048,7 +2050,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -2079,7 +2081,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "brown",
@@ -2110,7 +2112,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "CHERRY",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -2141,7 +2143,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "CHERRY",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -2172,7 +2174,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "CHERRY",
         stem: "Cherry MX",
         material: "Resin",
         color: "green",
@@ -2203,7 +2205,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "CHERRY",
         stem: "Cherry MX",
         material: "Resin",
         color: "blue",
@@ -2236,7 +2238,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "yellow",
@@ -2268,7 +2270,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -2300,7 +2302,7 @@ const PRODUCT_DATA = [
         discountPercent: 0,
         size: "1U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "red",
@@ -2330,9 +2332,9 @@ const PRODUCT_DATA = [
         collectionId: 9,
         price: 50,
         discountPercent: 0,
-        size: "2.75U",
+        size: "2.25U",
         height: 16.5,
-        profile: "SAR1",
+        form: "SA R1",
         stem: "Cherry MX",
         material: "Resin",
         color: "orange",
@@ -2362,26 +2364,7 @@ const seedIfEmpty = async () => {
             console.log(`>>> Products đã tồn tại (${count}), bỏ qua seeding.`);
 
             // Recalculate productCounts to sync any existing records
-            const Category = require("../models/Category");
-            const Collection = require("../models/Collection");
-            const categoriesList = await Category.findAll();
-            for (const cat of categoriesList) {
-                const cCount = await Product.count({
-                    where: { categoryId: cat.id },
-                });
-                await cat.update({ productCount: cCount });
-            }
-
-            const collectionsList = await Collection.findAll();
-            for (const col of collectionsList) {
-                const cCount = await Product.count({
-                    where: { collectionId: col.id },
-                });
-                await col.update({ productCount: cCount });
-            }
-            console.log(
-                "Đã cập nhật productCount cho tất cả Category và Collection.",
-            );
+            await syncProductCounts();
             return;
         } else if (count > 0) {
             console.log(
@@ -2389,49 +2372,11 @@ const seedIfEmpty = async () => {
             );
         }
 
-        // Use idempotent upsert/findOrCreate per item so partial failures
-        // don't leave the DB in a half-seeded state. This will insert
-        // any missing products and skip existing ones.
-        const Category = require("../models/Category");
-        const Collection = require("../models/Collection");
-
-        const categories = [{ name: "Artisan Keycap" }, { name: "Deskmat" }];
-
-        for (const category of categories) {
-            await Category.findOrCreate({
-                where: { name: category.name },
-                defaults: category,
-            });
-        }
-
-        const [catArtisan] = await Category.findOrCreate({
-            where: { name: "Artisan Keycap" },
-        });
-
-        const [colOnePiece] = await Collection.findOrCreate({
-            where: { name: "One Piece" },
-            defaults: {
-                image: "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68da10e9662dec5f2da9828e",
-            },
-        });
-
-        const [colAOT] = await Collection.findOrCreate({
-            where: { name: "Attack on Titan" },
-            defaults: {
-                image: "https://market.dwarf-factory.com/ams-ecom/70783785-b0b6-4092-a90b-aa310e651f45/gallery-collections/68da10e9662dec5f2da9828e",
-            },
-        });
+        await seedCategoriesIfEmpty();
 
         let inserted = 0;
         for (const p of PRODUCT_DATA) {
-            // Map hardcoded IDs to actual DB IDs
-            p.categoryId = catArtisan.id;
-
-            if (p.collectionId === 1) {
-                p.collectionId = colOnePiece.id;
-            } else if (p.collectionId === 2) {
-                p.collectionId = colAOT.id;
-            }
+            p.slug = p.slug || slugify(p.title) + "-" + p.sku;
 
             const [prod, created] = await Product.findOrCreate({
                 where: { sku: p.sku },
@@ -2445,25 +2390,7 @@ const seedIfEmpty = async () => {
         );
 
         // Recalculate productCounts to sync any existing records
-        const categoriesList = await Category.findAll();
-        for (const cat of categoriesList) {
-            const count = await Product.count({
-                where: { categoryId: cat.id },
-            });
-            await cat.update({ productCount: count });
-        }
-
-        const collectionsList = await Collection.findAll();
-        for (const col of collectionsList) {
-            const count = await Product.count({
-                where: { collectionId: col.id },
-            });
-            await col.update({ productCount: count });
-        }
-
-        console.log(
-            "Đã cập nhật productCount cho tất cả Category và Collection.",
-        );
+        await syncProductCounts();
     } catch (err) {
         console.error(">>> Seed error:", err.message);
     }
