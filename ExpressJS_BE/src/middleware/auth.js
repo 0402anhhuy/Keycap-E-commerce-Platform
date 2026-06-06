@@ -26,6 +26,4 @@ const requireRole =
         next();
     };
 
-const vendorMiddleware = requireRole("admin");
-
-module.exports = { authMiddleware, requireRole, vendorMiddleware };
+module.exports = { authMiddleware, requireRole };
