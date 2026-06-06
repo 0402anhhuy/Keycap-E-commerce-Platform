@@ -31,7 +31,7 @@ const normalizeProduct = (product) => {
         discountPercent: p.discountPercent,
         size: p.size,
         height: p.height,
-        profile: p.profile,
+        form: p.form,
         stem: p.stem,
         material: p.material,
         color: p.color,
@@ -47,8 +47,14 @@ const normalizeProduct = (product) => {
         reviewCount: p.reviewCount != null ? Number(p.reviewCount) : 0,
         createdAt: p.createdAt,
         updatedAt: p.updatedAt,
-        category: p.category?.name || p.Category?.name || (typeof p.category === 'string' ? p.category : null),
-        collection: p.collection?.name || p.Collection?.name || (typeof p.collection === 'string' ? p.collection : null),
+        category:
+            p.category?.name ||
+            p.Category?.name ||
+            (typeof p.category === "string" ? p.category : null),
+        collection:
+            p.collection?.name ||
+            p.Collection?.name ||
+            (typeof p.collection === "string" ? p.collection : null),
     };
 };
 
@@ -214,7 +220,7 @@ const createProduct = async (data) => {
         discountPercent,
         size,
         height,
-        profile,
+        form,
         stem,
         material,
         color,
@@ -237,7 +243,7 @@ const createProduct = async (data) => {
         discountPercent: discountPercent || 0,
         size,
         height,
-        profile,
+        form,
         stem,
         material,
         color,
@@ -285,7 +291,7 @@ const setProductStatus = async (productId, status) => {
 const getSimilarProducts = async (identifier) => {
     const isNumeric = !isNaN(identifier) && !isNaN(parseFloat(identifier));
     const whereClause = isNumeric ? { id: identifier } : { slug: identifier };
-    
+
     const product = await Product.findOne({ where: whereClause });
     if (!product) return [];
 
@@ -296,7 +302,7 @@ const getSimilarProducts = async (identifier) => {
     if (product.color) {
         clauses.push({ color: product.color });
     }
-    
+
     // Fallback to category if no collection or color
     if (clauses.length === 0 && product.categoryId) {
         clauses.push({ categoryId: product.categoryId });
