@@ -67,7 +67,7 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
-const getShopOrders = async (req, res) => {
+const getManagerOrders = async (req, res) => {
     try {
         const result = await orderService.getManagerOrders(req.query);
         return res.json(result);
@@ -92,6 +92,6 @@ module.exports = {
     getOrderDetail,
     cancelOrder,
     updateOrderStatus,
-    getShopOrders,
+    getManagerOrders,
     checkCoupon,
 };
