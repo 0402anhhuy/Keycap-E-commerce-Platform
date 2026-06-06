@@ -13,16 +13,28 @@ const CouponUsage = sequelize.define(
         couponId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
+            references: {
+                model: "coupons",
+                key: "id",
+            },
         },
 
         userId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
+            references: {
+                model: "users",
+                key: "id",
+            },
         },
 
         orderId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
+            references: {
+                model: "orders",
+                key: "id",
+            },
         },
 
         discountAmount: {
