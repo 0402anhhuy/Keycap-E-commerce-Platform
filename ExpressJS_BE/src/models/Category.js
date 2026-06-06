@@ -15,6 +15,17 @@ const Category = sequelize.define(
             allowNull: false,
             unique: true,
             validate: {
+                notEmpty: true,
+                len: [2, 100],
+            },
+        },
+
+        slug: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            unique: true,
+            validate: {
+                notEmpty: true,
                 len: [2, 100],
             },
         },
@@ -23,6 +34,9 @@ const Category = sequelize.define(
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             defaultValue: 0,
+            validate: {
+                min: 0,
+            },
         },
     },
     {
@@ -31,8 +45,7 @@ const Category = sequelize.define(
 
         indexes: [
             {
-                unique: true,
-                fields: ["name"],
+                fields: ["slug"],
             },
         ],
     },
