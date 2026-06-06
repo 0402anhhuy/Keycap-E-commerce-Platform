@@ -32,6 +32,7 @@ const normalizeProduct = (product) => {
         size: p.size,
         height: p.height,
         profile: p.profile,
+        stem: p.stem,
         material: p.material,
         color: p.color,
         designer: p.designer,
@@ -46,8 +47,8 @@ const normalizeProduct = (product) => {
         reviewCount: p.reviewCount != null ? Number(p.reviewCount) : 0,
         createdAt: p.createdAt,
         updatedAt: p.updatedAt,
-        category: p.Category || p.category || null,
-        collection: p.Collection || p.collection || null,
+        category: p.category?.name || p.Category?.name || (typeof p.category === 'string' ? p.category : null),
+        collection: p.collection?.name || p.Collection?.name || (typeof p.collection === 'string' ? p.collection : null),
     };
 };
 
@@ -104,6 +105,10 @@ const getProducts = async ({
     const { count, rows } = await Product.findAndCountAll({
         where,
         order,
+        include: [
+            { model: Category, as: "category" },
+            { model: Collection, as: "collection" },
+        ],
         limit: Number(limit),
         offset,
     });
@@ -210,6 +215,7 @@ const createProduct = async (data) => {
         size,
         height,
         profile,
+        stem,
         material,
         color,
         designer,
@@ -232,6 +238,7 @@ const createProduct = async (data) => {
         size,
         height,
         profile,
+        stem,
         material,
         color,
         designer,
@@ -275,25 +282,33 @@ const setProductStatus = async (productId, status) => {
     return normalizeProduct(product);
 };
 
-const getSimilarProducts = async (id) => {
-    const product = await Product.findByPk(id);
+const getSimilarProducts = async (identifier) => {
+    const isNumeric = !isNaN(identifier) && !isNaN(parseFloat(identifier));
+    const whereClause = isNumeric ? { id: identifier } : { slug: identifier };
+    
+    const product = await Product.findOne({ where: whereClause });
     if (!product) return [];
 
     const clauses = [];
-    if (product.categoryId) {
-        clauses.push({ categoryId: product.categoryId });
-    }
     if (product.collectionId) {
         clauses.push({ collectionId: product.collectionId });
+    }
+    if (product.color) {
+        clauses.push({ color: product.color });
+    }
+    
+    // Fallback to category if no collection or color
+    if (clauses.length === 0 && product.categoryId) {
+        clauses.push({ categoryId: product.categoryId });
     }
 
     const similar = await Product.findAll({
         where: {
-            id: { [Op.ne]: id },
+            id: { [Op.ne]: product.id },
             status: "active",
             ...(clauses.length > 0 ? { [Op.or]: clauses } : {}),
         },
-        limit: 4,
+        limit: 12,
         order: [["sold", "DESC"]],
     });
 
