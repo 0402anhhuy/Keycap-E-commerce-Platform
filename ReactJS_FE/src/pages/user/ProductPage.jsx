@@ -59,6 +59,81 @@ const COLORS = [
     },
 ];
 
+const FORMS = [
+    {
+        label: "DOM",
+        value: "DOM",
+        icon: (
+            <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 43 42"
+                fill="none"
+                fit=""
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+            >
+                <mask id="path-1-inside-1_4357_1506" fill="white">
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M39.819 22.7869V37.0849H21.4998H3.18066V22.7869V21.8227H3.2056C3.707 12.1535 11.7059 4.46777 21.4998 4.46777C31.2938 4.46777 39.2926 12.1535 39.794 21.8227H39.819V22.7869Z"
+                    ></path>
+                </mask>
+                <path
+                    d="M39.819 37.0849V39.0849C40.9235 39.0849 41.819 38.1895 41.819 37.0849H39.819ZM3.18066 37.0849H1.18066C1.18066 38.1895 2.07609 39.0849 3.18066 39.0849L3.18066 37.0849ZM3.18066 21.8227V19.8227C2.07609 19.8227 1.18066 20.7181 1.18066 21.8227H3.18066ZM3.2056 21.8227V23.8227C4.26992 23.8227 5.1478 22.9892 5.20292 21.9263L3.2056 21.8227ZM39.794 21.8227L37.7967 21.9263C37.8518 22.9892 38.7297 23.8227 39.794 23.8227V21.8227ZM39.819 21.8227H41.819C41.819 20.7181 40.9235 19.8227 39.819 19.8227V21.8227ZM37.819 22.7869V37.0849H41.819V22.7869H37.819ZM39.819 35.0849H21.4998V39.0849H39.819V35.0849ZM21.4998 35.0849H3.18066V39.0849H21.4998V35.0849ZM5.18066 37.0849V22.7869H1.18066V37.0849H5.18066ZM5.18066 22.7869V21.8227H1.18066V22.7869H5.18066ZM3.18066 23.8227H3.2056V19.8227H3.18066V23.8227ZM5.20292 21.9263C5.64949 13.3144 12.7757 6.46777 21.4998 6.46777V2.46777C10.636 2.46777 1.76451 10.9926 1.20829 21.7191L5.20292 21.9263ZM21.4998 6.46777C30.2239 6.46777 37.3501 13.3144 37.7967 21.9263L41.7913 21.7191C41.2351 10.9926 32.3636 2.46777 21.4998 2.46777V6.46777ZM39.794 23.8227H39.819V19.8227H39.794V23.8227ZM37.819 21.8227V22.7869H41.819V21.8227H37.819Z"
+                    fill="var(--theme-accent)"
+                    mask="url('/product?customparam-specs=cherry#path-1-inside-1_4357_1506')"
+                ></path>
+            </svg>
+        ),
+    },
+    {
+        label: "CHERRY",
+        value: "CHERRY",
+        icon: (
+            <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 42 22"
+                fill="none"
+                fit=""
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+            >
+                <path
+                    d="M3.07434 1.61719L1.28711 20.83H40.6063L32.5637 1.61719H3.07434Z"
+                    stroke="var(--theme-accent)"
+                    stroke-width="3"
+                    stroke-linejoin="round"
+                ></path>
+            </svg>
+        ),
+    },
+    {
+        label: "SA R1",
+        value: "SAR1",
+        icon: (
+            <svg
+                width="95%"
+                height="95%"
+                viewBox="0 0 41 35"
+                fill="none"
+                fit=""
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+            >
+                <path
+                    d="M7.09562 1.36133C2.44881 8.86771 1.28711 23.9996 1.28711 33.0847H39.7126C41.0531 23.7018 35.6914 9.85069 34.7977 7.16984C24.0743 8.95707 9.32966 2.25495 7.09562 1.36133Z"
+                    stroke="var(--theme-accent)"
+                    stroke-width="3"
+                    stroke-linejoin="round"
+                ></path>
+            </svg>
+        ),
+    },
+];
+
 const ProductPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -88,8 +163,12 @@ const ProductPage = () => {
     const [isPriceRangeOpen, setIsPriceRangeOpen] = useState(true);
     const [isColorOpen, setIsColorOpen] = useState(true);
 
-    // Color state
+    // Color, Size, and Form state
     const [selectedColor, setSelectedColor] = useState([]);
+    const [selectedSize, setSelectedSize] = useState([]);
+    const [isSizeOpen, setIsSizeOpen] = useState(true);
+    const [selectedForm, setSelectedForm] = useState([]);
+    const [isFormOpen, setIsFormOpen] = useState(true);
 
     const [appliedFilters, setAppliedFilters] = useState({
         category: [],
@@ -98,6 +177,8 @@ const ProductPage = () => {
         customMin: "",
         customMax: "",
         color: [],
+        size: [],
+        form: [],
     });
 
     const toggleFilterItem = (setState, value) => {
@@ -125,14 +206,15 @@ const ProductPage = () => {
             }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener("scroll", handleScroll, { passive: true });
         handleScroll(); // Check on mount
-        
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     useEffect(() => {
         setCurrentPage(1);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, [
         search,
         appliedFilters,
@@ -213,6 +295,18 @@ const ProductPage = () => {
         return [...new Set(products.map((p) => p.category).filter(Boolean))];
     }, [products]);
 
+    const sizes = useMemo(() => {
+        return [...new Set(products.map((p) => p.size).filter(Boolean))].sort(
+            (a, b) => {
+                // Sort standard sizes properly (e.g. 1U, 1.25U, 1.5U, 2U, 6.25U)
+                const numA = parseFloat(a.replace("U", ""));
+                const numB = parseFloat(b.replace("U", ""));
+                if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                return a.localeCompare(b);
+            },
+        );
+    }, [products]);
+
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
@@ -231,6 +325,8 @@ const ProductPage = () => {
         setOnlyDiscount(false);
         setSortBy("newest");
         setSelectedColor([]);
+        setSelectedSize([]);
+        setSelectedForm([]);
         setAppliedFilters({
             category: [],
             collection: [],
@@ -238,6 +334,8 @@ const ProductPage = () => {
             customMin: "",
             customMax: "",
             color: [],
+            size: [],
+            form: [],
         });
     };
 
@@ -276,6 +374,14 @@ const ProductPage = () => {
             list = list.filter((p) =>
                 appliedFilters.color.includes(p.color?.toLowerCase()),
             );
+        }
+
+        if (appliedFilters.size?.length > 0) {
+            list = list.filter((p) => appliedFilters.size.includes(p.size));
+        }
+
+        if (appliedFilters.form?.length > 0) {
+            list = list.filter((p) => appliedFilters.form.includes(p.form));
         }
 
         if (appliedFilters.customMin || appliedFilters.customMax) {
@@ -593,6 +699,94 @@ const ProductPage = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Size */}
+                    <div
+                        className={`transition-all duration-300 ${isSizeOpen ? "mb-8" : "mb-2"}`}
+                    >
+                        <div
+                            className={`flex items-center justify-between cursor-pointer ${isSizeOpen ? "mb-4" : "mb-0"}`}
+                            onClick={() => setIsSizeOpen(!isSizeOpen)}
+                        >
+                            <h3 className="text-2xl font-anton uppercase tracking-widest m-0 text-black">
+                                Size
+                            </h3>
+                            <svg
+                                className={`w-4 h-4 text-black transform transition-transform ${isSizeOpen ? "" : "rotate-180"}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </div>
+                        <div
+                            className={`grid grid-cols-2 gap-2 p-1 pt-2 overflow-hidden transition-all duration-300 ${isSizeOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
+                        >
+                            {sizes.map((sz) => (
+                                <button
+                                    key={sz}
+                                    onClick={() =>
+                                        toggleFilterItem(setSelectedSize, sz)
+                                    }
+                                    className={`rounded-md px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedSize.includes(sz) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center`}
+                                >
+                                    {sz}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Form */}
+                    <div
+                        className={`transition-all duration-300 ${isFormOpen ? "mb-8" : "mb-2"}`}
+                    >
+                        <div
+                            className={`flex items-center justify-between cursor-pointer ${isFormOpen ? "mb-4" : "mb-0"}`}
+                            onClick={() => setIsFormOpen(!isFormOpen)}
+                        >
+                            <h3 className="text-2xl font-anton uppercase tracking-widest m-0 text-black">
+                                Form
+                            </h3>
+                            <svg
+                                className={`w-4 h-4 text-black transform transition-transform ${isFormOpen ? "" : "rotate-180"}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </div>
+                        <div
+                            className={`grid grid-cols-3 gap-3 p-1 pt-2 overflow-hidden transition-all duration-300 ${isFormOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
+                        >
+                            {FORMS.map((form) => (
+                                <button
+                                    key={form.value}
+                                    onClick={() =>
+                                        toggleFilterItem(
+                                            setSelectedForm,
+                                            form.value,
+                                        )
+                                    }
+                                    className={`rounded-md px-2 py-3 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedForm.includes(form.value) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex flex-col items-center justify-center text-center gap-2`}
+                                >
+                                    {form.icon && (
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                            {form.icon}
+                                        </div>
+                                    )}
+                                    <span>{form.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="p-3 bg-white flex justify-end shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.1)]">
@@ -605,8 +799,11 @@ const ProductPage = () => {
                                 customMin: customMin,
                                 customMax: customMax,
                                 color: selectedColor,
+                                size: selectedSize,
+                                form: selectedForm,
                             });
                             setSidebarOpen(false);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
                         className="w-1/3 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] bg-cover bg-center text-white px-8 py-3 font-oswald font-bold text-xl uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
                     >
@@ -668,8 +865,16 @@ const ProductPage = () => {
 
                 {/* Toolbar */}
                 <div ref={toolbarRef} className="w-full relative z-[60]">
-                    <div className={`flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full px-4 md:px-8 py-3 bg-white border-b-2 border-black shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-[60]" : "mb-10 z-[60]"}`}>
-                        <div className={isSticky ? "max-w-6xl w-full mx-auto flex flex-col md:flex-row justify-between gap-4" : "w-full flex flex-col md:flex-row justify-between gap-4"}>
+                    <div
+                        className={`flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full px-4 md:px-8 py-3 bg-white border-b-2 border-black shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-[60]" : "mb-10 z-[60]"}`}
+                    >
+                        <div
+                            className={
+                                isSticky
+                                    ? "max-w-6xl w-full mx-auto flex flex-col md:flex-row justify-between gap-4"
+                                    : "w-full flex flex-col md:flex-row justify-between gap-4"
+                            }
+                        >
                             <button
                                 onClick={() => setSidebarOpen(!sidebarOpen)}
                                 className="border-2 border-black bg-white px-5 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all"
@@ -698,7 +903,9 @@ const ProductPage = () => {
                                     type="text"
                                     placeholder="Pokemon, Gummy Pet..."
                                     value={searchInput}
-                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchInput(e.target.value)
+                                    }
                                     className="flex-1 px-4 py-2 text-sm bg-transparent focus:outline-none text-black font-semibold placeholder-black/40"
                                 />
                                 <button
@@ -722,7 +929,9 @@ const ProductPage = () => {
                             </form>
                         </div>
                     </div>
-                    {isSticky && <div className="h-[104px] md:h-[52px] mb-10"></div>}
+                    {isSticky && (
+                        <div className="h-[104px] md:h-[52px] mb-10"></div>
+                    )}
                 </div>
 
                 <div className="flex gap-8 items-start">
