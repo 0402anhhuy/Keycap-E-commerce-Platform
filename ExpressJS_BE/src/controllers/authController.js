@@ -2,12 +2,12 @@ const authService = require("../services/authService");
 
 const register = async (req, res) => {
     try {
-        const { name, email, password, address } = req.body;
-        if (!name || !email || !password)
+        const { firstName, lastName, dob, email, password, address } = req.body;
+        if (!firstName || !lastName || !email || !password)
             return res
                 .status(400)
-                .json({ message: "Vui lòng cung cấp tên, email và mật khẩu." });
-        await authService.register({ name, email, password, address });
+                .json({ message: "Vui lòng cung cấp đầy đủ tên, email và mật khẩu." });
+        await authService.register({ firstName, lastName, dob, email, password, address });
         return res.json({
             message: "OTP đã được gửi tới email. Vui lòng kiểm tra hộp thư.",
         });
