@@ -5,7 +5,6 @@ const Product = require('../models/Product');
 const CartItem = require('../models/CartItem');
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
-// Removed WalletTransaction and Shop since we don't handle shop balance anymore
 const { Op } = require('sequelize');
 
 // ── Auto-confirm sau 30 phút nếu đơn vẫn pending ──────────────────────────
