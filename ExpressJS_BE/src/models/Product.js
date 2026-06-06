@@ -86,7 +86,7 @@ const Product = sequelize.define(
             comment: "Height in millimeters",
         },
 
-        profile: {
+        form: {
             type: DataTypes.STRING(50),
             allowNull: false,
         },
