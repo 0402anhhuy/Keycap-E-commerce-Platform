@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const { authMiddleware, vendorMiddleware } = require('../middleware/auth');
+const { authMiddleware, requireRole } = require('../middleware/auth');
 const {
     listUserCoupons,
     listShopCoupons,
@@ -11,9 +11,9 @@ const {
 } = require('../controllers/couponController');
 
 router.get('/', authMiddleware, listUserCoupons);
-router.get('/shop', authMiddleware, vendorMiddleware, listShopCoupons);
-router.post('/', authMiddleware, vendorMiddleware, createCoupon);
-router.put('/:id', authMiddleware, vendorMiddleware, updateCoupon);
-router.delete('/:id', authMiddleware, vendorMiddleware, deleteCoupon);
+router.get('/shop', authMiddleware, requireRole("admin"), listShopCoupons);
+router.post('/', authMiddleware, requireRole("admin"), createCoupon);
+router.put('/:id', authMiddleware, requireRole("admin"), updateCoupon);
+router.delete('/:id', authMiddleware, requireRole("admin"), deleteCoupon);
 
 module.exports = router;
