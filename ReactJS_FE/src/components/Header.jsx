@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
@@ -28,7 +28,7 @@ const Header = ({ isHidden = false }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
@@ -48,7 +48,9 @@ const Header = ({ isHidden = false }) => {
         ? "bg-transparent border-transparent"
         : `bg-white border-b-2 border-black ${isScrolled ? "shadow-[0_4px_0_rgba(0,0,0,0.1)]" : ""}`;
 
-    const logoBg = isAtTop ? "bg-white text-black" : "bg-black text-white";
+    const logoBg = isAtTop
+        ? "bg-white text-black"
+        : "bg-[var(--theme-accent)] text-white";
     const logoText = isAtTop ? "!text-white" : "text-black";
     const iconColor = isAtTop ? "!text-white" : "text-black";
     const inputBorder = isAtTop
