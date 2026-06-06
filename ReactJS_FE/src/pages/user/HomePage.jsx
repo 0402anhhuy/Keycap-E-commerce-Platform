@@ -154,7 +154,7 @@ const HorizontalProductSlider = ({ title, products, navigate }) => {
                         <div
                             key={idx}
                             onClick={() => scrollToPage(idx)}
-                            className={`h-0.5 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-black/20 hover:bg-black/40"}`}
+                            className={`h-1 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-black/20 hover:bg-black/40"}`}
                         ></div>
                     ))}
                 </div>
@@ -377,7 +377,7 @@ const CollabSlider = ({ collections, navigate }) => {
                         <div
                             key={idx}
                             onClick={() => scrollToPage(idx)}
-                            className={`h-1 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-gray-300 hover:bg-gray-400"}`}
+                            className={`h-1 w-8 cursor-pointer transition-colors ${activeDot === idx ? "bg-[var(--theme-accent)]" : "bg-black/20 hover:bg-black/40"}`}
                         ></div>
                     ))}
                 </div>
@@ -493,7 +493,7 @@ const HomePage = () => {
 
                         <button
                             onClick={() => navigate("/products")}
-                            className="w-full bg-[var(--theme-accent)] text-white font-oswald font-bold py-4 uppercase tracking-widest flex justify-between items-center px-5 hover:bg-black transition-colors text-xl"
+                            className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-4 uppercase flex justify-between items-center px-5 text-xl cursor-pointer"
                             style={{ letterSpacing: "0.2em" }}
                         >
                             SHOP NOW
@@ -568,7 +568,7 @@ const HomePage = () => {
                     <div className="flex flex-col items-center mt-8">
                         <button
                             onClick={() => navigate("/products")}
-                            className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2"
+                            className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2 cursor-pointer"
                         >
                             EXPLORE NOW
                         </button>
