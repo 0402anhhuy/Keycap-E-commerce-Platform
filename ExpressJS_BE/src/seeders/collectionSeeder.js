@@ -58,12 +58,23 @@ const COLLECTION_DATA = [
     },
 ];
 
+const slugify = (text) =>
+    text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "")
+        .replace(/-+/g, "-");
+
 const seedCollectionsIfEmpty = async () => {
     try {
         console.log(`Chuẩn bị seed ${COLLECTION_DATA.length} collections...`);
         let inserted = 0;
 
         for (const col of COLLECTION_DATA) {
+            col.slug = slugify(col.name);
             const [collection, created] = await Collection.findOrCreate({
                 where: { name: col.name },
                 defaults: col,
@@ -73,22 +84,18 @@ const seedCollectionsIfEmpty = async () => {
                 inserted += 1;
             } else if (
                 collection.logo !== col.logo ||
-                collection.background !== col.background
+                collection.background !== col.background ||
+                collection.slug !== col.slug
             ) {
                 await collection.update({
                     logo: col.logo,
                     background: col.background,
+                    slug: col.slug,
                 });
             }
         }
 
-        const allCollections = await Collection.findAll();
-        for (const col of allCollections) {
-            const count = await Product.count({
-                where: { collectionId: col.id },
-            });
-            await col.update({ productCount: count });
-        }
+        await syncProductCounts();
 
         console.log(
             `Seed Collection hoàn tất. Thêm mới ${inserted} / ${COLLECTION_DATA.length} collection.`,
@@ -102,4 +109,23 @@ const seedCollectionsIfEmpty = async () => {
     }
 };
 
-module.exports = { seedCollectionsIfEmpty, COLLECTION_DATA };
+const syncProductCounts = async () => {
+    const Category = require("../models/Category");
+    const categoriesList = await Category.findAll();
+    for (const cat of categoriesList) {
+        const count = await Product.count({
+            where: { categoryId: cat.id },
+        });
+        await cat.update({ productCount: count });
+    }
+
+    const collectionsList = await Collection.findAll();
+    for (const col of collectionsList) {
+        const count = await Product.count({
+            where: { collectionId: col.id },
+        });
+        await col.update({ productCount: count });
+    }
+};
+
+module.exports = { seedCollectionsIfEmpty, COLLECTION_DATA, slugify, syncProductCounts };
