@@ -19,6 +19,10 @@ const Order = sequelize.define(
         userId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
+            references: {
+                model: "users",
+                key: "id",
+            },
         },
 
         subtotal: {
@@ -107,7 +111,6 @@ const Order = sequelize.define(
 
         indexes: [
             {
-                unique: true,
                 fields: ["orderCode"],
             },
             {
