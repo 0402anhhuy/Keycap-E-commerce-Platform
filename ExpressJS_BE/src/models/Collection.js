@@ -13,9 +13,21 @@ const Collection = sequelize.define(
         name: {
             type: DataTypes.STRING(50),
             allowNull: false,
+            unique: true,
         },
 
-        image: {
+        slug: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            unique: true,
+        },
+
+        logo: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+
+        background: {
             type: DataTypes.STRING(255),
             allowNull: false,
         },
@@ -29,12 +41,6 @@ const Collection = sequelize.define(
     {
         tableName: "collections",
         timestamps: true,
-        indexes: [
-            {
-                unique: true,
-                fields: ["name"],
-            },
-        ],
     },
 );
 
