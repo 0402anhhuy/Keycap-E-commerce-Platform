@@ -46,7 +46,6 @@ const ProductDetail = () => {
     const [success, setSuccess] = useState(false);
 
     // Engagement & History states
-    const [recentlyViewed, setRecentlyViewed] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
 
     // Reviews states
@@ -239,45 +238,6 @@ const ProductDetail = () => {
         }
     }, [product]);
 
-    // Track recently viewed history
-    useEffect(() => {
-        if (!product) return;
-
-        let items = [];
-        try {
-            const raw = localStorage.getItem("recentlyViewed");
-            items = raw ? JSON.parse(raw) : [];
-        } catch (e) {
-            items = [];
-        }
-
-        // Remove duplicate of current product if it exists
-        items = items.filter((item) => String(item.id) !== String(product.id));
-
-        // Add current product details
-        const newItem = {
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            originalPrice: product.originalPrice,
-            category: product.category,
-            colors: product.colors,
-            image: images[0] || product.image,
-            rating: product.rating,
-        };
-        items.unshift(newItem);
-
-        // Keep only top 10 items
-        items = items.slice(0, 10);
-
-        localStorage.setItem("recentlyViewed", JSON.stringify(items));
-
-        // Filter out current product to display in list below
-        setRecentlyViewed(
-            items.filter((item) => String(item.id) !== String(product.id)),
-        );
-    }, [product, images]);
-
     const calculateDiscountedPrice = () => {
         const price =
             product.price - (product.price * product.discountPercent) / 100;
@@ -401,15 +361,6 @@ const ProductDetail = () => {
         }
     };
 
-    const handleBuyNow = async () => {
-        try {
-            await addToCart(product.id, quantity);
-            navigate("/checkout");
-        } catch (err) {
-            alert(err.message || "Lỗi mua ngay");
-        }
-    };
-
     if (loading) return <div className="p-4">Loading...</div>;
     if (error) return <div className="p-4 text-red-500">{error}</div>;
     if (!product) return <div className="p-4">Not found</div>;
@@ -423,7 +374,7 @@ const ProductDetail = () => {
                 <Breadcrumb
                     items={[
                         { label: "Homepage", to: "/" },
-                        { label: "Product", to: "/products" },
+                        { label: "Products", to: "/products" },
                         { label: product.title },
                     ]}
                 />
@@ -1015,7 +966,7 @@ const ProductDetail = () => {
                                             <button
                                                 onClick={handleAddToCart}
                                                 disabled={adding}
-                                                className="w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] cursor-pointer"
+                                                className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] cursor-pointer"
                                             >
                                                 {adding ? (
                                                     <svg
