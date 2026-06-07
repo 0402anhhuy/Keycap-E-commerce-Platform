@@ -141,7 +141,9 @@ const ProductPage = () => {
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.toString()) return fallback;
         try {
-            const savedStr = sessionStorage.getItem("keycap_shop_product_filters");
+            const savedStr = sessionStorage.getItem(
+                "keycap_shop_product_filters",
+            );
             if (savedStr) {
                 const saved = JSON.parse(savedStr);
                 return saved[key] !== undefined ? saved[key] : fallback;
@@ -151,19 +153,39 @@ const ProductPage = () => {
     };
 
     const [search, setSearch] = useState(() => getInitialState("search", ""));
-    const [searchInput, setSearchInput] = useState(() => getInitialState("searchInput", ""));
-    const [selectedCategory, setSelectedCategory] = useState(() => getInitialState("selectedCategory", []));
-    const [selectedCollection, setSelectedCollection] = useState(() => getInitialState("selectedCollection", []));
-    const [priceRange, setPriceRange] = useState(() => getInitialState("priceRange", []));
-    const [customMin, setCustomMin] = useState(() => getInitialState("customMin", ""));
-    const [customMax, setCustomMax] = useState(() => getInitialState("customMax", ""));
-    const [stockFilter, setStockFilter] = useState(() => getInitialState("stockFilter", "all"));
-    const [onlyDiscount, setOnlyDiscount] = useState(() => getInitialState("onlyDiscount", false));
-    const [sortBy, setSortBy] = useState(() => getInitialState("sortBy", "newest"));
+    const [searchInput, setSearchInput] = useState(() =>
+        getInitialState("searchInput", ""),
+    );
+    const [selectedCategory, setSelectedCategory] = useState(() =>
+        getInitialState("selectedCategory", []),
+    );
+    const [selectedCollection, setSelectedCollection] = useState(() =>
+        getInitialState("selectedCollection", []),
+    );
+    const [priceRange, setPriceRange] = useState(() =>
+        getInitialState("priceRange", []),
+    );
+    const [customMin, setCustomMin] = useState(() =>
+        getInitialState("customMin", ""),
+    );
+    const [customMax, setCustomMax] = useState(() =>
+        getInitialState("customMax", ""),
+    );
+    const [stockFilter, setStockFilter] = useState(() =>
+        getInitialState("stockFilter", "all"),
+    );
+    const [onlyDiscount, setOnlyDiscount] = useState(() =>
+        getInitialState("onlyDiscount", false),
+    );
+    const [sortBy, setSortBy] = useState(() =>
+        getInitialState("sortBy", "newest"),
+    );
 
     // UI state
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(() => getInitialState("currentPage", 1));
+    const [currentPage, setCurrentPage] = useState(() =>
+        getInitialState("currentPage", 1),
+    );
     const [filterShopId, setFilterShopId] = useState(null);
 
     // Filter collapse states
@@ -173,22 +195,30 @@ const ProductPage = () => {
     const [isColorOpen, setIsColorOpen] = useState(true);
 
     // Color, Size, and Form state
-    const [selectedColor, setSelectedColor] = useState(() => getInitialState("selectedColor", []));
-    const [selectedSize, setSelectedSize] = useState(() => getInitialState("selectedSize", []));
+    const [selectedColor, setSelectedColor] = useState(() =>
+        getInitialState("selectedColor", []),
+    );
+    const [selectedSize, setSelectedSize] = useState(() =>
+        getInitialState("selectedSize", []),
+    );
     const [isSizeOpen, setIsSizeOpen] = useState(true);
-    const [selectedForm, setSelectedForm] = useState(() => getInitialState("selectedForm", []));
+    const [selectedForm, setSelectedForm] = useState(() =>
+        getInitialState("selectedForm", []),
+    );
     const [isFormOpen, setIsFormOpen] = useState(true);
 
-    const [appliedFilters, setAppliedFilters] = useState(() => getInitialState("appliedFilters", {
-        category: [],
-        collection: [],
-        priceRange: [],
-        customMin: "",
-        customMax: "",
-        color: [],
-        size: [],
-        form: [],
-    }));
+    const [appliedFilters, setAppliedFilters] = useState(() =>
+        getInitialState("appliedFilters", {
+            category: [],
+            collection: [],
+            priceRange: [],
+            customMin: "",
+            customMax: "",
+            color: [],
+            size: [],
+            form: [],
+        }),
+    );
 
     const toggleFilterItem = (setState, value) => {
         setState((prev) =>
@@ -257,11 +287,26 @@ const ProductPage = () => {
             selectedForm,
             appliedFilters,
         };
-        sessionStorage.setItem("keycap_shop_product_filters", JSON.stringify(filterState));
+        sessionStorage.setItem(
+            "keycap_shop_product_filters",
+            JSON.stringify(filterState),
+        );
     }, [
-        search, searchInput, selectedCategory, selectedCollection, priceRange,
-        customMin, customMax, stockFilter, onlyDiscount, sortBy,
-        currentPage, selectedColor, selectedSize, selectedForm, appliedFilters
+        search,
+        searchInput,
+        selectedCategory,
+        selectedCollection,
+        priceRange,
+        customMin,
+        customMax,
+        stockFilter,
+        onlyDiscount,
+        sortBy,
+        currentPage,
+        selectedColor,
+        selectedSize,
+        selectedForm,
+        appliedFilters,
     ]);
 
     useEffect(() => {
@@ -270,7 +315,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
-        
+
         // If there are no query params, we don't need to parse anything, sessionStorage handled it.
         if (!queryParams.toString()) return;
 
@@ -823,7 +868,11 @@ const ProductPage = () => {
                                 >
                                     {form.icon && (
                                         <div className="w-8 h-8 flex items-center justify-center ">
-                                            {form.icon(selectedForm.includes(form.value))}
+                                            {form.icon(
+                                                selectedForm.includes(
+                                                    form.value,
+                                                ),
+                                            )}
                                         </div>
                                     )}
                                     <span>{form.label}</span>
