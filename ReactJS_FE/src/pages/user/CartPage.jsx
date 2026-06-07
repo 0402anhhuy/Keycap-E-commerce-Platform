@@ -45,26 +45,11 @@ const CartPage = () => {
     const tax = Math.round(subtotal * 0.08);
     const finalTotal = subtotal + tax;
 
-    if (loading)
-        return (
-            <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative">
-                <Header />
-                <div className="flex-1 flex flex-col max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
-                    <Breadcrumb />
-                    <div className="flex-1 flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div>
-                    </div>
-                </div>
-            </div>
-        );
-
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative text-black">
+        <div className="min-h-screen bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] font-oswald flex flex-col relative text-black">
             <Header />
             <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-12 relative z-10">
-                <div>
-                    <Breadcrumb />
-                </div>
+                <Breadcrumb />
 
                 <div className="mt-8 mb-8">
                     <h1 className="text-5xl font-anton uppercase tracking-widest text-black">
@@ -161,12 +146,6 @@ const CartPage = () => {
                                                                 ?.title ||
                                                                 "KEYCAP"}
                                                         </p>
-                                                        {item.color && (
-                                                            <p className="text-[10px] font-bold uppercase tracking-widest text-black/50 mt-1">
-                                                                MÀU:{" "}
-                                                                {item.color}
-                                                            </p>
-                                                        )}
                                                         <button
                                                             onClick={() =>
                                                                 handleRemove(
