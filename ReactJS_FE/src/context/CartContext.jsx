@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useCallback,
+} from "react";
 
 const CartContext = createContext(null);
 
@@ -15,18 +21,27 @@ export const CartProvider = ({ children }) => {
 
     const fetchCart = useCallback(async () => {
         const token = getToken();
-        if (!token) { setItems([]); setTotal(0); return; }
+        if (!token) {
+            setItems([]);
+            setTotal(0);
+            return;
+        }
         try {
             setLoading(true);
             const res = await fetch(`${API_URL}/api/carts`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) { setItems([]); setTotal(0); return; }
+            if (!res.ok) {
+                setItems([]);
+                setTotal(0);
+                return;
+            }
             const data = await res.json();
             setItems(data.items || []);
             setTotal(data.total || 0);
         } catch {
-            setItems([]); setTotal(0);
+            setItems([]);
+            setTotal(0);
         } finally {
             setLoading(false);
         }
@@ -39,20 +54,26 @@ export const CartProvider = ({ children }) => {
         const onStorage = (e) => {
             if (e.key === "accessToken") {
                 if (e.newValue) fetchCart();
-                else { setItems([]); setTotal(0); }
+                else {
+                    setItems([]);
+                    setTotal(0);
+                }
             }
         };
         window.addEventListener("storage", onStorage);
         return () => window.removeEventListener("storage", onStorage);
     }, [fetchCart]);
 
-    const addToCart = async (productId, quantity = 1, color = null) => {
+    const addToCart = async (productId, quantity = 1) => {
         const token = getToken();
         if (!token) throw new Error("Vui lòng đăng nhập.");
         const res = await fetch(`${API_URL}/api/carts`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ productId, quantity, color })
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ productId, quantity }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Lỗi thêm vào giỏ.");
@@ -64,8 +85,11 @@ export const CartProvider = ({ children }) => {
         const token = getToken();
         const res = await fetch(`${API_URL}/api/carts/${cartItemId}`, {
             method: "PATCH",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ quantity })
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ quantity }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Lỗi cập nhật giỏ.");
@@ -77,9 +101,12 @@ export const CartProvider = ({ children }) => {
         const token = getToken();
         const res = await fetch(`${API_URL}/api/carts/${cartItemId}`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) { const d = await res.json(); throw new Error(d.message || "Lỗi xóa sản phẩm."); }
+        if (!res.ok) {
+            const d = await res.json();
+            throw new Error(d.message || "Lỗi xóa sản phẩm.");
+        }
         await fetchCart();
     };
 
@@ -87,14 +114,30 @@ export const CartProvider = ({ children }) => {
         const token = getToken();
         const res = await fetch(`${API_URL}/api/carts`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) { const d = await res.json(); throw new Error(d.message || "Lỗi xóa giỏ."); }
-        setItems([]); setTotal(0);
+        if (!res.ok) {
+            const d = await res.json();
+            throw new Error(d.message || "Lỗi xóa giỏ.");
+        }
+        setItems([]);
+        setTotal(0);
     };
 
     return (
-        <CartContext.Provider value={{ items, total, itemCount, loading, fetchCart, addToCart, updateItem, removeItem, clearCart }}>
+        <CartContext.Provider
+            value={{
+                items,
+                total,
+                itemCount,
+                loading,
+                fetchCart,
+                addToCart,
+                updateItem,
+                removeItem,
+                clearCart,
+            }}
+        >
             {children}
         </CartContext.Provider>
     );
