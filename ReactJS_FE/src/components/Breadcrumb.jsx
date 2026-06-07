@@ -16,7 +16,7 @@ const Breadcrumb = ({ items, showBack = false, className = "" }) => {
 
     const auto = useMemo(() => {
         const segs = location.pathname.split("/").filter(Boolean);
-        const list = [{ label: "TRANG CHỦ", to: "/" }];
+        const list = [{ label: "Homepage", to: "/" }];
         segs.forEach((s, i) => {
             const to = "/" + segs.slice(0, i + 1).join("/");
             list.push({ label: humanize(s).toUpperCase(), to });
@@ -37,7 +37,7 @@ const Breadcrumb = ({ items, showBack = false, className = "" }) => {
                     <button
                         onClick={() => navigate(-1)}
                         className="flex items-center gap-1 hover:text-[var(--theme-accent)] transition-colors pr-2 border-r border-black/20"
-                        title="Quay lại"
+                        title="Back"
                     >
                         <svg
                             className="w-3 h-3"
