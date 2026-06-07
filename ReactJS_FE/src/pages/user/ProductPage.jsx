@@ -137,20 +137,33 @@ const ProductPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const [search, setSearch] = useState("");
-    const [searchInput, setSearchInput] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState([]);
-    const [selectedCollection, setSelectedCollection] = useState([]);
-    const [priceRange, setPriceRange] = useState([]);
-    const [customMin, setCustomMin] = useState("");
-    const [customMax, setCustomMax] = useState("");
-    const [stockFilter, setStockFilter] = useState("all");
-    const [onlyDiscount, setOnlyDiscount] = useState(false);
-    const [sortBy, setSortBy] = useState("newest");
+    const getInitialState = (key, fallback) => {
+        const queryParams = new URLSearchParams(location.search);
+        if (queryParams.toString()) return fallback;
+        try {
+            const savedStr = sessionStorage.getItem("keycap_shop_product_filters");
+            if (savedStr) {
+                const saved = JSON.parse(savedStr);
+                return saved[key] !== undefined ? saved[key] : fallback;
+            }
+        } catch (e) {}
+        return fallback;
+    };
+
+    const [search, setSearch] = useState(() => getInitialState("search", ""));
+    const [searchInput, setSearchInput] = useState(() => getInitialState("searchInput", ""));
+    const [selectedCategory, setSelectedCategory] = useState(() => getInitialState("selectedCategory", []));
+    const [selectedCollection, setSelectedCollection] = useState(() => getInitialState("selectedCollection", []));
+    const [priceRange, setPriceRange] = useState(() => getInitialState("priceRange", []));
+    const [customMin, setCustomMin] = useState(() => getInitialState("customMin", ""));
+    const [customMax, setCustomMax] = useState(() => getInitialState("customMax", ""));
+    const [stockFilter, setStockFilter] = useState(() => getInitialState("stockFilter", "all"));
+    const [onlyDiscount, setOnlyDiscount] = useState(() => getInitialState("onlyDiscount", false));
+    const [sortBy, setSortBy] = useState(() => getInitialState("sortBy", "newest"));
 
     // UI state
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(() => getInitialState("currentPage", 1));
     const [filterShopId, setFilterShopId] = useState(null);
 
     // Filter collapse states
@@ -160,13 +173,13 @@ const ProductPage = () => {
     const [isColorOpen, setIsColorOpen] = useState(true);
 
     // Color, Size, and Form state
-    const [selectedColor, setSelectedColor] = useState([]);
-    const [selectedSize, setSelectedSize] = useState([]);
+    const [selectedColor, setSelectedColor] = useState(() => getInitialState("selectedColor", []));
+    const [selectedSize, setSelectedSize] = useState(() => getInitialState("selectedSize", []));
     const [isSizeOpen, setIsSizeOpen] = useState(true);
-    const [selectedForm, setSelectedForm] = useState([]);
+    const [selectedForm, setSelectedForm] = useState(() => getInitialState("selectedForm", []));
     const [isFormOpen, setIsFormOpen] = useState(true);
 
-    const [appliedFilters, setAppliedFilters] = useState({
+    const [appliedFilters, setAppliedFilters] = useState(() => getInitialState("appliedFilters", {
         category: [],
         collection: [],
         priceRange: [],
@@ -175,7 +188,7 @@ const ProductPage = () => {
         color: [],
         size: [],
         form: [],
-    });
+    }));
 
     const toggleFilterItem = (setState, value) => {
         setState((prev) =>
@@ -208,7 +221,13 @@ const ProductPage = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const isFirstMount = useRef(true);
+
     useEffect(() => {
+        if (isFirstMount.current) {
+            isFirstMount.current = false;
+            return;
+        }
         setCurrentPage(1);
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [
@@ -221,11 +240,40 @@ const ProductPage = () => {
     ]);
 
     useEffect(() => {
+        const filterState = {
+            search,
+            searchInput,
+            selectedCategory,
+            selectedCollection,
+            priceRange,
+            customMin,
+            customMax,
+            stockFilter,
+            onlyDiscount,
+            sortBy,
+            currentPage,
+            selectedColor,
+            selectedSize,
+            selectedForm,
+            appliedFilters,
+        };
+        sessionStorage.setItem("keycap_shop_product_filters", JSON.stringify(filterState));
+    }, [
+        search, searchInput, selectedCategory, selectedCollection, priceRange,
+        customMin, customMax, stockFilter, onlyDiscount, sortBy,
+        currentPage, selectedColor, selectedSize, selectedForm, appliedFilters
+    ]);
+
+    useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [currentPage]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
+        
+        // If there are no query params, we don't need to parse anything, sessionStorage handled it.
+        if (!queryParams.toString()) return;
+
         const shopIdParam = queryParams.get("shopId    ");
         if (shopIdParam) {
             setFilterShopId(Number(shopIdParam));
