@@ -63,27 +63,25 @@ const FORMS = [
     {
         label: "DOM",
         value: "DOM",
-        icon: (
+        icon: (isSelected) => (
             <svg
                 width="100%"
                 height="100%"
                 viewBox="0 0 43 42"
                 fill="none"
-                fit=""
                 preserveAspectRatio="xMidYMid meet"
                 focusable="false"
             >
                 <mask id="path-1-inside-1_4357_1506" fill="white">
                     <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M39.819 22.7869V37.0849H21.4998H3.18066V22.7869V21.8227H3.2056C3.707 12.1535 11.7059 4.46777 21.4998 4.46777C31.2938 4.46777 39.2926 12.1535 39.794 21.8227H39.819V22.7869Z"
                     ></path>
                 </mask>
                 <path
                     d="M39.819 37.0849V39.0849C40.9235 39.0849 41.819 38.1895 41.819 37.0849H39.819ZM3.18066 37.0849H1.18066C1.18066 38.1895 2.07609 39.0849 3.18066 39.0849L3.18066 37.0849ZM3.18066 21.8227V19.8227C2.07609 19.8227 1.18066 20.7181 1.18066 21.8227H3.18066ZM3.2056 21.8227V23.8227C4.26992 23.8227 5.1478 22.9892 5.20292 21.9263L3.2056 21.8227ZM39.794 21.8227L37.7967 21.9263C37.8518 22.9892 38.7297 23.8227 39.794 23.8227V21.8227ZM39.819 21.8227H41.819C41.819 20.7181 40.9235 19.8227 39.819 19.8227V21.8227ZM37.819 22.7869V37.0849H41.819V22.7869H37.819ZM39.819 35.0849H21.4998V39.0849H39.819V35.0849ZM21.4998 35.0849H3.18066V39.0849H21.4998V35.0849ZM5.18066 37.0849V22.7869H1.18066V37.0849H5.18066ZM5.18066 22.7869V21.8227H1.18066V22.7869H5.18066ZM3.18066 23.8227H3.2056V19.8227H3.18066V23.8227ZM5.20292 21.9263C5.64949 13.3144 12.7757 6.46777 21.4998 6.46777V2.46777C10.636 2.46777 1.76451 10.9926 1.20829 21.7191L5.20292 21.9263ZM21.4998 6.46777C30.2239 6.46777 37.3501 13.3144 37.7967 21.9263L41.7913 21.7191C41.2351 10.9926 32.3636 2.46777 21.4998 2.46777V6.46777ZM39.794 23.8227H39.819V19.8227H39.794V23.8227ZM37.819 21.8227V22.7869H41.819V21.8227H37.819Z"
-                    fill="var(--theme-accent)"
-                    mask="url('/product?customparam-specs=cherry#path-1-inside-1_4357_1506')"
+                    fill={isSelected ? "white" : "var(--theme-accent)"}
                 ></path>
             </svg>
         ),
@@ -91,21 +89,20 @@ const FORMS = [
     {
         label: "CHERRY",
         value: "CHERRY",
-        icon: (
+        icon: (isSelected) => (
             <svg
                 width="100%"
                 height="100%"
                 viewBox="0 0 42 22"
                 fill="none"
-                fit=""
                 preserveAspectRatio="xMidYMid meet"
                 focusable="false"
             >
                 <path
                     d="M3.07434 1.61719L1.28711 20.83H40.6063L32.5637 1.61719H3.07434Z"
-                    stroke="var(--theme-accent)"
-                    stroke-width="3"
-                    stroke-linejoin="round"
+                    stroke={isSelected ? "white" : "var(--theme-accent)"}
+                    strokeWidth="3"
+                    strokeLinejoin="round"
                 ></path>
             </svg>
         ),
@@ -113,21 +110,20 @@ const FORMS = [
     {
         label: "SA R1",
         value: "SAR1",
-        icon: (
+        icon: (isSelected) => (
             <svg
                 width="95%"
                 height="95%"
                 viewBox="0 0 41 35"
                 fill="none"
-                fit=""
                 preserveAspectRatio="xMidYMid meet"
                 focusable="false"
             >
                 <path
                     d="M7.09562 1.36133C2.44881 8.86771 1.28711 23.9996 1.28711 33.0847H39.7126C41.0531 23.7018 35.6914 9.85069 34.7977 7.16984C24.0743 8.95707 9.32966 2.25495 7.09562 1.36133Z"
-                    stroke="var(--theme-accent)"
-                    stroke-width="3"
-                    stroke-linejoin="round"
+                    stroke={isSelected ? "white" : "var(--theme-accent)"}
+                    strokeWidth="3"
+                    strokeLinejoin="round"
                 ></path>
             </svg>
         ),
@@ -557,7 +553,7 @@ const ProductPage = () => {
                                             cat,
                                         )
                                     }
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory.includes(cat) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory.includes(cat) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
                                 >
                                     {cat}
                                 </button>
@@ -602,7 +598,7 @@ const ProductPage = () => {
                                             col,
                                         )
                                     }
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCollection.includes(col) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCollection.includes(col) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
                                 >
                                     {col}
                                 </button>
@@ -649,7 +645,7 @@ const ProductPage = () => {
                                         setCustomMin("");
                                         setCustomMax("");
                                     }}
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${priceRange.includes(pr.value) && !customMin && !customMax ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex items-center justify-center text-center min-h-[60px]`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${priceRange.includes(pr.value) && !customMin && !customMax ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex items-center justify-center text-center min-h-[60px]`}
                                 >
                                     {pr.label}
                                 </button>
@@ -732,7 +728,7 @@ const ProductPage = () => {
                                     onClick={() =>
                                         toggleFilterItem(setSelectedSize, sz)
                                     }
-                                    className={`rounded-md px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedSize.includes(sz) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center`}
+                                    className={`rounded-md px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedSize.includes(sz) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center`}
                                 >
                                     {sz}
                                 </button>
@@ -775,11 +771,11 @@ const ProductPage = () => {
                                             form.value,
                                         )
                                     }
-                                    className={`rounded-md px-2 py-3 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedForm.includes(form.value) ? "bg-black text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex flex-col items-center justify-center text-center gap-2`}
+                                    className={`rounded-md px-2 py-3 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedForm.includes(form.value) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex flex-col items-center justify-center text-center gap-2`}
                                 >
                                     {form.icon && (
-                                        <div className="w-8 h-8 flex items-center justify-center">
-                                            {form.icon}
+                                        <div className="w-8 h-8 flex items-center justify-center ">
+                                            {form.icon(selectedForm.includes(form.value))}
                                         </div>
                                     )}
                                     <span>{form.label}</span>
