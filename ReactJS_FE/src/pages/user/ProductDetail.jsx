@@ -278,6 +278,12 @@ const ProductDetail = () => {
         );
     }, [product, images]);
 
+    const calculateDiscountedPrice = () => {
+        const price =
+            product.price - (product.price * product.discountPercent) / 100;
+        return price;
+    };
+
     const toggleFavorite = async () => {
         if (!product) return;
         const token = localStorage.getItem("accessToken");
@@ -386,9 +392,8 @@ const ProductDetail = () => {
         if (adding) return;
         setAdding(true);
         try {
-            await addToCart(product.id, quantity, selectedColor);
+            await addToCart(product.id, quantity);
             setSuccess(true);
-            setTimeout(() => setSuccess(false), 2000);
         } catch (err) {
             alert(err.message || "Lỗi thêm giỏ hàng");
         } finally {
@@ -398,7 +403,7 @@ const ProductDetail = () => {
 
     const handleBuyNow = async () => {
         try {
-            await addToCart(product.id, quantity, selectedColor);
+            await addToCart(product.id, quantity);
             navigate("/checkout");
         } catch (err) {
             alert(err.message || "Lỗi mua ngay");
@@ -659,6 +664,20 @@ const ProductDetail = () => {
                                                 className="w-full h-full object-contain p-2"
                                             />
                                         </div>
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-black shadow-md flex items-center justify-center text-xl z-30">
+                                            <img
+                                                src="https://dwarf-factory.com/assets/images/logo-square.svg"
+                                                alt="logo"
+                                                className="w-full h-full object-contain p-2"
+                                            />
+                                        </div>
+                                        <div className="w-12 h-12 rounded-full bg-[#F17336] border-2 border-black shadow-md flex items-center justify-center text-xl z-30">
+                                            <img
+                                                src="https://dwarf-factory.com/assets/images/logo-square.svg"
+                                                alt="logo"
+                                                className="w-full h-full object-contain p-2"
+                                            />
+                                        </div>
                                     </div>
                                     <button className="w-full border border-black/20 bg-black/5 py-3 px-4 flex justify-between items-center text-sm font-bold uppercase tracking-widest cursor-pointer hover:bg-black/10 transition-colors">
                                         <span>
@@ -909,22 +928,24 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Right: Info */}
-                        <div className="w-full lg:w-[420px] flex flex-col items-end shrink-0 relative h-full">
-                            <button
-                                onClick={toggleFavorite}
-                                className={`mb-4 px-5 py-2 border-2 flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest ${
-                                    isFavorite
-                                        ? "bg-black text-white border-black"
-                                        : "bg-white text-black border-black hover:bg-black hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
-                                }`}
-                            >
-                                <span className="text-lg leading-none">
-                                    {isFavorite ? "−" : "+"}
-                                </span>{" "}
-                                WISHLIST
-                            </button>
+                        <div className="w-full lg:w-[420px] shrink-0">
+                            <div className="flex justify-end mb-4">
+                                <button
+                                    onClick={toggleFavorite}
+                                    className={`px-5 py-2 border-2 flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest ${
+                                        isFavorite
+                                            ? "bg-[var(--theme-accent)] text-white border-black"
+                                            : "bg-white text-black border-black hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
+                                    }`}
+                                >
+                                    <span className="text-lg leading-none">
+                                        {isFavorite ? "−" : "+"}
+                                    </span>{" "}
+                                    WISHLIST
+                                </button>
+                            </div>
 
-                            <div className="w-full bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] relative flex flex-col text-left sticky top-24 z-30">
+                            <div className="w-full bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] flex flex-col text-left sticky top-24 z-30">
                                 <div className="p-8 pb-6">
                                     <h1
                                         className="text-[32px] font-black leading-tight tracking-wide text-black"
@@ -935,99 +956,38 @@ const ProductDetail = () => {
                                         {product.title}
                                     </h1>
 
-                                    <div className="text-2xl font-bold text-black mt-2">
+                                    <div className="text-2xl font-bold text-[var(--theme-accent)] mt-2">
                                         $
-                                        {Number(product.price).toLocaleString()}
-                                        {product.originalPrice &&
-                                            product.originalPrice >
-                                                product.price && (
-                                                <span className="text-xl text-black/40 line-through ml-3 font-medium">
-                                                    $
-                                                    {Number(
-                                                        product.originalPrice,
-                                                    ).toLocaleString()}
-                                                </span>
-                                            )}
-                                    </div>
-
-                                    {/* Colors / Skin */}
-                                    <div className="mt-10 border-t-2 border-black/10 pt-6">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <div className="text-xl font-bold text-black">
-                                                Skin
-                                            </div>
-                                            <div className="text-sm text-black/60">
-                                                {product.colors
-                                                    ? product.colors.length
-                                                    : 0}{" "}
-                                                skins
-                                            </div>
-                                        </div>
-                                        <div className="text-sm text-black/60 mb-2">
-                                            {selectedColor || "--"}
-                                        </div>
-                                        <div className="flex gap-4">
-                                            {product.colors &&
-                                            product.colors.length > 0 ? (
-                                                product.colors.map((c, i) => (
-                                                    <div
-                                                        key={i}
-                                                        title={c.label}
-                                                        onClick={() => {
-                                                            setSelectedColor(
-                                                                c.label,
-                                                            );
-                                                            if (images[i])
-                                                                setActiveImage(
-                                                                    i,
-                                                                );
-                                                        }}
-                                                        className={`w-16 h-16 overflow-hidden transition-all cursor-pointer flex items-center justify-center border-2 ${selectedColor === c.label ? "border-black shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "border-black/20 hover:border-black hover:-translate-y-1"}`}
-                                                        style={{
-                                                            backgroundColor:
-                                                                images[i]
-                                                                    ? "transparent"
-                                                                    : c.value,
-                                                        }}
-                                                    >
-                                                        {images[i] ? (
-                                                            <img
-                                                                src={images[i]}
-                                                                alt={c.label}
-                                                                className="w-full h-full object-cover p-1"
-                                                            />
-                                                        ) : (
-                                                            <div className="text-[10px] text-black font-bold text-center p-1">
-                                                                {c.label}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div className="text-sm text-black/40">
-                                                    Không có phân loại màu sắc
-                                                </div>
-                                            )}
-                                        </div>
+                                        {Number(
+                                            calculateDiscountedPrice(),
+                                        ).toLocaleString()}
+                                        {product.discountPercent > 0 && (
+                                            <span className="text-xl text-black/40 line-through ml-3 font-medium">
+                                                $
+                                                {Number(
+                                                    product.price,
+                                                ).toLocaleString()}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* Bottom bar with Quantity and Add to Cart */}
                                 <div className="bg-[#f8f8f8] p-8 pt-6 pb-8 border-t-2 border-black">
                                     <div className="flex items-center gap-4 relative">
-                                        <div className="text-[var(--theme-accent)] text-[11px] font-bold mb-2 absolute -top-5 tracking-widest uppercase whitespace-nowrap">
+                                        <div className="text-[var(--theme-accent)] text-[11px] font-bold absolute -top-2 tracking-widest uppercase whitespace-nowrap">
                                             {product.stock > 0
                                                 ? `${product.stock} INSTOCKS`
                                                 : "10 INSTOCKS"}
                                         </div>
-                                        <div className="flex items-center border-2 border-black h-[35px] bg-white w-24 shrink-0 relative mt-1">
+                                        <div className="flex items-center border-2 border-black h-[35px] bg-white w-24 shrink-0">
                                             <button
                                                 onClick={() =>
                                                     handleQuantityChange(
                                                         quantity - 1,
                                                     )
                                                 }
-                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/5 transition-colors text-lg"
+                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/20 transition-colors text-lg cursor-pointer"
                                             >
                                                 −
                                             </button>
@@ -1045,7 +1005,7 @@ const ProductDetail = () => {
                                                         quantity + 1,
                                                     )
                                                 }
-                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/5 transition-colors text-lg"
+                                                className="w-8 h-full flex items-center justify-center text-black hover:bg-black/20 transition-colors text-lg cursor-pointer"
                                             >
                                                 +
                                             </button>
@@ -1055,16 +1015,35 @@ const ProductDetail = () => {
                                             <button
                                                 onClick={handleAddToCart}
                                                 disabled={adding}
-                                                className="w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)]"
+                                                className="w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] cursor-pointer"
                                             >
-                                                <span className="text-[15px] leading-tight tracking-widest uppercase">
-                                                    {adding
-                                                        ? "ĐANG THÊM..."
-                                                        : success
-                                                          ? "ĐÃ THÊM ✓"
-                                                          : "ADD TO CART"}
-                                                </span>
-                                                {!adding && !success && (
+                                                {adding ? (
+                                                    <svg
+                                                        className="animate-spin h-5 w-5 text-white"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <circle
+                                                            className="opacity-25"
+                                                            cx="12"
+                                                            cy="12"
+                                                            r="10"
+                                                            stroke="currentColor"
+                                                            strokeWidth="4"
+                                                        ></circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                        ></path>
+                                                    </svg>
+                                                ) : (
+                                                    <span className="text-[15px] leading-tight tracking-widest uppercase">
+                                                        ADD TO CART
+                                                    </span>
+                                                )}
+                                                {!adding && (
                                                     <svg
                                                         className="w-5 h-5 ml-1"
                                                         fill="none"
@@ -1329,6 +1308,129 @@ const ProductDetail = () => {
                                 className={`h-[3px] transition-all duration-300 cursor-pointer ${activeImage === idx ? "w-10 bg-[var(--theme-accent)]" : "w-6 bg-white/30 hover:bg-white/60"}`}
                             ></button>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Success Modal */}
+            {success && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 font-oswald">
+                    <div
+                        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                        onClick={() => setSuccess(false)}
+                    ></div>
+                    <div className="relative bg-white w-full max-w-[420px] p-8 pt-12 pb-10 text-center flex flex-col items-center shadow-2xl rounded-sm">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setSuccess(false)}
+                            className="absolute top-4 right-4 text-black hover:scale-110 transition-transform cursor-pointer"
+                        >
+                            <svg
+                                className="w-7 h-7"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </button>
+
+                        {/* Success Icon */}
+                        <div className="absolute -top-10 w-20 h-20 bg-[#12d822] rounded-full flex items-center justify-center shadow-lg border-[4px] border-white">
+                            <svg
+                                className="w-10 h-10 text-white"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+
+                        <h2 className="text-[34px] font-anton uppercase tracking-widest text-black mt-4 mb-6 leading-none">
+                            SUCCESSFUL ADD TO CART!
+                        </h2>
+
+                        <div className="flex text-left w-full gap-4 mb-5 items-center">
+                            <div className="w-24 h-24 bg-[#f8f8f8] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-black/10">
+                                <img
+                                    src={images[activeImage] || images[0]}
+                                    alt={product.title}
+                                    className="w-full h-full object-contain p-2 drop-shadow-md"
+                                />
+                            </div>
+                            <div className="flex-1 flex flex-col justify-center">
+                                <div className="flex justify-between items-start gap-2 mb-1">
+                                    <h3 className="font-oswald text-xl font-bold leading-tight">
+                                        {product.title}
+                                    </h3>
+                                    <div className="font-anton text-3xl">
+                                        $
+                                        {Number(product.price).toLocaleString()}
+                                    </div>
+                                </div>
+                                <div className="mb-2">
+                                    {product.stock > 0 && (
+                                        <span className="bg-[#F17336] text-white text-[11px] font-oswald font-bold px-2 py-[2px] uppercase tracking-widest rounded-sm">
+                                            {product.stock} IN STOCK
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-3 text-[15px] text-black/60 font-bold tracking-wide">
+                                    <span>
+                                        Quantity:{" "}
+                                        <span className="text-black">
+                                            {quantity}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="text-[#F17336] text-sm font-bold flex items-center justify-start gap-1.5 w-full mb-6 mt-1">
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                ></path>
+                            </svg>
+                            <span className="relative top-[1px]">
+                                Only {product.stock} item(s) in stock
+                            </span>
+                        </div>
+
+                        <button
+                            onClick={() => navigate("/cart")}
+                            className="w-full bg-[#111] text-white font-oswald font-bold text-xl uppercase tracking-widest py-4 mb-6 hover:bg-[var(--theme-accent)] transition-colors cursor-pointer"
+                            style={{
+                                clipPath:
+                                    "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%)",
+                            }}
+                        >
+                            VIEW MY CART
+                        </button>
+
+                        <button
+                            onClick={() => setSuccess(false)}
+                            className="text-black font-bold text-[16px] underline hover:text-[var(--theme-accent)] transition-colors tracking-wide cursor-pointer"
+                        >
+                            Continue Shopping
+                        </button>
                     </div>
                 </div>
             )}
