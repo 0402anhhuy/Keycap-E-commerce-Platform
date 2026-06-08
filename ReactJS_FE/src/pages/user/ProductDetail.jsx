@@ -895,6 +895,22 @@ const ProductDetail = () => {
                                             </span>
                                         )}
                                     </div>
+
+                                    <p className="text-[14px] text-black/60 font-medium mt-3">
+                                        Skin:{" "}
+                                        <span className="text-black font-semibold">
+                                            {product?.title.split(": ")[1]}
+                                        </span>
+                                    </p>
+                                    <p className="text-[14px] text-black/60 font-medium">
+                                        Color:{" "}
+                                        <span className="text-black font-semibold">
+                                            {product?.color
+                                                ?.charAt(0)
+                                                .toUpperCase() +
+                                                product?.color?.slice(1)}
+                                        </span>
+                                    </p>
                                 </div>
 
                                 {/* Bottom bar with Quantity and Add to Cart */}
@@ -1341,7 +1357,7 @@ const ProductDetail = () => {
 
                         <button
                             onClick={() => navigate("/cart")}
-                            className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-xl uppercase tracking-widest py-4 mb-6 cursor-pointer"
+                            className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-xl hover:opacity-80 uppercase tracking-widest py-4 mb-6 cursor-pointer"
                             style={{
                                 clipPath:
                                     "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%)",
