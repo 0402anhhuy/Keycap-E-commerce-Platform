@@ -182,11 +182,11 @@ const CheckoutPage = () => {
 
     const validateShip = () => {
         const errs = {};
-        if (!ship.firstName.trim()) errs.firstName = "Vui lòng nhập họ.";
-        if (!ship.lastName.trim()) errs.lastName = "Vui lòng nhập tên.";
-        if (!ship.phone.trim()) errs.phone = "Vui lòng nhập số điện thoại.";
-        if (!ship.street.trim()) errs.street = "Vui lòng nhập địa chỉ.";
-        if (!ship.city.trim()) errs.city = "Vui lòng nhập thành phố.";
+        if (!ship.firstName.trim()) errs.firstName = "First Name is required";
+        if (!ship.lastName.trim()) errs.lastName = "Last Name is required";
+        if (!ship.phone.trim()) errs.phone = "Phone number is required";
+        if (!ship.street.trim()) errs.street = "Address is required";
+        if (!ship.city.trim()) errs.city = "City is required";
         setShipErrors(errs);
         return Object.keys(errs).length === 0;
     };
@@ -197,7 +197,7 @@ const CheckoutPage = () => {
 
     const goToReview = () => {
         if (payMethod === "cod" || payConfirmed) setStep(2);
-        else setMsg("Vui lòng xác nhận thanh toán trước khi tiếp tục.");
+        else setMsg("Please confirm payment before continuing");
     };
 
     const handlePlaceOrder = async () => {
@@ -296,7 +296,7 @@ const CheckoutPage = () => {
                                     className="flex-1 flex flex-col gap-2 cursor-pointer"
                                     onClick={() => navigate("/cart")}
                                 >
-                                    <div className="w-full h-[2px] bg-[#F17336]"></div>
+                                    <div className="w-full h-[4px] bg-[#F17336]"></div>
                                     <div className="flex justify-between items-center text-black hover:opacity-70 transition-opacity">
                                         <span>YOUR CART</span>
                                         <span>01</span>
@@ -304,7 +304,7 @@ const CheckoutPage = () => {
                                 </div>
                                 <div className="flex-1 flex flex-col gap-2">
                                     <div
-                                        className={`w-full h-[2px] ${step >= 0 ? "bg-[#F17336]" : "bg-black/30"}`}
+                                        className={`w-full h-[4px] ${step >= 0 ? "bg-[#F17336]" : "bg-black/30"}`}
                                     ></div>
                                     <div
                                         className={`flex justify-between items-center ${step >= 0 ? "text-black" : "text-black/50"}`}
@@ -317,7 +317,7 @@ const CheckoutPage = () => {
                                 </div>
                                 <div className="flex-1 flex flex-col gap-2">
                                     <div
-                                        className={`w-full h-[2px] ${step >= 1 ? "bg-[#F17336]" : "bg-black/30"}`}
+                                        className={`w-full h-[4px] ${step >= 1 ? "bg-[#F17336]" : "bg-black/30"}`}
                                     ></div>
                                     <div
                                         className={`flex justify-between items-center ${step >= 1 ? "text-black" : "text-black/50"}`}
