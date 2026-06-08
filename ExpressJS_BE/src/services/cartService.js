@@ -1,5 +1,5 @@
-const CartItem = require('../models/CartItem');
-const Product = require('../models/Product');
+const CartItem = require("../models/CartItem");
+const Product = require("../models/Product");
 
 const getCart = async (userId) => {
     const items = await CartItem.findAll({ where: { userId } });
@@ -19,38 +19,54 @@ const getCart = async (userId) => {
             id: item.id,
             productId: item.productId,
             quantity: item.quantity,
-            color: item.color,
-            product: p ? {
-                id: p.id,
-                title: p.title,
-                price: Number(p.price),
-                image: p.images?.[0] || null,
-                stock: p.stock,
-                status: p.status
-            } : null,
-            lineTotal
+            product: p
+                ? {
+                      id: p.id,
+                      title: p.title,
+                      slug: p.slug,
+                      form: p.form,
+                      profile: p.profile,
+                      color: p.color,
+                      price: Number(p.price),
+                      image: p.images?.[0] || null,
+                      stock: p.stock,
+                      status: p.status,
+                  }
+                : null,
+            lineTotal,
         };
     });
 
     return { items: enriched, total };
 };
 
-const addToCart = async (userId, { productId, quantity = 1, color }) => {
-    const product = await Product.findOne({ where: { id: productId, status: 'active' } });
-    if (!product) throw Object.assign(new Error('Sản phẩm không tồn tại.'), { status: 404 });
-    if (product.stock < quantity) throw Object.assign(new Error('Sản phẩm không đủ hàng.'), { status: 400 });
+const addToCart = async (userId, { productId, quantity = 1 }) => {
+    const product = await Product.findOne({
+        where: { id: productId, status: "active" },
+    });
+    if (!product)
+        throw Object.assign(new Error("Sản phẩm không tồn tại"), {
+            status: 404,
+        });
+    if (product.stock < quantity)
+        throw Object.assign(new Error("Sản phẩm không đủ hàng"), {
+            status: 400,
+        });
 
-    const existing = await CartItem.findOne({ where: { userId, productId, color: color || null } });
+    const existing = await CartItem.findOne({ where: { userId, productId } });
     if (existing) {
         await existing.update({ quantity: existing.quantity + quantity });
         return existing;
     }
-    return CartItem.create({ userId, productId, quantity, color: color || null });
+    return CartItem.create({ userId, productId, quantity });
 };
 
 const updateCartItem = async (userId, cartItemId, quantity) => {
     const item = await CartItem.findOne({ where: { id: cartItemId, userId } });
-    if (!item) throw Object.assign(new Error('Không tìm thấy sản phẩm trong giỏ.'), { status: 404 });
+    if (!item)
+        throw Object.assign(new Error("Không tìm thấy sản phẩm trong giỏ."), {
+            status: 404,
+        });
     if (quantity <= 0) {
         await item.destroy();
         return null;
@@ -61,7 +77,10 @@ const updateCartItem = async (userId, cartItemId, quantity) => {
 
 const removeFromCart = async (userId, cartItemId) => {
     const item = await CartItem.findOne({ where: { id: cartItemId, userId } });
-    if (!item) throw Object.assign(new Error('Không tìm thấy sản phẩm trong giỏ.'), { status: 404 });
+    if (!item)
+        throw Object.assign(new Error("Không tìm thấy sản phẩm trong giỏ."), {
+            status: 404,
+        });
     await item.destroy();
 };
 
@@ -69,4 +88,10 @@ const clearCart = async (userId) => {
     await CartItem.destroy({ where: { userId } });
 };
 
-module.exports = { getCart, addToCart, updateCartItem, removeFromCart, clearCart };
+module.exports = {
+    getCart,
+    addToCart,
+    updateCartItem,
+    removeFromCart,
+    clearCart,
+};
