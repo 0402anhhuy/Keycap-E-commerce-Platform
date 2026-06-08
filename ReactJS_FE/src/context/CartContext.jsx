@@ -66,7 +66,7 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = async (productId, quantity = 1) => {
         const token = getToken();
-        if (!token) throw new Error("Vui lòng đăng nhập.");
+        if (!token) throw new Error("Vui lòng đăng nhập");
         const res = await fetch(`${API_URL}/api/carts`, {
             method: "POST",
             headers: {
@@ -76,7 +76,7 @@ export const CartProvider = ({ children }) => {
             body: JSON.stringify({ productId, quantity }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Lỗi thêm vào giỏ.");
+        if (!res.ok) throw new Error(data.message || "Lỗi thêm vào giỏ");
         await fetchCart();
         return data;
     };
