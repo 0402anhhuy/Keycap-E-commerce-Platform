@@ -14,6 +14,7 @@ const CartPage = () => {
     const [coupon, setCoupon] = useState("");
     const [couponApplied, setCouponApplied] = useState(false);
     const [actionLoading, setActionLoading] = useState({});
+    const [itemToRemove, setItemToRemove] = useState(null);
 
     const fmt = (n) => "$" + Number(n).toFixed(2);
 
@@ -59,14 +60,14 @@ const CartPage = () => {
                             {/* Stepper Steps */}
                             <div className="flex items-center gap-3 md:gap-4 w-full text-[11px] xl:text-[12px] tracking-widest uppercase font-oswald font-medium">
                                 <div className="flex-1 flex flex-col gap-2 cursor-pointer">
-                                    <div className="w-full h-[2px] bg-[#F17336]"></div>
+                                    <div className="w-full h-[4px] bg-[#F17336]"></div>
                                     <div className="flex justify-between items-center text-black">
                                         <span>YOUR CART</span>
                                         <span>01</span>
                                     </div>
                                 </div>
                                 <div className="flex-1 flex flex-col gap-2">
-                                    <div className="w-full h-[2px] bg-black/30"></div>
+                                    <div className="w-full h-[4px] bg-black/30"></div>
                                     <div className="flex justify-between items-center text-black/50">
                                         <span className="truncate mr-1">
                                             INFORMATION
@@ -75,7 +76,7 @@ const CartPage = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 flex flex-col gap-2">
-                                    <div className="w-full h-[2px] bg-black/30"></div>
+                                    <div className="w-full h-[4px] bg-black/30"></div>
                                     <div className="flex justify-between items-center text-black/50">
                                         <span>PAYMENT</span>
                                         <span>03</span>
@@ -96,7 +97,7 @@ const CartPage = () => {
                         </p>
                         <Link
                             to="/products"
-                            className="px-8 py-4 bg-[#F17336] text-white font-oswald font-bold text-lg uppercase tracking-widest hover:opacity-90 transition-all shadow-md"
+                            className="px-8 py-4 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-lg uppercase tracking-widest hover:opacity-80 transition-all shadow-md"
                         >
                             Explore Now
                         </Link>
@@ -127,7 +128,12 @@ const CartPage = () => {
                                                         alt={
                                                             item.product?.title
                                                         }
-                                                        className="w-full h-full object-contain"
+                                                        className="w-full h-full object-contain cursor-pointer"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/products/${item.product?.slug}`,
+                                                            )
+                                                        }
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full bg-[#f8f8f8]" />
@@ -150,19 +156,21 @@ const CartPage = () => {
                                                             Skin:{" "}
                                                             <span className="text-black font-semibold">
                                                                 {
-                                                                    item.product
-                                                                        ?.title
+                                                                    item.product?.title?.split(
+                                                                        ": ",
+                                                                    )[1]
                                                                 }
                                                             </span>
                                                         </p>
-                                                        {item.color && (
-                                                            <p className="text-[14px] text-black/60 font-medium">
-                                                                Profile Type:{" "}
-                                                                <span className="text-black font-semibold">
-                                                                    {item.color}
-                                                                </span>
-                                                            </p>
-                                                        )}
+                                                        <p className="text-[14px] text-black/60 font-medium">
+                                                            Form:{" "}
+                                                            <span className="text-black font-semibold">
+                                                                {
+                                                                    item.product
+                                                                        ?.form
+                                                                }
+                                                            </span>
+                                                        </p>
                                                     </div>
 
                                                     <div className="text-right flex flex-col items-end gap-3">
@@ -246,8 +254,15 @@ const CartPage = () => {
                                                             </div>
                                                             <button
                                                                 onClick={() =>
-                                                                    handleRemove(
-                                                                        item.id,
+                                                                    setItemToRemove(
+                                                                        {
+                                                                            id: item.id,
+                                                                            title:
+                                                                                item
+                                                                                    .product
+                                                                                    ?.title ||
+                                                                                "KEYCAP",
+                                                                        },
                                                                     )
                                                                 }
                                                                 disabled={
@@ -255,7 +270,7 @@ const CartPage = () => {
                                                                         item.id
                                                                     ]
                                                                 }
-                                                                className="text-black/50 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                                                                className="text-black/50 hover:text-red-500 transition-colors p-1 cursor-pointer disabled:opacity-40"
                                                             >
                                                                 <svg
                                                                     className="w-4 h-4"
@@ -297,6 +312,27 @@ const CartPage = () => {
                                         </div>
                                     );
                                 })}
+                            </div>
+
+                            {/* Actions below cart items */}
+                            <div className="mt-8 flex items-center justify-between">
+                                <Link
+                                    to="/products"
+                                    className="text-[13px] font-bold tracking-widest uppercase text-black hover:underline underline-offset-4 flex items-center gap-2"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                    CONTINUE SHOPPING
+                                </Link>
+                                
+                                <button
+                                    onClick={() => setItemToRemove({ id: "ALL", title: "ALL ITEMS" })}
+                                    className="text-[13px] font-bold tracking-widest uppercase text-black/50 hover:text-red-500 hover:underline underline-offset-4 flex items-center gap-2 cursor-pointer transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    CLEAR CART
+                                </button>
                             </div>
                         </div>
 
@@ -355,6 +391,92 @@ const CartPage = () => {
                     </div>
                 )}
             </main>
+
+            {/* Remove Confirmation Modal */}
+            {itemToRemove && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-md p-8 md:p-10 w-full max-w-sm flex flex-col items-center text-center relative border-[3px] border-black shadow-2xl">
+                        {/* Close button */}
+                        <button
+                            onClick={() => setItemToRemove(null)}
+                            className="absolute top-4 right-4 text-black hover:scale-110 transition-transform cursor-pointer"
+                        >
+                            <svg
+                                className="w-7 h-7"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="red"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </button>
+
+                        {/* Trash Icon */}
+                        <div className="text-[#F17336] mb-6">
+                            <svg
+                                className="w-[72px] h-[72px]"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                            </svg>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="font-anton text-[28px] leading-none tracking-wide text-black mb-4 uppercase">
+                            Do you want to remove?
+                        </h3>
+
+                        {/* Text */}
+                        <p className="text-black/80 font-medium mb-8 text-[15px] leading-relaxed">
+                            {itemToRemove.id === "ALL" ? (
+                                <>All items will be removed from your cart. Are you sure to remove them?</>
+                            ) : (
+                                <>The item <span className="text-black font-bold">{itemToRemove.title}</span> will be removed from your cart. Are you sure to remove it?</>
+                            )}
+                        </p>
+
+                        {/* OK Button */}
+                        <button
+                            onClick={() => {
+                                if (itemToRemove.id === "ALL") {
+                                    clearCart();
+                                } else {
+                                    handleRemove(itemToRemove.id);
+                                }
+                                setItemToRemove(null);
+                            }}
+                            className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-xl uppercase tracking-widest py-3 mb-5 cursor-pointer hover:opacity-80 transition-opacity"
+                            style={{
+                                clipPath:
+                                    "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%)",
+                            }}
+                        >
+                            OK
+                        </button>
+
+                        {/* Cancel Button */}
+                        <button
+                            onClick={() => setItemToRemove(null)}
+                            className="text-black text-sm font-bold tracking-widest uppercase hover:underline underline-offset-4 cursor-pointer transition-all"
+                        >
+                            CANCEL
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </div>
     );
