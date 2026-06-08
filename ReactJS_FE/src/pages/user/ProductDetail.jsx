@@ -345,13 +345,7 @@ const ProductDetail = () => {
 
             {/* Breadcrumb */}
             <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-4">
-                <Breadcrumb
-                    items={[
-                        { label: "Homepage", to: "/" },
-                        { label: "Products", to: "/products" },
-                        { label: product.title },
-                    ]}
-                />
+                <Breadcrumb />
             </div>
 
             {/* Product Info */}
