@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
 
     return (
         <div
-            onClick={() => navigate(`/product/${product.slug}`)}
+            onClick={() => navigate(`/products/${product.slug}`)}
             className="group relative flex h-full flex-col bg-white cursor-pointer transition-all duration-200 border-2 border-transparent hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:z-20"
         >
             <div className="absolute -inset-[2px] border-2 border-black pointer-events-none z-20"></div>
