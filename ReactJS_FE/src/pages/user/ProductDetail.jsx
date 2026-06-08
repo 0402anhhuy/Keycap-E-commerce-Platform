@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
 import ScrollToTop from "../../components/ScrollToTop";
+import Toast from "../../components/Toast";
 import { useCart } from "../../context/CartContext";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
@@ -44,6 +45,16 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [adding, setAdding] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    // Toast state
+    const [toastState, setToastState] = useState({
+        show: false,
+        message: "",
+        type: "error",
+    });
+    const showToast = (message, type = "error") => {
+        setToastState({ show: true, message, type });
+    };
 
     // Engagement & History states
     const [isFavorite, setIsFavorite] = useState(false);
@@ -197,45 +208,26 @@ const ProductDetail = () => {
         if (!product) return;
 
         const token = localStorage.getItem("accessToken");
-        if (token) {
-            fetch(`${API_BASE}/api/wishlists`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    const list = normalizeArray(data);
-                    setIsFavorite(
-                        list.some((p) => String(p.id) === String(product.id)),
-                    );
-                })
-                .catch(() => {
-                    let favorites = [];
-                    try {
-                        const raw = localStorage.getItem("wishlist");
-                        favorites = raw ? JSON.parse(raw) : [];
-                    } catch (e) {
-                        favorites = [];
-                    }
-                    setIsFavorite(
-                        favorites.some(
-                            (fav) => String(fav.id) === String(product.id),
-                        ),
-                    );
-                });
-        } else {
-            let favorites = [];
-            try {
-                const raw = localStorage.getItem("wishlist");
-                favorites = raw ? JSON.parse(raw) : [];
-            } catch (e) {
-                favorites = [];
-            }
-            setIsFavorite(
-                favorites.some((fav) => String(fav.id) === String(product.id)),
-            );
+        if (!token) {
+            setIsFavorite(false);
+            return;
         }
+
+        fetch(`${API_BASE}/api/wishlists`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const list = normalizeArray(data);
+                setIsFavorite(
+                    list.some((p) => String(p.id) === String(product.id)),
+                );
+            })
+            .catch(() => {
+                setIsFavorite(false);
+            });
     }, [product]);
 
     const calculateDiscountedPrice = () => {
@@ -247,57 +239,33 @@ const ProductDetail = () => {
     const toggleFavorite = async () => {
         if (!product) return;
         const token = localStorage.getItem("accessToken");
-        if (token) {
-            try {
-                const res = await fetch(
-                    `${API_BASE}/api/wishlists/${product.id}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                );
-                if (res.ok) {
-                    const result = await res.json();
-                    setIsFavorite(!!result.added);
-                    return;
-                }
-            } catch (e) {
-                console.error(
-                    "Backend wishlist toggle failed, using local storage",
-                    e,
-                );
-            }
+        if (!token) {
+            showToast("Vui lòng đăng nhập", "error");
+            return;
         }
 
-        let favorites = [];
         try {
-            const raw = localStorage.getItem("wishlist");
-            favorites = raw ? JSON.parse(raw) : [];
-        } catch (e) {
-            favorites = [];
-        }
-
-        const exists = favorites.some(
-            (fav) => String(fav.id) === String(product.id),
-        );
-        if (exists) {
-            favorites = favorites.filter(
-                (fav) => String(fav.id) !== String(product.id),
-            );
-            setIsFavorite(false);
-        } else {
-            favorites.push({
-                id: product.id,
-                title: product.title,
-                price: product.price,
-                image: images[0] || product.image,
-                rating: product.rating,
+            const res = await fetch(`${API_BASE}/api/wishlists/${product.id}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
-            setIsFavorite(true);
+            if (res.ok) {
+                const result = await res.json();
+                setIsFavorite(!!result.added);
+                if (result.added) {
+                    showToast("Đã thêm vào wishlist", "success");
+                } else {
+                    showToast("Đã xoá khỏi wishlist", "success");
+                }
+            } else {
+                throw new Error("Lỗi khi cập nhật wishlist");
+            }
+        } catch (e) {
+            console.error("Backend wishlist toggle failed", e);
+            showToast("Lỗi khi cập nhật wishlist", "error");
         }
-        localStorage.setItem("wishlist", JSON.stringify(favorites));
     };
 
     const handleReviewSubmit = async (e) => {
@@ -355,7 +323,7 @@ const ProductDetail = () => {
             await addToCart(product.id, quantity);
             setSuccess(true);
         } catch (err) {
-            alert(err.message || "Lỗi thêm giỏ hàng");
+            showToast(err.message || "Lỗi thêm giỏ hàng");
         } finally {
             setAdding(false);
         }
@@ -368,6 +336,12 @@ const ProductDetail = () => {
     return (
         <div className="min-h-screen text-black relative bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')]">
             <Header />
+            <Toast
+                show={toastState.show}
+                message={toastState.message}
+                type={toastState.type}
+                onClose={() => setToastState({ ...toastState, show: false })}
+            />
 
             {/* Breadcrumb */}
             <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-4">
