@@ -6,7 +6,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { useCart } from "../../context/CartContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const fmt = (n) => Number(n).toLocaleString("vi-VN") + "đ";
+const fmt = (n) => "$" + Number(n).toFixed(2);
 
 // ── QR Mock Images ──────────────────────────────────────────────────────
 const MOMO_QR =
@@ -24,12 +24,19 @@ const CheckoutPage = () => {
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState(null);
 
+    const [userEmail, setUserEmail] = useState("");
     // Shipping info
     const [ship, setShip] = useState({
         firstName: "",
         lastName: "",
-        phone: "",
+        company: "",
         street: "",
+        apartment: "",
+        country: "Country",
+        city: "",
+        postcode: "",
+        phone: "",
+        useContactBook: true,
     });
     const [shipErrors, setShipErrors] = useState({});
     const [userAddresses, setUserAddresses] = useState([]);
@@ -104,6 +111,7 @@ const CheckoutPage = () => {
                 const data = await res.json();
                 const u = data.user || data; // API trả về { user: {...} }
                 setUserPoints(u.points || 0);
+                setUserEmail(u.email || "");
 
                 // Tách họ và tên từ trường name
                 const nameParts = u.name ? u.name.trim().split(/\s+/) : [];
@@ -135,7 +143,13 @@ const CheckoutPage = () => {
                     firstName: fName,
                     lastName: lName,
                     phone: u.phone || "",
-                    street: fullStreet,
+                    street: defaultAddr?.street || "",
+                    city: defaultAddr?.city || "",
+                    company: "",
+                    apartment: "",
+                    country: "Vietnam",
+                    postcode: "",
+                    useContactBook: true,
                 });
 
                 if (u.addresses && Array.isArray(u.addresses)) {
@@ -172,6 +186,7 @@ const CheckoutPage = () => {
         if (!ship.lastName.trim()) errs.lastName = "Vui lòng nhập tên.";
         if (!ship.phone.trim()) errs.phone = "Vui lòng nhập số điện thoại.";
         if (!ship.street.trim()) errs.street = "Vui lòng nhập địa chỉ.";
+        if (!ship.city.trim()) errs.city = "Vui lòng nhập thành phố.";
         setShipErrors(errs);
         return Object.keys(errs).length === 0;
     };
@@ -199,10 +214,20 @@ const CheckoutPage = () => {
         setLoading(true);
         setMsg(null);
         try {
+            const combinedStreet = [
+                ship.apartment,
+                ship.street,
+                ship.city,
+                ship.country,
+                ship.postcode ? `Postcode: ${ship.postcode}` : "",
+            ]
+                .filter(Boolean)
+                .join(", ");
+
             const shippingAddress = {
                 fullName: `${ship.firstName} ${ship.lastName}`.trim(),
                 phone: ship.phone,
-                street: ship.street,
+                street: combinedStreet,
             };
             const orderItems = items.map((i) => ({
                 productId: i.productId,
@@ -235,7 +260,7 @@ const CheckoutPage = () => {
     };
 
     const subtotal = total;
-    const tax = Math.round(subtotal * 0.08);
+    const tax = 0; // tax is set to 0 to match mockup
     const couponDiscount = appliedCoupon ? appliedCoupon.discountAmount : 0;
     const pointsDiscount = usePoints
         ? Math.min(userPoints * 1000, subtotal - couponDiscount)
@@ -247,27 +272,75 @@ const CheckoutPage = () => {
     const fmtCountdown = `${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(countdown % 60).padStart(2, "0")}`;
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col relative text-black">
+        <div className="min-h-screen bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')] font-oswald flex flex-col relative text-black">
             <Header />
-            <main className="flex-1 max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-12 w-full z-10">
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-24 relative z-10">
                 <Breadcrumb />
-                {/* Step Indicator */}
-                <div className="flex items-center justify-center mb-12">
-                    {STEPS.map((s, i) => (
-                        <div key={s} className="flex items-center">
-                            <div className="flex flex-col items-center">
+
+                {/* Header & Stepper */}
+                <div className="mt-8 mb-4 border-b-2 border-black/10 pb-4 relative">
+                    <div className="flex flex-col lg:flex-row gap-12 items-end">
+                        <div className="flex-1 flex justify-between items-end w-full">
+                            <h1 className="text-[40px] leading-none font-anton uppercase tracking-widest text-black">
+                                {step === 0
+                                    ? "INFORMATION"
+                                    : step === 1
+                                      ? "PAYMENT"
+                                      : "REVIEW"}
+                            </h1>
+                        </div>
+                        <div className="w-full lg:w-[380px] xl:w-[380px] shrink-0">
+                            {/* Stepper Steps */}
+                            <div className="flex items-center gap-3 md:gap-4 w-full text-[11px] xl:text-[12px] tracking-widest uppercase font-oswald font-medium">
                                 <div
-                                    className={`w-12 h-12 border-2 flex items-center justify-center font-bold text-sm transition-all shadow-[2px_2px_0_rgba(0,0,0,1)] ${
-                                        i < step
-                                            ? "bg-black text-white border-black"
-                                            : i === step
-                                              ? "bg-[var(--theme-accent)] text-black border-black"
-                                              : "bg-[#f8f8f8] text-black/40 border-black/20"
-                                    }`}
+                                    className="flex-1 flex flex-col gap-2 cursor-pointer"
+                                    onClick={() => navigate("/cart")}
                                 >
-                                    {i < step ? (
+                                    <div className="w-full h-[2px] bg-[#F17336]"></div>
+                                    <div className="flex justify-between items-center text-black hover:opacity-70 transition-opacity">
+                                        <span>YOUR CART</span>
+                                        <span>01</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 flex flex-col gap-2">
+                                    <div
+                                        className={`w-full h-[2px] ${step >= 0 ? "bg-[#F17336]" : "bg-black/30"}`}
+                                    ></div>
+                                    <div
+                                        className={`flex justify-between items-center ${step >= 0 ? "text-black" : "text-black/50"}`}
+                                    >
+                                        <span className="truncate mr-1">
+                                            INFORMATION
+                                        </span>
+                                        <span>02</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 flex flex-col gap-2">
+                                    <div
+                                        className={`w-full h-[2px] ${step >= 1 ? "bg-[#F17336]" : "bg-black/30"}`}
+                                    ></div>
+                                    <div
+                                        className={`flex justify-between items-center ${step >= 1 ? "text-black" : "text-black/50"}`}
+                                    >
+                                        <span>PAYMENT</span>
+                                        <span>03</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-12 mt-12">
+                    {/* Left Panel */}
+                    <div className="flex-1">
+                        {step === 0 && (
+                            <div className="flex flex-col">
+                                {/* Email Info */}
+                                <div className="mb-8">
+                                    <div className="flex items-center gap-2 mb-1">
                                         <svg
-                                            className="w-6 h-6"
+                                            className="w-5 h-5"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -275,175 +348,241 @@ const CheckoutPage = () => {
                                             <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
-                                                strokeWidth="3"
-                                                d="M5 13l4 4L19 7"
+                                                strokeWidth="2"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                                             />
                                         </svg>
-                                    ) : (
-                                        i + 1
-                                    )}
-                                </div>
-                                <span
-                                    className={`text-xs mt-3 font-bold uppercase tracking-widest ${i === step ? "text-black" : "text-black/40"}`}
-                                >
-                                    {s}
-                                </span>
-                            </div>
-                            {i < STEPS.length - 1 && (
-                                <div
-                                    className={`w-16 md:w-32 h-1 mx-4 mb-6 ${i < step ? "bg-black" : "bg-black/10"}`}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left Panel */}
-                    <div className="flex-1">
-                        {/* ── Step 0: Shipping + Payment Method ── */}
-                        {step === 0 && (
-                            <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-8">
-                                <h2 className="font-anton text-2xl uppercase tracking-widest text-black mb-8">
-                                    THÔNG TIN GIAO HÀNG
-                                </h2>
-                                <div className="grid grid-cols-2 gap-6 mb-6">
-                                    <FormField
-                                        label="Họ"
-                                        value={ship.firstName}
-                                        error={shipErrors.firstName}
-                                        onChange={(e) =>
-                                            setShip((p) => ({
-                                                ...p,
-                                                firstName: e.target.value,
-                                            }))
-                                        }
-                                        placeholder="NGUYỄN"
-                                    />
-                                    <FormField
-                                        label="Tên"
-                                        value={ship.lastName}
-                                        error={shipErrors.lastName}
-                                        onChange={(e) =>
-                                            setShip((p) => ({
-                                                ...p,
-                                                lastName: e.target.value,
-                                            }))
-                                        }
-                                        placeholder="VĂN A"
-                                    />
-                                </div>
-                                <FormField
-                                    label="Số điện thoại"
-                                    value={ship.phone}
-                                    error={shipErrors.phone}
-                                    onChange={(e) =>
-                                        setShip((p) => ({
-                                            ...p,
-                                            phone: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="037XXXXXXX"
-                                />
-                                <FormField
-                                    label="Địa chỉ giao hàng"
-                                    value={ship.street}
-                                    error={shipErrors.street}
-                                    onChange={(e) =>
-                                        setShip((p) => ({
-                                            ...p,
-                                            street: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="123 ĐƯỜNG LÊ LỢI, QUẬN 1, TP.HCM"
-                                    className="mt-6"
-                                />
-
-                                {userAddresses.length >= 2 && (
-                                    <div className="mt-6">
-                                        <label className="block text-xs font-bold uppercase tracking-widest text-black mb-3">
-                                            CHỌN ĐỊA CHỈ ĐÃ LƯU:
-                                        </label>
-                                        <div className="space-y-4">
-                                            {userAddresses.map((addr) => {
-                                                const fullAddrText = [
-                                                    addr.street,
-                                                    addr.ward,
-                                                    addr.district,
-                                                    addr.city,
-                                                ]
-                                                    .filter(Boolean)
-                                                    .join(", ");
-                                                const isSelected =
-                                                    ship.street ===
-                                                    fullAddrText;
-
-                                                return (
-                                                    <button
-                                                        key={addr.id}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            setShip((p) => ({
-                                                                ...p,
-                                                                street: fullAddrText,
-                                                            }))
-                                                        }
-                                                        className={`w-full text-left p-4 border-2 flex items-start gap-3 transition-all ${
-                                                            isSelected
-                                                                ? "border-black bg-[var(--theme-accent)] shadow-[4px_4px_0_rgba(0,0,0,1)]"
-                                                                : "border-black/20 hover:border-black bg-white"
-                                                        }`}
-                                                    >
-                                                        <div
-                                                            className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center mt-0.5 bg-white`}
-                                                        >
-                                                            {isSelected && (
-                                                                <div className="w-2.5 h-2.5 rounded-full bg-black" />
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-bold text-black uppercase tracking-widest text-sm">
-                                                                    {
-                                                                        addr.street
-                                                                    }
-                                                                </span>
-                                                                {addr.isDefault && (
-                                                                    <span className="px-2 py-1 text-[10px] font-bold text-white bg-black uppercase tracking-widest">
-                                                                        MẶC ĐỊNH
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            {(addr.ward ||
-                                                                addr.district ||
-                                                                addr.city) && (
-                                                                <span className="text-xs font-bold uppercase tracking-widest text-black/60 block mt-1">
-                                                                    {[
-                                                                        addr.ward,
-                                                                        addr.district,
-                                                                        addr.city,
-                                                                    ]
-                                                                        .filter(
-                                                                            Boolean,
-                                                                        )
-                                                                        .join(
-                                                                            ", ",
-                                                                        )}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
+                                        <span className="font-anton tracking-widest uppercase text-xl">
+                                            EMAIL
+                                        </span>
                                     </div>
-                                )}
+                                    <p className="text-sm font-medium">
+                                        {userEmail || "guest@example.com"}
+                                    </p>
+                                </div>
 
-                                {/* Payment Method */}
-                                <h2 className="font-anton text-2xl uppercase tracking-widest text-black mt-12 mb-8">
-                                    PHƯƠNG THỨC THANH TOÁN
+                                <h2 className="font-anton text-[28px] uppercase tracking-widest text-black mb-6">
+                                    SHIPPING INFORMATION
                                 </h2>
-                                <div className="grid grid-cols-3 gap-6">
+
+                                <div className="flex flex-col gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            label="FIRST NAME"
+                                            value={ship.firstName}
+                                            error={shipErrors.firstName}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    firstName: e.target.value,
+                                                })
+                                            }
+                                        />
+                                        <FormField
+                                            label="LAST NAME"
+                                            value={ship.lastName}
+                                            error={shipErrors.lastName}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    lastName: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                    <FormField
+                                        label="COMPANY"
+                                        value={ship.company}
+                                        onChange={(e) =>
+                                            setShip({
+                                                ...ship,
+                                                company: e.target.value,
+                                            })
+                                        }
+                                    />
+                                    <FormField
+                                        label="STREET ADDRESS"
+                                        value={ship.street}
+                                        error={shipErrors.street}
+                                        onChange={(e) =>
+                                            setShip({
+                                                ...ship,
+                                                street: e.target.value,
+                                            })
+                                        }
+                                    />
+                                    <FormField
+                                        label="APARTMENT"
+                                        value={ship.apartment}
+                                        onChange={(e) =>
+                                            setShip({
+                                                ...ship,
+                                                apartment: e.target.value,
+                                            })
+                                        }
+                                    />
+
+                                    <div className="mb-4">
+                                        <label className="block text-[13px] text-black/60 font-bold uppercase tracking-widest mb-1">
+                                            COUNTRY
+                                        </label>
+                                        <select
+                                            value={ship.country}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    country: e.target.value,
+                                                })
+                                            }
+                                            className="w-full border border-black/30 bg-transparent rounded-sm px-4 py-3 text-[14px] font-medium text-black focus:outline-none focus:border-black appearance-none cursor-pointer"
+                                            style={{
+                                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                                backgroundPosition:
+                                                    "right 1rem center",
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundSize: "1.2em",
+                                            }}
+                                        >
+                                            <option value="Country" disabled>
+                                                Country
+                                            </option>
+                                            <option value="Vietnam">
+                                                Vietnam
+                                            </option>
+                                            <option value="USA">
+                                                United States
+                                            </option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            label="CITY"
+                                            value={ship.city}
+                                            error={shipErrors.city}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    city: e.target.value,
+                                                })
+                                            }
+                                        />
+                                        <FormField
+                                            label="POSTCODE"
+                                            value={ship.postcode}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    postcode: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                    <FormField
+                                        label="PHONE"
+                                        value={ship.phone}
+                                        error={shipErrors.phone}
+                                        onChange={(e) =>
+                                            setShip({
+                                                ...ship,
+                                                phone: e.target.value,
+                                            })
+                                        }
+                                    />
+
+                                    <label className="flex items-center gap-3 cursor-pointer mt-2 group">
+                                        <input
+                                            type="checkbox"
+                                            checked={ship.useContactBook}
+                                            onChange={(e) =>
+                                                setShip({
+                                                    ...ship,
+                                                    useContactBook:
+                                                        e.target.checked,
+                                                })
+                                            }
+                                            className="w-5 h-5 border-2 border-black appearance-none checked:bg-[#F17336] checked:border-[#F17336] rounded-sm transition-all relative after:content-[''] after:absolute after:hidden checked:after:block after:left-[6px] after:top-[2px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
+                                        />
+                                        <span className="text-[14px] font-bold">
+                                            Use information to Contact book
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <h2 className="font-anton text-[28px] uppercase tracking-widest text-black mt-10 mb-4">
+                                    SHIPPING METHOD
+                                </h2>
+                                <div className="border border-black/30 p-4 bg-transparent flex items-center gap-3 mb-10 rounded-sm">
+                                    <svg
+                                        className="w-6 h-6 text-black"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                                        />
+                                    </svg>
+                                    <span className="text-[14px] font-medium text-black">
+                                        Please fill out your address to view
+                                        your shipping fee
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between items-center pt-6">
+                                    <button
+                                        onClick={() => navigate("/cart")}
+                                        className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-widest text-black hover:opacity-70 transition-colors"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                                            />
+                                        </svg>
+                                        BACK TO CART
+                                    </button>
+                                    <button
+                                        onClick={goToPayment}
+                                        className="px-8 py-3 bg-[#F17336] text-white font-oswald font-bold text-[16px] tracking-widest uppercase hover:opacity-90 transition-all flex items-center gap-2 rounded-sm shadow-md"
+                                    >
+                                        CONTINUE PAYMENT
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Step 1: Payment */}
+                        {step === 1 && (
+                            <div className="flex flex-col">
+                                <h2 className="font-anton text-[28px] uppercase tracking-widest text-black mb-6">
+                                    PAYMENT METHOD
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <PayOption
                                         id="cod"
                                         label="COD (TIỀN MẶT)"
@@ -464,136 +603,14 @@ const CheckoutPage = () => {
                                     />
                                 </div>
 
-                                {payMethod === "cod" && (
-                                    <div className="mt-6 p-4 bg-[#f8f8f8] border-2 border-black flex items-start gap-4">
-                                        <svg
-                                            className="w-6 h-6 text-black flex-shrink-0 mt-0.5"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="3"
-                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                            />
-                                        </svg>
-                                        <span className="text-xs font-bold uppercase tracking-widest text-black leading-relaxed">
-                                            THANH TOÁN KHI NHẬN HÀNG. VUI LÒNG
-                                            CHUẨN BỊ ĐÚNG SỐ TIỀN KHI NHẬN HÀNG.
-                                        </span>
-                                    </div>
-                                )}
-
-                                <div className="flex justify-between items-center mt-12 pt-8 border-t-2 border-black/10">
-                                    <button
-                                        onClick={() => navigate("/cart")}
-                                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors"
-                                    >
-                                        <svg
-                                            className="w-4 h-4 border-2 border-black bg-white rounded-full p-0.5"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="3"
-                                                d="M15 19l-7-7 7-7"
-                                            />
-                                        </svg>
-                                        QUAY LẠI GIỎ HÀNG
-                                    </button>
-                                    <button
-                                        onClick={goToPayment}
-                                        className="px-8 py-4 bg-[var(--theme-accent)] border-2 border-black text-black text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
-                                    >
-                                        TIẾP TỤC →
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* ── Step 1: QR Payment / Confirm ── */}
-                        {step === 1 && (
-                            <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-8">
-                                {payMethod === "cod" ? (
-                                    <div className="text-center py-12">
-                                        <div className="flex justify-center mb-6">
-                                            <div className="w-20 h-20 bg-[var(--theme-accent)] border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] rounded-full flex items-center justify-center">
-                                                <svg
-                                                    className="w-10 h-10 text-black"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="3"
-                                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <h3 className="font-anton text-2xl uppercase tracking-widest text-black mb-4">
-                                            THANH TOÁN KHI NHẬN HÀNG (COD)
-                                        </h3>
-                                        <p className="text-xs font-bold uppercase tracking-widest text-black/60">
-                                            ĐƠN HÀNG SẼ ĐƯỢC XÁC NHẬN VÀ GIAO
-                                            TỚI ĐỊA CHỈ CỦA BẠN.
-                                        </p>
-                                        <p className="text-xs font-bold uppercase tracking-widest text-black/60 mt-1">
-                                            VUI LÒNG CHUẨN BỊ ĐÚNG SỐ TIỀN KHI
-                                            NHẬN HÀNG.
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-8">
-                                        <h3 className="font-anton text-2xl uppercase tracking-widest text-black mb-4 flex items-center justify-center gap-3">
-                                            {payMethod === "momo" ? (
-                                                <>
-                                                    <svg
-                                                        className="w-8 h-8 text-[#ff0080]"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="3"
-                                                            d="M9 5H7a2 2 0 00-2-2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                                                        />
-                                                    </svg>
-                                                    THANH TOÁN MOMO
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <svg
-                                                        className="w-8 h-8 text-[#0063a5]"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="3"
-                                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                                                        />
-                                                    </svg>
-                                                    THANH TOÁN VNPAY
-                                                </>
-                                            )}
-                                        </h3>
-                                        <p className="text-sm font-bold uppercase tracking-widest text-black/60 mb-8">
+                                {(payMethod === "momo" ||
+                                    payMethod === "vnpay") && (
+                                    <div className="mt-8 text-center bg-white p-8 border border-black/10 shadow-sm">
+                                        <p className="text-sm font-bold uppercase tracking-widest text-black/60 mb-6">
                                             QUÉT MÃ QR ĐỂ THANH TOÁN{" "}
                                             {fmt(finalTotal)}
                                         </p>
-                                        <div className="inline-block p-4 bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] mb-8">
+                                        <div className="inline-block p-4 border-2 border-black/10 mb-6">
                                             <img
                                                 src={
                                                     payMethod === "momo"
@@ -605,7 +622,7 @@ const CheckoutPage = () => {
                                             />
                                         </div>
                                         <div
-                                            className={`font-anton text-3xl tracking-widest mb-8 ${countdown < 60 ? "text-[#ff4d4f] animate-pulse" : "text-black"}`}
+                                            className={`font-anton text-2xl tracking-widest mb-6 ${countdown < 60 ? "text-[#ff4d4f] animate-pulse" : "text-black"}`}
                                         >
                                             HẾT HẠN SAU: {fmtCountdown}
                                         </div>
@@ -614,16 +631,12 @@ const CheckoutPage = () => {
                                                 onClick={() =>
                                                     setPayConfirmed(true)
                                                 }
-                                                className={`w-full py-4 border-2 border-black text-black font-bold uppercase tracking-widest text-sm hover:-translate-y-[2px] transition-all cursor-pointer ${
-                                                    payMethod === "momo"
-                                                        ? "bg-[#ff0080] text-white hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
-                                                        : "bg-[#0063a5] text-white hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
-                                                }`}
+                                                className={`w-full max-w-sm mx-auto py-3 text-white font-bold uppercase tracking-widest rounded-sm transition-all ${payMethod === "momo" ? "bg-[#ff0080]" : "bg-[#0063a5]"}`}
                                             >
                                                 ✓ TÔI ĐÃ THANH TOÁN
                                             </button>
                                         ) : (
-                                            <div className="w-full py-4 border-2 border-black bg-[var(--theme-accent)] text-black font-bold uppercase tracking-widest text-sm text-center shadow-[4px_4px_0_rgba(0,0,0,1)]">
+                                            <div className="w-full max-w-sm mx-auto py-3 bg-[#52c41a] text-white font-bold uppercase tracking-widest rounded-sm">
                                                 ✓ ĐÃ XÁC NHẬN THANH TOÁN
                                             </div>
                                         )}
@@ -631,21 +644,18 @@ const CheckoutPage = () => {
                                 )}
 
                                 {msg && (
-                                    <p className="text-[#ff4d4f] font-bold text-sm text-center uppercase tracking-widest mt-6">
+                                    <p className="text-[#ff4d4f] font-bold text-sm text-center mt-6">
                                         {msg}
                                     </p>
                                 )}
 
-                                <div className="flex justify-between items-center mt-12 pt-8 border-t-2 border-black/10">
+                                <div className="flex justify-between items-center mt-12 pt-8">
                                     <button
-                                        onClick={() => {
-                                            setStep(0);
-                                            setMsg(null);
-                                        }}
-                                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors"
+                                        onClick={() => setStep(0)}
+                                        className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-widest text-black hover:opacity-70 transition-colors"
                                     >
                                         <svg
-                                            className="w-4 h-4 border-2 border-black bg-white rounded-full p-0.5"
+                                            className="w-5 h-5"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -653,418 +663,196 @@ const CheckoutPage = () => {
                                             <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
-                                                strokeWidth="3"
-                                                d="M15 19l-7-7 7-7"
+                                                strokeWidth="2"
+                                                d="M10 19l-7-7m0 0l7-7m-7 7h18"
                                             />
                                         </svg>
-                                        QUAY LẠI
-                                    </button>
-                                    <button
-                                        onClick={goToReview}
-                                        className="px-8 py-4 bg-black border-2 border-black text-white text-xs font-bold uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
-                                    >
-                                        XEM LẠI ĐƠN HÀNG →
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* ── Step 2: Review ── */}
-                        {step === 2 && (
-                            <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-8">
-                                <h2 className="font-anton text-2xl uppercase tracking-widest text-black mb-8">
-                                    XÁC NHẬN ĐƠN HÀNG
-                                </h2>
-
-                                {/* Shipping Info Review */}
-                                <div className="mb-8 p-6 bg-[#f8f8f8] border-2 border-black">
-                                    <p className="text-[10px] text-black/50 uppercase font-bold tracking-widest mb-3">
-                                        GIAO TỚI
-                                    </p>
-                                    <p className="font-bold uppercase tracking-widest text-black text-lg">
-                                        {ship.firstName} {ship.lastName}
-                                    </p>
-                                    <p className="text-xs font-bold uppercase tracking-widest text-black/60 mt-2">
-                                        {ship.phone}
-                                    </p>
-                                    <p className="text-xs font-bold uppercase tracking-widest text-black/60 mt-1">
-                                        {ship.street}
-                                    </p>
-                                </div>
-
-                                {/* Payment Method Review */}
-                                <div className="mb-8 p-6 bg-[#f8f8f8] border-2 border-black flex items-center gap-4">
-                                    <span className="flex-shrink-0">
-                                        {payMethod === "cod" ? (
-                                            <svg
-                                                className="w-8 h-8 text-black"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="3"
-                                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                                                />
-                                            </svg>
-                                        ) : payMethod === "momo" ? (
-                                            <svg
-                                                className="w-8 h-8 text-[#ff0080]"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="3"
-                                                    d="M9 5H7a2 2 0 00-2-2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                                                />
-                                            </svg>
-                                        ) : (
-                                            <svg
-                                                className="w-8 h-8 text-[#0063a5]"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="3"
-                                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                                                />
-                                            </svg>
-                                        )}
-                                    </span>
-                                    <div>
-                                        <p className="text-[10px] text-black/50 uppercase font-bold tracking-widest mb-1">
-                                            PHƯƠNG THỨC THANH TOÁN
-                                        </p>
-                                        <p className="font-bold text-black uppercase tracking-widest">
-                                            {payMethod === "cod"
-                                                ? "THANH TOÁN KHI NHẬN HÀNG (COD)"
-                                                : payMethod === "momo"
-                                                  ? "VÍ MOMO"
-                                                  : "VNPAY"}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Items Review */}
-                                <div className="space-y-4 mb-8">
-                                    <p className="text-[10px] text-black/50 uppercase font-bold tracking-widest mb-2">
-                                        SẢN PHẨM ĐÃ CHỌN
-                                    </p>
-                                    {items.map((item) => (
-                                        <div
-                                            key={item.id}
-                                            className="flex items-center gap-4 p-4 bg-white border-2 border-black"
-                                        >
-                                            <div className="w-16 h-16 border-2 border-black overflow-hidden bg-[#e5e5e5] flex-shrink-0">
-                                                {item.product?.image ? (
-                                                    <img
-                                                        src={
-                                                            item.product.image.startsWith(
-                                                                "http",
-                                                            )
-                                                                ? item.product
-                                                                      .image
-                                                                : `${API_URL}${item.product.image}`
-                                                        }
-                                                        alt=""
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full bg-[#f8f8f8]" />
-                                                )}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-black uppercase tracking-widest truncate">
-                                                    {item.product?.title}
-                                                </p>
-                                                {item.color && (
-                                                    <p className="text-[10px] font-bold text-black/50 uppercase tracking-widest mt-1">
-                                                        MÀU: {item.color}
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div className="text-right text-sm flex-shrink-0">
-                                                <p className="text-xs font-bold uppercase tracking-widest text-black/50">
-                                                    x{item.quantity}
-                                                </p>
-                                                <p className="font-anton text-xl tracking-wider text-black">
-                                                    {fmt(item.lineTotal || 0)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {msg && (
-                                    <p className="text-[#ff4d4f] font-bold text-sm text-center uppercase tracking-widest mb-8">
-                                        {msg}
-                                    </p>
-                                )}
-
-                                <div className="flex justify-between items-center mt-8 pt-8 border-t-2 border-black/10">
-                                    <button
-                                        onClick={() => setStep(1)}
-                                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors"
-                                    >
-                                        <svg
-                                            className="w-4 h-4 border-2 border-black bg-white rounded-full p-0.5"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="3"
-                                                d="M15 19l-7-7 7-7"
-                                            />
-                                        </svg>
-                                        QUAY LẠI
+                                        BACK
                                     </button>
                                     <button
                                         onClick={handlePlaceOrder}
-                                        disabled={loading}
-                                        className="bg-[var(--theme-accent)] border-2 border-black disabled:opacity-60 text-black text-xs font-bold uppercase tracking-widest px-8 py-4 hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all flex items-center gap-3 cursor-pointer disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                                        disabled={
+                                            loading ||
+                                            (payMethod !== "cod" &&
+                                                !payConfirmed)
+                                        }
+                                        className="px-8 py-3 bg-[#F17336] disabled:bg-gray-400 text-white font-oswald font-bold text-[16px] tracking-widest uppercase hover:opacity-90 transition-all flex items-center gap-2 rounded-sm shadow-md"
                                     >
-                                        {loading ? (
-                                            <>
-                                                <span className="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
-                                                ĐANG XỬ LÝ...
-                                            </>
-                                        ) : (
-                                            "🛍 ĐẶT HÀNG NGAY"
-                                        )}
+                                        {loading
+                                            ? "PROCESSING..."
+                                            : "PLACE ORDER"}
                                     </button>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Order Summary Sidebar */}
-                    <div className="w-full lg:w-[400px] flex-shrink-0 z-20">
-                        <div className="bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] p-8 sticky top-6">
-                            <h2 className="font-anton text-2xl uppercase tracking-widest text-black mb-8">
-                                TỔNG ĐƠN HÀNG
+                    {/* Right Panel: Order Summary & Promo */}
+                    <div className="w-full lg:w-[420px] flex-shrink-0 z-20">
+                        <div className="sticky top-6">
+                            {/* Promo Code */}
+                            <h2 className="font-anton text-[24px] uppercase tracking-widest text-black mb-4">
+                                ENTER YOUR PROMOTION CODE
                             </h2>
-                            <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="flex gap-0 mb-8 h-12 shadow-sm">
+                                <input
+                                    type="text"
+                                    value={couponCode}
+                                    onChange={(e) => {
+                                        setCouponCode(
+                                            e.target.value.toUpperCase(),
+                                        );
+                                        setCouponError("");
+                                        setCouponSuccess("");
+                                    }}
+                                    placeholder="Your Code"
+                                    className="flex-1 border border-black/30 border-r-0 bg-transparent rounded-l-sm px-4 text-[14px] font-medium text-black focus:outline-none focus:border-black"
+                                    disabled={!!appliedCoupon}
+                                />
+                                {appliedCoupon ? (
+                                    <button
+                                        onClick={handleRemoveCoupon}
+                                        className="px-6 bg-[#ff4d4f] text-white font-bold text-[14px] uppercase tracking-widest rounded-r-sm"
+                                    >
+                                        REMOVE
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleApplyCoupon}
+                                        className="px-6 bg-black text-white font-bold text-[14px] uppercase tracking-widest rounded-r-sm"
+                                    >
+                                        APPLY
+                                    </button>
+                                )}
+                            </div>
+                            {couponError && (
+                                <p className="text-[12px] text-[#ff4d4f] font-bold mb-4">
+                                    {couponError}
+                                </p>
+                            )}
+                            {couponSuccess && (
+                                <p className="text-[12px] text-[#52c41a] font-bold mb-4">
+                                    {couponSuccess}
+                                </p>
+                            )}
+
+                            {/* Order Summary */}
+                            <div className="flex justify-between items-end mb-6">
+                                <h2 className="font-anton text-[28px] uppercase tracking-widest text-black leading-none">
+                                    ORDER SUMMARY
+                                </h2>
+                                <span className="text-[14px] font-medium text-black">
+                                    {items.length} items
+                                </span>
+                            </div>
+
+                            <div className="flex flex-col gap-6 mb-8 border-t border-black/10 pt-6">
                                 {items.map((item) => {
                                     const imgSrc = item.product?.image
                                         ? item.product.image.startsWith("http")
                                             ? item.product.image
                                             : `${API_URL}${item.product.image}`
                                         : null;
+                                    const stock = item.product?.stock || 0;
                                     return (
                                         <div
                                             key={item.id}
-                                            className="flex items-start gap-4"
+                                            className="flex gap-4"
                                         >
-                                            <div className="w-16 h-16 border-2 border-black overflow-hidden bg-[#e5e5e5] flex-shrink-0">
+                                            <div className="w-[80px] h-[80px] bg-white shadow-sm flex-shrink-0 flex items-center justify-center p-1 rounded-sm">
                                                 {imgSrc ? (
                                                     <img
                                                         src={imgSrc}
                                                         alt=""
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-contain"
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full bg-[#f8f8f8]" />
                                                 )}
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-bold text-black uppercase tracking-widest line-clamp-2 leading-snug">
-                                                    {item.product?.title}
+                                            <div className="flex-1 flex flex-col justify-start min-w-0">
+                                                <div className="flex justify-between items-start mb-1">
+                                                    <h3 className="font-oswald text-[16px] font-medium leading-tight truncate pr-2">
+                                                        {item.product?.title}
+                                                    </h3>
+                                                    <div className="font-anton text-xl tracking-widest text-black flex-shrink-0">
+                                                        {fmt(
+                                                            item.product
+                                                                ?.price || 0,
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <div className="inline-block bg-[#F17336] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-widest rounded-sm">
+                                                        {stock} IN STOCK
+                                                    </div>
+                                                    <p className="text-[13px] text-black/60 font-medium text-right">
+                                                        Quantity:{" "}
+                                                        <span className="text-black font-bold">
+                                                            {item.quantity}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <p className="text-[13px] text-black/60 font-medium truncate">
+                                                    Skin:{" "}
+                                                    <span className="text-black font-semibold">
+                                                        {item.product?.title}
+                                                    </span>
                                                 </p>
                                                 {item.color && (
-                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-black/50 mt-1">
-                                                        MÀU: {item.color}
+                                                    <p className="text-[13px] text-black/60 font-medium truncate">
+                                                        Profile Type:{" "}
+                                                        <span className="text-black font-semibold">
+                                                            {item.color}
+                                                        </span>
                                                     </p>
                                                 )}
-                                                <p className="text-[10px] font-bold uppercase tracking-widest text-black/50 mt-1">
-                                                    SỐ LƯỢNG: {item.quantity}
-                                                </p>
+                                                <div className="mt-1 flex items-center gap-1 text-[#F17336] text-[11px] font-medium">
+                                                    <svg
+                                                        className="w-3 h-3"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                                        />
+                                                    </svg>
+                                                    Only {stock} Item(s) in
+                                                    stock
+                                                </div>
                                             </div>
-                                            <span className="text-sm font-bold uppercase tracking-widest text-black flex-shrink-0 mt-0.5">
-                                                {fmt(item.lineTotal || 0)}
-                                            </span>
                                         </div>
                                     );
                                 })}
                             </div>
 
-                            {/* Promo & Loyalty Section */}
-                            <div className="border-t-2 border-b-2 border-black/10 py-6 my-6 space-y-6 text-left">
-                                {/* Loyalty Points Toggle */}
-                                <div className="space-y-3">
-                                    <label className="flex items-center justify-between cursor-pointer select-none group">
-                                        <div className="flex items-center gap-2 text-xs text-black font-bold uppercase tracking-widest">
-                                            <span className="text-lg">🪙</span>
-                                            <span className="group-hover:text-[var(--theme-accent)] transition-colors">
-                                                DÙNG XU ({userPoints} XU)
-                                            </span>
-                                        </div>
-                                        <input
-                                            type="checkbox"
-                                            checked={usePoints}
-                                            disabled={userPoints <= 0}
-                                            onChange={(e) =>
-                                                setUsePoints(e.target.checked)
-                                            }
-                                            className="w-5 h-5 border-2 border-black appearance-none checked:bg-[var(--theme-accent)] checked:border-black checked:after:content-['✓'] checked:after:text-black checked:after:text-xs checked:after:font-bold flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                        />
-                                    </label>
-                                    {usePoints && userPoints > 0 && (
-                                        <p className="text-[10px] text-[#52c41a] font-bold uppercase tracking-widest">
-                                            QUY ĐỔI GIẢM: -{fmt(pointsDiscount)}
-                                        </p>
-                                    )}
+                            <div className="space-y-3 pt-6 border-t border-black/10">
+                                <div className="flex justify-between items-center text-[15px] text-black font-medium uppercase tracking-widest">
+                                    <span>MERCHANDISE SUBTOTAL</span>
+                                    <span>{fmt(subtotal)}</span>
                                 </div>
-
-                                {/* Coupon Code Input */}
-                                <div className="space-y-3">
-                                    <label className="block text-xs text-black font-bold uppercase tracking-widest">
-                                        MÃ GIẢM GIÁ
-                                    </label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            value={couponCode}
-                                            onChange={(e) => {
-                                                setCouponCode(
-                                                    e.target.value.toUpperCase(),
-                                                );
-                                                setCouponError("");
-                                                setCouponSuccess("");
-                                            }}
-                                            placeholder="NHẬP MÃ..."
-                                            className="flex-1 border-2 border-black rounded-none px-4 py-3 text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-0 focus:border-black bg-[#f8f8f8]"
-                                            disabled={!!appliedCoupon}
-                                        />
-                                        {appliedCoupon ? (
-                                            <button
-                                                type="button"
-                                                onClick={handleRemoveCoupon}
-                                                className="px-6 py-3 bg-[#ff4d4f] border-2 border-black text-white font-bold text-xs uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
-                                            >
-                                                HỦY
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={handleApplyCoupon}
-                                                className="px-6 py-3 bg-black border-2 border-black text-white font-bold text-xs uppercase tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
-                                            >
-                                                ÁP DỤNG
-                                            </button>
-                                        )}
-                                    </div>
-                                    {couponError && (
-                                        <p className="text-[10px] text-[#ff4d4f] font-bold uppercase tracking-widest">
-                                            {couponError}
-                                        </p>
-                                    )}
-                                    {couponSuccess && (
-                                        <p className="text-[10px] text-[#52c41a] font-bold uppercase tracking-widest">
-                                            {couponSuccess}
-                                        </p>
-                                    )}
+                                <div className="flex justify-between items-center text-[15px] text-black font-medium uppercase tracking-widest">
+                                    <span>SHIPPING FEE</span>
+                                    <span>{fmt(0)}</span>
                                 </div>
-                            </div>
-
-                            <div className="space-y-4 text-sm mt-8">
-                                <div className="flex justify-between items-center text-black/60">
-                                    <span className="text-xs font-bold uppercase tracking-widest">
-                                        TẠM TÍNH
-                                    </span>
-                                    <span className="font-bold text-black">
-                                        {fmt(subtotal)}
+                                <div className="flex justify-between items-center text-[15px] text-black font-medium uppercase tracking-widest">
+                                    <span>DISCOUNT</span>
+                                    <span>
+                                        {fmt(couponDiscount + pointsDiscount)}
                                     </span>
                                 </div>
-                                {couponDiscount > 0 && (
-                                    <div className="flex justify-between items-center text-[#52c41a]">
-                                        <span className="text-xs font-bold uppercase tracking-widest">
-                                            MÃ GIẢM GIÁ
-                                        </span>
-                                        <span className="font-bold">
-                                            -{fmt(couponDiscount)}
-                                        </span>
-                                    </div>
-                                )}
-                                {pointsDiscount > 0 && (
-                                    <div className="flex justify-between items-center text-[#52c41a]">
-                                        <span className="text-xs font-bold uppercase tracking-widest">
-                                            XU TÍCH LŨY
-                                        </span>
-                                        <span className="font-bold">
-                                            -{fmt(pointsDiscount)}
-                                        </span>
-                                    </div>
-                                )}
-                                <div className="flex justify-between items-center text-black/60">
-                                    <span className="text-xs font-bold uppercase tracking-widest">
-                                        VẬN CHUYỂN
+                                <div className="flex justify-between items-center pt-2 mt-2">
+                                    <span className="text-[16px] font-bold uppercase tracking-widest text-black">
+                                        ORDER TOTAL
                                     </span>
-                                    <span className="text-[#52c41a] font-bold uppercase tracking-widest">
-                                        MIỄN PHÍ
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center text-black/60">
-                                    <span className="text-xs font-bold uppercase tracking-widest">
-                                        THUẾ VAT (8%)
-                                    </span>
-                                    <span className="font-bold text-black">
-                                        {fmt(tax)}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-end pt-6 mt-6 border-t-2 border-black/10">
-                                    <span className="text-sm font-bold uppercase tracking-widest text-black mb-1">
-                                        TỔNG CỘNG
-                                    </span>
-                                    <span className="font-anton text-4xl tracking-widest text-[var(--theme-accent)] leading-none">
+                                    <span className="font-anton text-2xl tracking-wider text-black">
                                         {fmt(finalTotal)}
                                     </span>
                                 </div>
-                            </div>
-
-                            <div className="mt-8 flex gap-3">
-                                <button className="flex-1 py-4 border-2 border-black bg-[#f8f8f8] text-[10px] font-bold uppercase tracking-widest text-black hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] flex items-center justify-center gap-2 transition-all cursor-pointer">
-                                    <svg
-                                        className="w-4 h-4 text-black"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="3"
-                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                        />
-                                    </svg>
-                                    AN TOÀN
-                                </button>
-                                <button className="flex-1 py-4 border-2 border-black bg-[#f8f8f8] text-[10px] font-bold uppercase tracking-widest text-black hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] flex items-center justify-center gap-2 transition-all cursor-pointer">
-                                    <svg
-                                        className="w-4 h-4 text-black"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="3"
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                                        />
-                                    </svg>
-                                    BẢO VỆ
-                                </button>
                             </div>
                         </div>
                     </div>
