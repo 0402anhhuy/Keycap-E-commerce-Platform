@@ -240,7 +240,7 @@ const ProductDetail = () => {
         if (!product) return;
         const token = localStorage.getItem("accessToken");
         if (!token) {
-            showToast("Vui lòng đăng nhập", "error");
+            showToast("Please login", "error");
             return;
         }
 
@@ -255,16 +255,16 @@ const ProductDetail = () => {
                 const result = await res.json();
                 setIsFavorite(!!result.added);
                 if (result.added) {
-                    showToast("Đã thêm vào wishlist", "success");
+                    showToast("Added to wishlist", "success");
                 } else {
-                    showToast("Đã xoá khỏi wishlist", "success");
+                    showToast("Removed from wishlist", "success");
                 }
             } else {
-                throw new Error("Lỗi khi cập nhật wishlist");
+                throw new Error("Error updating wishlist");
             }
         } catch (e) {
             console.error("Backend wishlist toggle failed", e);
-            showToast("Lỗi khi cập nhật wishlist", "error");
+            showToast("Error updating wishlist", "error");
         }
     };
 
@@ -344,13 +344,19 @@ const ProductDetail = () => {
             />
 
             {/* Breadcrumb */}
-            <div className="max-w-[1400px] mx-auto px-6 pt-[90px] md:pt-[100px] pb-4">
-                <Breadcrumb />
+            <div className="max-w-6xl w-full mx-auto px-4 pt-[90px] md:pt-[100px] pb-4">
+                <Breadcrumb
+                    items={[
+                        { label: "Homepage", to: "/" },
+                        { label: "Products", to: "/products" },
+                        { label: product.title },
+                    ]}
+                />
             </div>
 
             {/* Product Info */}
             <div className="relative z-20 flex flex-col min-h-screen">
-                <main className="max-w-[1400px] mx-auto px-6 pb-24 w-full flex-1">
+                <main className="max-w-6xl w-full mx-auto px-4 pb-24 flex-1">
                     <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-16">
                         {/* Left Side: Images & Specification */}
                         <div className="flex-1 min-w-0 flex flex-col">
@@ -1052,7 +1058,7 @@ const ProductDetail = () => {
                                         <div
                                             key={p.id}
                                             onClick={() =>
-                                                navigate(`/product/${p.slug}`)
+                                                navigate(`/products/${p.slug}`)
                                             }
                                             className="cursor-pointer h-full"
                                         >
@@ -1248,8 +1254,8 @@ const ProductDetail = () => {
                                 className="w-7 h-7"
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
+                                stroke="red"
+                                strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                             >
@@ -1274,8 +1280,8 @@ const ProductDetail = () => {
                             </svg>
                         </div>
 
-                        <h2 className="text-[34px] font-anton uppercase tracking-widest text-black mt-4 mb-6 leading-none">
-                            SUCCESSFUL ADD TO CART!
+                        <h2 className="text-[30px] font-anton uppercase tracking-widest text-black mt-4 mb-6 leading-none">
+                            SUCCESSFUL ADD TO CART
                         </h2>
 
                         <div className="flex text-left w-full gap-4 mb-5 items-center">
@@ -1288,12 +1294,12 @@ const ProductDetail = () => {
                             </div>
                             <div className="flex-1 flex flex-col justify-center">
                                 <div className="flex justify-between items-start gap-2 mb-1">
-                                    <h3 className="font-oswald text-xl font-bold leading-tight">
+                                    <p className="font-oswald text-lg font-bold leading-tight text-[16px]">
                                         {product.title}
-                                    </h3>
+                                    </p>
                                     <div className="font-anton text-3xl">
-                                        $
                                         {Number(product.price).toLocaleString()}
+                                        $
                                     </div>
                                 </div>
                                 <div className="mb-2">
@@ -1335,7 +1341,7 @@ const ProductDetail = () => {
 
                         <button
                             onClick={() => navigate("/cart")}
-                            className="w-full bg-[#111] text-white font-oswald font-bold text-xl uppercase tracking-widest py-4 mb-6 hover:bg-[var(--theme-accent)] transition-colors cursor-pointer"
+                            className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-xl uppercase tracking-widest py-4 mb-6 cursor-pointer"
                             style={{
                                 clipPath:
                                     "polygon(0% 0%, 100% 0%, 98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 100%, 0% 100%, 2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%)",
