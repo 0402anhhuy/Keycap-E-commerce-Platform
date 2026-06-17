@@ -142,11 +142,14 @@ const CartPage = () => {
                                             <div className="flex-1 flex flex-col justify-start">
                                                 <div className="flex justify-between items-start gap-4">
                                                     <div>
-                                                        <h3 className="font-oswald text-[22px] font-medium leading-tight mb-2">
+                                                        <h3 className="font-oswald text-[22px] font-medium leading-tight">
                                                             {item.product
                                                                 ?.title ||
                                                                 "KEYCAP"}
                                                         </h3>
+                                                        <div className="inline-block bg-[#F17336] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-widest rounded-sm">
+                                                            {stock} IN STOCK
+                                                        </div>
                                                         <p className="text-[14px] text-black/60 font-medium">
                                                             Skin:{" "}
                                                             <span className="text-black font-semibold">
@@ -154,15 +157,6 @@ const CartPage = () => {
                                                                     item.product?.title?.split(
                                                                         ": ",
                                                                     )[1]
-                                                                }
-                                                            </span>
-                                                        </p>
-                                                        <p className="text-[14px] text-black/60 font-medium">
-                                                            Material:{" "}
-                                                            <span className="text-black font-semibold">
-                                                                {
-                                                                    item.product
-                                                                        ?.material
                                                                 }
                                                             </span>
                                                         </p>
