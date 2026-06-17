@@ -1,10 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const {
-    authMiddleware,
-    requireRole,
-} = require("../middleware/auth");
+const { authMiddleware, requireRole } = require("../middleware/auth");
 
 const {
     getProducts,
@@ -27,7 +24,7 @@ router.get(
 
 router.get("/", getProducts);
 router.get("/:identifier/similar", getSimilarProducts);
-router.get("/:slug", getProductBySlug)
+router.get("/:slug", getProductBySlug);
 router.get("/:id", getProductById);
 
 router.post("/", authMiddleware, requireRole("admin"), createProduct);
@@ -36,7 +33,12 @@ router.put("/:id", authMiddleware, requireRole("admin"), updateProduct);
 
 router.delete("/:id", authMiddleware, requireRole("admin"), deleteProduct);
 
-router.patch("/:id/status", authMiddleware, requireRole("admin"), setProductStatus);
+router.patch(
+    "/:id/status",
+    authMiddleware,
+    requireRole("admin"),
+    setProductStatus,
+);
 router.patch(
     "/:id/moderation",
     authMiddleware,
