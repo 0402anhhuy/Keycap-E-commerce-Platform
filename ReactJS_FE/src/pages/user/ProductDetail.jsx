@@ -377,7 +377,7 @@ const ProductDetail = () => {
                                         e.stopPropagation();
                                         toggleFavorite();
                                     }}
-                                    className={`absolute top-4 right-4 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center transition-all shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] z-10 ${
+                                    className={`absolute top-4 right-4 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center transition-all shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] z-10 cursor-pointer ${
                                         isFavorite
                                             ? "bg-white text-red-500"
                                             : "bg-white text-black hover:bg-red-500 hover:text-white"
@@ -989,10 +989,16 @@ const ProductDetail = () => {
                                                     if (adding) return;
                                                     setAdding(true);
                                                     try {
-                                                        await addToCart(product.id, quantity);
+                                                        await addToCart(
+                                                            product.id,
+                                                            quantity,
+                                                        );
                                                         navigate("/checkout");
                                                     } catch (err) {
-                                                        showToast(err.message || "Lỗi thêm giỏ hàng");
+                                                        showToast(
+                                                            err.message ||
+                                                                "Lỗi thêm giỏ hàng",
+                                                        );
                                                         setAdding(false);
                                                     }
                                                 }}
