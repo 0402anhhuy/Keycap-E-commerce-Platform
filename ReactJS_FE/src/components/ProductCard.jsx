@@ -78,15 +78,16 @@ const ProductCard = ({ product }) => {
                         </h3>
                         <div className="flex items-baseline gap-2">
                             <div className="text-[var(--theme-accent)] font-anton text-sm tracking-wider">
-                                {Number(discountPrice).toLocaleString()}
-                                <span className="text-xs align-top">$</span>
+                                <span className="align-top">$</span>
+                                {Number(discountPrice).toLocaleString() + ".00"}
                             </div>
                             {product.discountPercent > 0 && (
                                 <div className="text-black font-anton text-[11px] tracking-wider line-through opacity-70">
-                                    {Number(product.price).toLocaleString()}
                                     <span className="text-[9px] align-top">
                                         $
                                     </span>
+                                    {Number(product.price).toLocaleString() +
+                                        ".00"}
                                 </div>
                             )}
                         </div>
