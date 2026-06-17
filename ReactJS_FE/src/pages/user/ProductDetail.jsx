@@ -885,13 +885,13 @@ const ProductDetail = () => {
                                         $
                                         {Number(
                                             calculateDiscountedPrice(),
-                                        ).toLocaleString()}
+                                        ).toLocaleString() + ".00"}
                                         {product.discountPercent > 0 && (
                                             <span className="text-xl text-black/40 line-through ml-3 font-medium">
                                                 $
                                                 {Number(
                                                     product.price,
-                                                ).toLocaleString()}
+                                                ).toLocaleString() + ".00"}
                                             </span>
                                         )}
                                     </div>
