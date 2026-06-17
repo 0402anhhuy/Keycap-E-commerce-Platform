@@ -51,12 +51,6 @@ const COLORS = [
     },
     { label: "Pink", value: "pink", bg: "bg-[#D40078]", text: "text-white" },
     { label: "Brown", value: "brown", bg: "bg-[#5C2B14]", text: "text-white" },
-    {
-        label: "Multi Color",
-        value: "multi",
-        bg: "bg-[#EAEBEA]",
-        text: "text-black",
-    },
 ];
 
 const FORMS = [
