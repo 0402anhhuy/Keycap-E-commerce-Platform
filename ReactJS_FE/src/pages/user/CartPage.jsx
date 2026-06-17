@@ -5,8 +5,6 @@ import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useCart } from "../../context/CartContext";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
 const CartPage = () => {
     const navigate = useNavigate();
     const { items, total, loading, updateItem, removeItem, clearCart } =
@@ -53,7 +51,9 @@ const CartPage = () => {
                                 YOUR CART
                             </h1>
                             <span className="text-[13px] font-oswald font-medium text-black/50 tracking-widest uppercase mb-1 hidden md:block">
-                                {items.length} ITEMS
+                                {items.length > 1
+                                    ? `${items.length} ITEMS`
+                                    : `${items.length} ITEM`}
                             </span>
                         </div>
                         <div className="w-full lg:w-[380px] xl:w-[380px] shrink-0">
@@ -97,7 +97,7 @@ const CartPage = () => {
                         </p>
                         <Link
                             to="/products"
-                            className="px-8 py-4 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold text-lg uppercase tracking-widest hover:opacity-80 transition-all shadow-md"
+                            className="px-8 py-4 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] !text-white font-oswald font-bold text-lg uppercase tracking-widest hover:opacity-80 transition-all shadow-md rounded-sm"
                         >
                             Explore Now
                         </Link>
@@ -108,13 +108,13 @@ const CartPage = () => {
                         <div className="flex-1 flex flex-col">
                             <div className="flex flex-col divide-y divide-black/10 border-b border-black/10">
                                 {items.map((item) => {
-                                    const imgSrc = item.product?.image
-                                        ? item.product.image.startsWith("http")
-                                            ? item.product.image
-                                            : `${API_URL}${item.product.image}`
-                                        : null;
+                                    const imgSrc = item.product?.image;
                                     const stock = item.product?.stock || 0;
-
+                                    const price =
+                                        item.product?.price -
+                                        (item.product?.price *
+                                            item.product?.discountPercent) /
+                                            100;
                                     return (
                                         <div
                                             key={item.id}
@@ -122,7 +122,7 @@ const CartPage = () => {
                                         >
                                             {/* Image */}
                                             <div className="w-[120px] h-[120px] bg-white shadow-md flex-shrink-0 flex items-center justify-center rounded-sm overflow-hidden p-2">
-                                                {imgSrc ? (
+                                                {imgSrc && (
                                                     <img
                                                         src={imgSrc}
                                                         alt={
@@ -135,8 +135,6 @@ const CartPage = () => {
                                                             )
                                                         }
                                                     />
-                                                ) : (
-                                                    <div className="w-full h-full bg-[#f8f8f8]" />
                                                 )}
                                             </div>
 
@@ -149,9 +147,6 @@ const CartPage = () => {
                                                                 ?.title ||
                                                                 "KEYCAP"}
                                                         </h3>
-                                                        <div className="inline-block bg-[#F17336] text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest rounded-sm mb-2">
-                                                            {stock} IN STOCK
-                                                        </div>
                                                         <p className="text-[14px] text-black/60 font-medium">
                                                             Skin:{" "}
                                                             <span className="text-black font-semibold">
@@ -159,6 +154,15 @@ const CartPage = () => {
                                                                     item.product?.title?.split(
                                                                         ": ",
                                                                     )[1]
+                                                                }
+                                                            </span>
+                                                        </p>
+                                                        <p className="text-[14px] text-black/60 font-medium">
+                                                            Material:{" "}
+                                                            <span className="text-black font-semibold">
+                                                                {
+                                                                    item.product
+                                                                        ?.material
                                                                 }
                                                             </span>
                                                         </p>
@@ -171,15 +175,22 @@ const CartPage = () => {
                                                                 }
                                                             </span>
                                                         </p>
+                                                        <p className="text-[14px] text-black/60 font-medium">
+                                                            Color:{" "}
+                                                            <span className="text-black font-semibold">
+                                                                {item.product?.color
+                                                                    .charAt(0)
+                                                                    .toUpperCase() +
+                                                                    item.product?.color.slice(
+                                                                        1,
+                                                                    )}
+                                                            </span>
+                                                        </p>
                                                     </div>
 
                                                     <div className="text-right flex flex-col items-end gap-3">
                                                         <div className="font-anton text-2xl tracking-widest text-black">
-                                                            {fmt(
-                                                                item.product
-                                                                    ?.price ||
-                                                                    0,
-                                                            )}
+                                                            {fmt(price)}
                                                         </div>
 
                                                         <div className="flex flex-col items-end gap-2">
@@ -292,21 +303,25 @@ const CartPage = () => {
 
                                                 {/* Warning */}
                                                 <div className="mt-4 flex items-center gap-1.5 text-[#F17336] text-[13px] font-medium">
-                                                    <svg
-                                                        className="w-4 h-4"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="2"
-                                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                                        />
-                                                    </svg>
-                                                    Only {stock} Item(s) in
-                                                    stock
+                                                    {stock <= 25 && (
+                                                        <>
+                                                            <svg
+                                                                className="w-4 h-4"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth="2"
+                                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                                                />
+                                                            </svg>
+                                                            Only {stock} Item(s)
+                                                            in stock
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -320,16 +335,43 @@ const CartPage = () => {
                                     to="/products"
                                     className="text-[13px] font-bold tracking-widest uppercase text-black hover:underline underline-offset-4 flex items-center gap-2"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                                        ></path>
+                                    </svg>
                                     CONTINUE SHOPPING
                                 </Link>
-                                
+
                                 <button
-                                    onClick={() => setItemToRemove({ id: "ALL", title: "ALL ITEMS" })}
+                                    onClick={() =>
+                                        setItemToRemove({
+                                            id: "ALL",
+                                            title: "ALL ITEMS",
+                                        })
+                                    }
                                     className="text-[13px] font-bold tracking-widest uppercase text-black/50 hover:text-red-500 hover:underline underline-offset-4 flex items-center gap-2 cursor-pointer transition-colors"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                        />
                                     </svg>
                                     CLEAR CART
                                 </button>
@@ -363,13 +405,9 @@ const CartPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="text-[13px] font-medium text-black/70 mb-4">
-                                    Enjoy more promotions at the next step!
-                                </div>
-
                                 <button
                                     onClick={() => navigate("/checkout")}
-                                    className="w-full bg-[var(--theme-accent)] text-white font-oswald font-bold py-4 text-[16px] tracking-widest uppercase hover:opacity-80 transition-all flex items-center justify-center gap-2 rounded-sm shadow-md cursor-pointer"
+                                    className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] bg-cover bg-center bg-no-repeat text-white font-oswald font-bold py-4 text-[16px] tracking-widest uppercase hover:opacity-80 transition-all flex items-center justify-center gap-2 rounded-sm shadow-md cursor-pointer"
                                 >
                                     CHECK OUT
                                     <svg
@@ -441,9 +479,19 @@ const CartPage = () => {
                         {/* Text */}
                         <p className="text-black/80 font-medium mb-8 text-[15px] leading-relaxed">
                             {itemToRemove.id === "ALL" ? (
-                                <>All items will be removed from your cart. Are you sure to remove them?</>
+                                <>
+                                    All items will be removed from your cart.
+                                    Are you sure to remove them?
+                                </>
                             ) : (
-                                <>The item <span className="text-black font-bold">{itemToRemove.title}</span> will be removed from your cart. Are you sure to remove it?</>
+                                <>
+                                    The item{" "}
+                                    <span className="text-black font-bold">
+                                        {itemToRemove.title}
+                                    </span>{" "}
+                                    will be removed from your cart. Are you sure
+                                    to remove it?
+                                </>
                             )}
                         </p>
 
