@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import Header from "../../components/Header";
@@ -213,14 +214,14 @@ const ProductDetail = () => {
             return;
         }
 
-        fetch(`${API_BASE}/api/wishlists`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                const list = normalizeArray(data);
+        axios
+            .get(`${API_BASE}/api/wishlists`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                const list = normalizeArray(response.data);
                 setIsFavorite(
                     list.some((p) => String(p.id) === String(product.id)),
                 );
@@ -245,22 +246,21 @@ const ProductDetail = () => {
         }
 
         try {
-            const res = await fetch(`${API_BASE}/api/wishlists/${product.id}`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
+            const res = await axios.post(
+                `${API_BASE}/api/wishlists/${product.id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 },
-            });
-            if (res.ok) {
-                const result = await res.json();
-                setIsFavorite(!!result.added);
-                if (result.added) {
-                    showToast("Added to wishlist", "success");
-                } else {
-                    showToast("Removed from wishlist", "success");
-                }
+            );
+            const result = res.data;
+            setIsFavorite(!!result.added);
+            if (result.added) {
+                showToast("Added to wishlist", "success");
             } else {
-                throw new Error("Error updating wishlist");
+                showToast("Removed from wishlist", "success");
             }
         } catch (e) {
             console.error("Backend wishlist toggle failed", e);
@@ -362,14 +362,48 @@ const ProductDetail = () => {
                         <div className="flex-1 min-w-0 flex flex-col">
                             {/* Main Image */}
                             <div
-                                className="w-full bg-[#f8f8f8] aspect-[4/3] relative flex items-center justify-center p-8 mb-4 border-2 border-black cursor-pointer shadow-[8px_8px_0_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:translate-x-1"
+                                className="w-full bg-[#f8f8f8] aspect-[4/3] relative flex items-center justify-center p-8 mb-4 border-2 border-black cursor-pointer shadow-[8px_8px_0_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:translate-x-1 group"
                                 onClick={() => setShowCarousel(true)}
                             >
                                 <img
                                     src={images[activeImage] || images[0]}
                                     alt={product.title}
-                                    className="w-full h-full object-contain drop-shadow-2xl"
+                                    className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
                                 />
+
+                                {/* Floating Wishlist Button */}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite();
+                                    }}
+                                    className={`absolute top-4 right-4 w-12 h-12 rounded-full border-2 border-black flex items-center justify-center transition-all shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] z-10 ${
+                                        isFavorite
+                                            ? "bg-white text-red-500"
+                                            : "bg-white text-black hover:bg-red-500 hover:text-white"
+                                    }`}
+                                    title={
+                                        isFavorite
+                                            ? "Remove from Wishlist"
+                                            : "Add to Wishlist"
+                                    }
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill={
+                                            isFavorite ? "currentColor" : "none"
+                                        }
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    </svg>
+                                </button>
                             </div>
 
                             {/* Thumbnails */}
@@ -854,19 +888,16 @@ const ProductDetail = () => {
 
                         {/* Right: Info */}
                         <div className="w-full lg:w-[420px] shrink-0">
-                            <div className="flex justify-end mb-4">
+                            <div className="flex justify-end mb-4 gap-4">
                                 <button
-                                    onClick={toggleFavorite}
-                                    className={`px-5 py-2 border-2 flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest ${
-                                        isFavorite
-                                            ? "bg-[var(--theme-accent)] text-white border-black"
-                                            : "bg-white text-black border-black hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"
-                                    }`}
+                                    onClick={handleAddToCart}
+                                    disabled={adding}
+                                    className="px-5 py-2 border-2 border-black bg-white flex items-center gap-2 text-sm font-bold uppercase transition-all cursor-pointer tracking-widest hover:-translate-y-[2px] hover:shadow-[4px_4px_0_rgba(0,0,0,1)] disabled:opacity-70 disabled:cursor-not-allowed text-black"
                                 >
                                     <span className="text-lg leading-none">
-                                        {isFavorite ? "−" : "+"}
+                                        +
                                     </span>{" "}
-                                    WISHLIST
+                                    {adding ? "ADDING..." : "ADD TO CART"}
                                 </button>
                             </div>
 
@@ -954,7 +985,17 @@ const ProductDetail = () => {
 
                                         <div className="flex-1 relative top-[2px]">
                                             <button
-                                                onClick={handleAddToCart}
+                                                onClick={async () => {
+                                                    if (adding) return;
+                                                    setAdding(true);
+                                                    try {
+                                                        await addToCart(product.id, quantity);
+                                                        navigate("/checkout");
+                                                    } catch (err) {
+                                                        showToast(err.message || "Lỗi thêm giỏ hàng");
+                                                        setAdding(false);
+                                                    }
+                                                }}
                                                 disabled={adding}
                                                 className="w-full bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all transform hover:-translate-y-[2px] active:scale-95 disabled:opacity-70 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] cursor-pointer"
                                             >
@@ -981,7 +1022,7 @@ const ProductDetail = () => {
                                                     </svg>
                                                 ) : (
                                                     <span className="text-[15px] leading-tight tracking-widest uppercase">
-                                                        ADD TO CART
+                                                        BUY NOW
                                                     </span>
                                                 )}
                                                 {!adding && (
