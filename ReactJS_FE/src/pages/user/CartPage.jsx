@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useCart } from "../../context/CartContext";
+import ScrollToTop from "../../components/ScrollToTop";
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -518,7 +519,7 @@ const CartPage = () => {
                     </div>
                 </div>
             )}
-
+            <ScrollToTop />
             <Footer />
         </div>
     );
