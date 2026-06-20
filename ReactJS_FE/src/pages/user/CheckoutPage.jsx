@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -18,7 +18,34 @@ const STEPS = ["Shipping", "Payment", "Review"];
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { items, total, fetchCart } = useCart();
+    const [searchParams] = useSearchParams();
+    const sessionId = searchParams.get("session");
+    
+    const { items: contextItems, total: contextTotal, fetchCart } = useCart();
+    const [checkoutItems, setCheckoutItems] = useState([]);
+    const [checkoutTotal, setCheckoutTotal] = useState(0);
+
+    useEffect(() => {
+        if (sessionId) {
+            const token = localStorage.getItem("accessToken");
+            fetch(`${API_URL}/api/orders/session/${sessionId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message && !Array.isArray(data)) throw new Error(data.message);
+                setCheckoutItems(data);
+                const total = data.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+                setCheckoutTotal(total);
+            })
+            .catch(err => {
+                setMsg("Lỗi phiên thanh toán: " + err.message);
+            });
+        } else {
+            setCheckoutItems(contextItems);
+            setCheckoutTotal(contextTotal);
+        }
+    }, [sessionId, contextItems, contextTotal]);
 
     const [step, setStep] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -69,7 +96,7 @@ const CheckoutPage = () => {
                 },
                 body: JSON.stringify({
                     couponCode: couponCode.trim(),
-                    items: items.map((i) => ({
+                    items: checkoutItems.map((i) => ({
                         productId: i.productId,
                         quantity: i.quantity,
                     })),
@@ -206,7 +233,7 @@ const CheckoutPage = () => {
             navigate("/login");
             return;
         }
-        if (items.length === 0) {
+        if (checkoutItems.length === 0) {
             setMsg("Giỏ hàng trống.");
             return;
         }
@@ -229,7 +256,7 @@ const CheckoutPage = () => {
                 phone: ship.phone,
                 street: combinedStreet,
             };
-            const orderItems = items.map((i) => ({
+            const orderItems = checkoutItems.map((i) => ({
                 productId: i.productId,
                 quantity: i.quantity,
                 color: i.color || null,
@@ -259,7 +286,7 @@ const CheckoutPage = () => {
         }
     };
 
-    const subtotal = total;
+    const subtotal = checkoutTotal;
     const tax = 0; // tax is set to 0 to match mockup
     const couponDiscount = appliedCoupon ? appliedCoupon.discountAmount : 0;
     const pointsDiscount = usePoints
@@ -742,17 +769,17 @@ const CheckoutPage = () => {
                                     ORDER SUMMARY
                                 </h2>
                                 <span className="text-[14px] font-medium text-black">
-                                    {items.length} items
+                                    {checkoutItems.length} items
                                 </span>
                             </div>
 
                             <div className="flex flex-col gap-6 mb-8 border-t border-black/10 pt-6">
-                                {items.map((item) => {
-                                    const imgSrc = item.product?.image
+                                {checkoutItems.map((item) => {
+                                    const imgSrc = item.productImage || (item.product?.image
                                         ? item.product.image.startsWith("http")
                                             ? item.product.image
                                             : `${API_URL}${item.product.image}`
-                                        : null;
+                                        : null);
                                     const stock = item.product?.stock || 0;
                                     return (
                                         <div
@@ -773,12 +800,11 @@ const CheckoutPage = () => {
                                             <div className="flex-1 flex flex-col justify-start min-w-0">
                                                 <div className="flex justify-between items-start mb-1">
                                                     <h3 className="font-oswald text-[16px] font-medium leading-tight truncate pr-2">
-                                                        {item.product?.title}
+                                                        {item.productTitle || item.product?.title}
                                                     </h3>
                                                     <div className="font-anton text-xl tracking-widest text-black flex-shrink-0">
                                                         {fmt(
-                                                            item.product
-                                                                ?.price || 0,
+                                                            item.price || item.product?.price || 0,
                                                         )}
                                                     </div>
                                                 </div>
@@ -796,7 +822,7 @@ const CheckoutPage = () => {
                                                 <p className="text-[13px] text-black/60 font-medium truncate">
                                                     Skin:{" "}
                                                     <span className="text-black font-semibold">
-                                                        {item.product?.title}
+                                                        {item.productTitle || item.product?.title}
                                                     </span>
                                                 </p>
                                                 {item.color && (
