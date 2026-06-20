@@ -6,8 +6,8 @@
 }
 
 :root {
-    --theme-bg: #ffffff;
-    --theme-surface: #f8f8f8;
+    --theme-bg: #f0ebe3;
+    --theme-surface: #f0ebe3;
     --theme-surface-2: #e0e0e0;
     --theme-line: rgba(0, 0, 0, 0.15);
     --theme-text: #111111;
