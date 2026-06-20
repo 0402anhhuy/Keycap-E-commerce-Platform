@@ -46,7 +46,7 @@ const Header = ({ isHidden = false }) => {
 
     const headerBg = isAtTop
         ? "bg-transparent border-transparent"
-        : `bg-white border-b-2 border-black ${isScrolled ? "shadow-[0_4px_0_rgba(0,0,0,0.1)]" : ""}`;
+        : `bg-[var(--theme-bg)] border-b-2 border-black ${isScrolled ? "shadow-[0_4px_0_rgba(0,0,0,0.1)]" : ""}`;
 
     const logoBg = isAtTop
         ? "bg-white text-black"
