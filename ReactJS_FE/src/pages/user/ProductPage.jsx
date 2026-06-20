@@ -576,29 +576,16 @@ const ProductPage = () => {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="text-black hover:text-[var(--theme-accent)] transition-colors mt-1"
+                            className="text-black hover:text-[var(--theme-accent)] transition-colors mt-1 cursor-pointer"
                         >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="5"
-                                viewBox="0 0 24 35"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 19l-7-7 7-7"
-                                ></path>
-                            </svg>
+                            <h2 className="text-[32px] font-anton uppercase tracking-wider m-0 text-black leading-none">
+                                Filter
+                            </h2>
                         </button>
-                        <h2 className="text-[32px] font-anton uppercase tracking-wider m-0 text-black leading-none">
-                            Filter
-                        </h2>
                     </div>
                     <button
                         onClick={clearFilters}
-                        className="text-[13px] font-oswald font-medium uppercase tracking-widest text-[var(--theme-accent)] underline underline-offset-4 hover:text-black transition-colors mt-2"
+                        className="text-[13px] font-oswald font-medium uppercase tracking-widest text-[var(--theme-accent)] underline underline-offset-4 hover:text-black transition-colors mt-2 cursor-pointer"
                     >
                         Clear all
                     </button>
@@ -640,7 +627,7 @@ const ProductPage = () => {
                                             cat,
                                         )
                                     }
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory.includes(cat) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory.includes(cat) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center cursor-pointer`}
                                 >
                                     {cat}
                                 </button>
@@ -685,7 +672,7 @@ const ProductPage = () => {
                                             col,
                                         )
                                     }
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCollection.includes(col) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedCollection.includes(col) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center min-h-[60px] flex items-center justify-center cursor-pointer`}
                                 >
                                     {col}
                                 </button>
@@ -732,7 +719,7 @@ const ProductPage = () => {
                                         setCustomMin("");
                                         setCustomMax("");
                                     }}
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${priceRange.includes(pr.value) && !customMin && !customMax ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex items-center justify-center text-center min-h-[60px]`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${priceRange.includes(pr.value) && !customMin && !customMax ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex items-center justify-center text-center min-h-[60px] cursor-pointer`}
                                 >
                                     {pr.label}
                                 </button>
@@ -775,7 +762,7 @@ const ProductPage = () => {
                                             color.value,
                                         )
                                     }
-                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${color.bg} ${color.text} ${selectedColor.includes(color.value) ? "shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1 ring-2 ring-black ring-offset-2" : "hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] opacity-90 hover:opacity-100"} text-center min-h-[60px] flex items-center justify-center`}
+                                    className={`rounded-md h-full px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${color.bg} ${color.text} ${selectedColor.includes(color.value) ? "shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1 ring-2 ring-black ring-offset-2" : "hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] opacity-90 hover:opacity-100"} text-center min-h-[60px] flex items-center justify-center cursor-pointer`}
                                 >
                                     {color.label}
                                 </button>
@@ -815,7 +802,7 @@ const ProductPage = () => {
                                     onClick={() =>
                                         toggleFilterItem(setSelectedSize, sz)
                                     }
-                                    className={`rounded-md px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedSize.includes(sz) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center`}
+                                    className={`rounded-md px-2 py-2 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedSize.includes(sz) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} text-center cursor-pointer`}
                                 >
                                     {sz}
                                 </button>
@@ -858,7 +845,7 @@ const ProductPage = () => {
                                             form.value,
                                         )
                                     }
-                                    className={`rounded-md px-2 py-3 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedForm.includes(form.value) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex flex-col items-center justify-center text-center gap-2`}
+                                    className={`rounded-md px-2 py-3 border-2 border-black font-oswald text-xs font-bold uppercase tracking-widest transition-all ${selectedForm.includes(form.value) ? "bg-[var(--theme-accent)] text-white shadow-[4px_4px_0_rgba(0,0,0,1)] -translate-y-1" : "bg-white text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)]"} flex flex-col items-center justify-center text-center gap-2 cursor-pointer`}
                                 >
                                     {form.icon && (
                                         <div className="w-8 h-8 flex items-center justify-center ">
@@ -892,7 +879,7 @@ const ProductPage = () => {
                             setSidebarOpen(false);
                             window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
-                        className="w-1/3 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] bg-cover bg-center text-white px-8 py-3 font-oswald font-bold text-xl uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
+                        className="w-1/3 bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] bg-cover bg-center text-white px-8 py-3 font-oswald font-bold text-xl uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black cursor-pointer"
                     >
                         Apply
                     </button>
@@ -927,7 +914,7 @@ const ProductPage = () => {
                                     <option
                                         key={o.value}
                                         value={o.value}
-                                        className="text-black bg-white uppercase font-bold tracking-widest"
+                                        className="text-black bg-white uppercase font-bold tracking-widest cursor-pointer"
                                     >
                                         {o.label}
                                     </option>
@@ -964,7 +951,7 @@ const ProductPage = () => {
                         >
                             <button
                                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                                className="border-2 border-black bg-white px-5 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all"
+                                className="border-2 border-black bg-white px-5 py-2 flex items-center gap-2 font-oswald font-bold uppercase tracking-widest text-black hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
                             >
                                 <svg
                                     className="w-4 h-4"
@@ -997,7 +984,7 @@ const ProductPage = () => {
                                 />
                                 <button
                                     type="submit"
-                                    className="px-4 text-black hover:bg-black hover:text-white transition-colors"
+                                    className="px-4 text-black hover:bg-black hover:text-white transition-colors cursor-pointer"
                                 >
                                     <svg
                                         className="w-4 h-4"
@@ -1031,7 +1018,7 @@ const ProductPage = () => {
                                 </p>
                                 <button
                                     onClick={clearFilters}
-                                    className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black"
+                                    className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black cursor-pointer"
                                 >
                                     Clear filters
                                 </button>
@@ -1062,7 +1049,7 @@ const ProductPage = () => {
                                                 )
                                             }
                                             disabled={currentPage === 1}
-                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d cursor-pointer"
                                         >
                                             &lt;
                                         </button>
@@ -1080,7 +1067,7 @@ const ProductPage = () => {
                                                 onClick={() =>
                                                     setCurrentPage(page)
                                                 }
-                                                className={`w-10 h-10 flex items-center justify-center border-2 border-black transition-colors btn-2d ${currentPage === page ? "bg-[var(--theme-accent)] text-white border-[var(--theme-accent)]" : "hover:bg-black hover:text-white"}`}
+                                                className={`w-10 h-10 flex items-center justify-center border-2 border-black transition-colors btn-2d ${currentPage === page ? "bg-[var(--theme-accent)] text-white border-[var(--theme-accent)]" : "hover:bg-black hover:text-white"} cursor-pointer`}
                                             >
                                                 {page}
                                             </button>
@@ -1101,7 +1088,7 @@ const ProductPage = () => {
                                                 currentPage ===
                                                 Math.ceil(filtered.length / 9)
                                             }
-                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d cursor-pointer"
                                         >
                                             &gt;
                                         </button>
