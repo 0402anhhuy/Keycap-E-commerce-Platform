@@ -66,32 +66,44 @@ const CollectionsPage = () => {
                 </div>
 
                 {/* Top Bar */}
-                <div className="flex flex-col md:flex-row justify-between items-end md:items-center mt-8 mb-8 gap-4">
-                    <h1 className="text-4xl md:text-5xl font-anton uppercase tracking-wider text-black">
-                        Collections
-                    </h1>
+                <div className="flex flex-col md:flex-row justify-between items-end md:items-center border-b pb-6 border-black/30 mt-8 mb-8 gap-4">
+                    <div>
+                        <h1
+                            className="text-6xl font-anton uppercase tracking-wider text-black m-0 leading-none"
+                            style={{
+                                textShadow: "1px 1px 0 rgba(255,255,255,0.5)",
+                            }}
+                        >
+                            COLLECTIONS
+                        </h1>
+                    </div>
 
-                    <div className="relative border-2 border-black bg-transparent">
+                    <div className="relative flex items-stretch border-2 border-black bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] transition-transform focus-within:-translate-y-[2px]">
                         <input
                             type="text"
-                            placeholder="SEARCH"
+                            placeholder="Search"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full md:w-64 px-4 py-2 bg-white text-sm font-oswald tracking-widest uppercase focus:outline-none placeholder:text-black/50"
+                            className="flex-1 md:w-64 px-4 py-3 bg-transparent text-sm font-oswald tracking-widest focus:outline-none placeholder:text-black/50"
                         />
-                        <svg
-                            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                        <button
+                            type="submit"
+                            className="px-4 flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors cursor-pointer"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
+                            <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2.5"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                ></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -139,7 +151,7 @@ const CollectionsPage = () => {
                                 setCurrentPage((p) => Math.max(1, p - 1))
                             }
                             disabled={currentPage === 1}
-                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d cursor-pointer"
                         >
                             &lt;
                         </button>
@@ -155,7 +167,7 @@ const CollectionsPage = () => {
                                     currentPage === page
                                         ? "bg-[var(--theme-accent)] text-white border-[var(--theme-accent)]"
                                         : "hover:bg-black hover:text-white"
-                                }`}
+                                } cursor-pointer`}
                             >
                                 {page}
                             </button>
@@ -168,7 +180,7 @@ const CollectionsPage = () => {
                                 )
                             }
                             disabled={currentPage === totalPages}
-                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d"
+                            className="w-10 h-10 flex items-center justify-center text-black border-2 border-black disabled:opacity-30 disabled:border-black/30 hover:bg-black hover:text-white transition-colors btn-2d cursor-pointer"
                         >
                             &gt;
                         </button>
@@ -178,7 +190,7 @@ const CollectionsPage = () => {
                 {/* Empty State */}
                 {!loading && filteredCollections.length === 0 && (
                     <div className="text-center py-20 text-black/50 font-oswald tracking-widest uppercase">
-                        No collections found.
+                        No collections found
                     </div>
                 )}
             </main>
