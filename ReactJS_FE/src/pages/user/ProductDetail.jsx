@@ -989,15 +989,48 @@ const ProductDetail = () => {
                                                     if (adding) return;
                                                     setAdding(true);
                                                     try {
-                                                        await addToCart(
-                                                            product.id,
-                                                            quantity,
+                                                        const token =
+                                                            localStorage.getItem(
+                                                                "accessToken",
+                                                            );
+                                                        if (!token) {
+                                                            navigate("/login");
+                                                            return;
+                                                        }
+                                                        const res = await fetch(
+                                                            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/orders/buy-now`,
+                                                            {
+                                                                method: "POST",
+                                                                headers: {
+                                                                    "Content-Type":
+                                                                        "application/json",
+                                                                    Authorization: `Bearer ${token}`,
+                                                                },
+                                                                body: JSON.stringify(
+                                                                    {
+                                                                        productId:
+                                                                            product.id,
+                                                                        quantity:
+                                                                            quantity,
+                                                                    },
+                                                                ),
+                                                            },
                                                         );
-                                                        navigate("/checkout");
+                                                        const data =
+                                                            await res.json();
+                                                        if (!res.ok)
+                                                            throw new Error(
+                                                                data.message ||
+                                                                    "Lỗi tạo phiên thanh toán",
+                                                            );
+
+                                                        navigate(
+                                                            `/checkout?session=${data.sessionId}`,
+                                                        );
                                                     } catch (err) {
                                                         showToast(
                                                             err.message ||
-                                                                "Lỗi thêm giỏ hàng",
+                                                                "Lỗi tạo phiên thanh toán",
                                                         );
                                                         setAdding(false);
                                                     }
@@ -1360,8 +1393,10 @@ const ProductDetail = () => {
                                     <p className="font-oswald text-lg font-bold leading-tight text-[16px]">
                                         {product.title}
                                     </p>
-                                    <div className="font-anton text-3xl">
-                                        {Number(product.price).toLocaleString()}
+                                    <div className="font-anton text-2xl">
+                                        {Number(
+                                            calculateDiscountedPrice(),
+                                        ).toLocaleString()}
                                         $
                                     </div>
                                 </div>
@@ -1384,22 +1419,24 @@ const ProductDetail = () => {
                         </div>
 
                         <div className="text-[#F17336] text-sm font-bold flex items-center justify-start gap-1.5 w-full mb-6 mt-1">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                ></path>
-                            </svg>
-                            <span className="relative top-[1px]">
-                                Only {product.stock} item(s) in stock
-                            </span>
+                            {product.stock <= 25 && (
+                                <>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                        />
+                                    </svg>
+                                    Only {product.stock} Item(s) in stock
+                                </>
+                            )}
                         </div>
 
                         <button
