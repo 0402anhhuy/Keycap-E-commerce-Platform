@@ -35,7 +35,7 @@ const Login = () => {
         e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            setMsg("Vui lòng nhập đầy đủ thông tin");
+            setMsg("Please enter your email and password");
             setMsgType("error");
             return;
         }
@@ -74,7 +74,7 @@ const Login = () => {
             localStorage.setItem("accessToken", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
-            setMsg("Đăng nhập thành công!");
+            setMsg("Login successful");
             setMsgType("success");
 
             const params = new URLSearchParams(window.location.search);
@@ -92,7 +92,7 @@ const Login = () => {
                 window.location.href = redirectUrl;
             }, 500);
         } catch (err) {
-            setMsg(err.message || "Lỗi đăng nhập");
+            setMsg(err.message || "Error");
             setMsgType("error");
             setLoading(false);
         }
@@ -179,7 +179,7 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="mt-2 w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70"
+                        className="mt-2 w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70 cursor-pointer"
                     >
                         <span className="text-[15px] leading-tight tracking-widest uppercase">
                             {loading ? "PROCESSING..." : "SIGN IN"}
