@@ -568,7 +568,7 @@ const HomePage = () => {
                     <div className="flex flex-col items-center mt-8">
                         <button
                             onClick={() => navigate("/products")}
-                            className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white font-oswald font-bold py-3 px-10 text-sm uppercase tracking-wider hover:bg-[var(--theme-accent-2)] transition-colors shadow-lg btn-2d flex items-center gap-2 cursor-pointer"
+                            className="h-12 w-40 bg-[var(--theme-accent)] px-5 py-2 items-center gap-2 font-oswald font-bold uppercase tracking-widest text-white hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] hover:border-2 hover:border-black transition-all cursor-pointer"
                         >
                             EXPLORE NOW
                         </button>
