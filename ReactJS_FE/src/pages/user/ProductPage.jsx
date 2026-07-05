@@ -1018,7 +1018,7 @@ const ProductPage = () => {
                                 </p>
                                 <button
                                     onClick={clearFilters}
-                                    className="bg-[url('https://dwarf-factory.com/assets/images/button/btn-orange.jpg')] text-white px-6 py-2 font-oswald font-bold text-sm uppercase tracking-widest btn-2d border-2 border-transparent hover:border-black cursor-pointer"
+                                    className="h-12 w-40 border-2 border-black bg-[var(--theme-accent)] px-5 py-2 items-center gap-2 font-oswald font-bold uppercase tracking-widest text-white hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
                                 >
                                     Clear filters
                                 </button>
