@@ -120,7 +120,7 @@ const Header = ({ isHidden = false }) => {
                         />
                         <button
                             type="submit"
-                            className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors`}
+                            className={`${iconColor} hover:text-[var(--theme-accent)] transition-colors cursor-pointer`}
                         >
                             <svg
                                 className="w-5 h-5"
