@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { OtpInput } from "../components";
-import Header from "../components/Header";
+import { OtpInput, Toast } from "../components";
 
 const STEPS = ["Email", "Verify", "New Password"];
 
@@ -18,6 +17,8 @@ const ForgotPassword = () => {
     const [msg, setMsg] = useState(null);
     const [msgType, setMsgType] = useState("info");
     const [errors, setErrors] = useState({});
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -28,7 +29,7 @@ const ForgotPassword = () => {
 
     const sendOtp = async () => {
         if (!email) {
-            setErrors({ email: "Vui lòng nhập email." });
+            setErrors({ email: "Email is required" });
             return;
         }
         setErrors({});
@@ -41,11 +42,11 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ email }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Lỗi gửi OTP");
+            if (!res.ok) throw new Error(data.message || "Error");
             setStep(1);
-            setMessage("OTP đã được gửi tới email của bạn.", "success");
+            setMessage("OTP has been sent to your email", "success");
         } catch (err) {
-            setMessage(err.message, "error");
+            setMessage("Email does not exist", "Error");
         } finally {
             setLoading(false);
         }
@@ -53,7 +54,7 @@ const ForgotPassword = () => {
 
     const verifyOtp = async () => {
         if (otp.length !== 6) {
-            setErrors({ otp: "Vui lòng nhập đủ 6 chữ số." });
+            setMessage("Please enter 6 digits", "Error");
             return;
         }
         setErrors({});
@@ -66,7 +67,7 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ email, otp }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "OTP không hợp lệ");
+            if (!res.ok) throw new Error(data.message || "Invalid OTP");
             setStep(2);
             setMessage(null);
         } catch (err) {
@@ -79,9 +80,9 @@ const ForgotPassword = () => {
     const resetPassword = async () => {
         const newErrors = {};
         if (!passwords.newPassword || passwords.newPassword.length < 6)
-            newErrors.newPassword = "Mật khẩu tối thiểu 6 ký tự.";
+            newErrors.newPassword = "Password must be at least 6 characters";
         if (passwords.newPassword !== passwords.confirmPassword)
-            newErrors.confirmPassword = "Mật khẩu xác nhận không khớp.";
+            newErrors.confirmPassword = "Confirm password does not match";
         if (Object.keys(newErrors).length) {
             setErrors(newErrors);
             return;
@@ -100,15 +101,14 @@ const ForgotPassword = () => {
                 }),
             });
             const data = await res.json();
-            if (!res.ok)
-                throw new Error(data.message || "Lỗi đặt lại mật khẩu");
+            if (!res.ok) throw new Error(data.message || "Error");
             setMessage(
-                "Đặt lại mật khẩu thành công! Đang chuyển hướng...",
-                "success",
+                "Reset password successfully! Redirecting...",
+                "Success",
             );
             setTimeout(() => navigate("/login"), 1500);
         } catch (err) {
-            setMessage(err.message, "error");
+            setMessage(err.message, "Error");
         } finally {
             setLoading(false);
         }
@@ -116,8 +116,12 @@ const ForgotPassword = () => {
 
     return (
         <div className="min-h-screen bg-[#e5e5e5] font-oswald flex flex-col items-center justify-center pt-24 pb-12 px-4 relative">
-            <Header />
-
+            <Toast
+                show={!!msg}
+                message={msg}
+                type={msgType}
+                onClose={() => setMsg(null)}
+            />
             <div className="w-full max-w-lg bg-white border-2 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] p-8 md:p-10 z-10 relative">
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-anton uppercase tracking-wider text-black mb-2">
@@ -163,7 +167,7 @@ const ForgotPassword = () => {
                         <button
                             onClick={sendOtp}
                             disabled={loading}
-                            className="mt-4 w-full bg-black text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-70"
+                            className="mt-4 w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-70 cursor-pointer"
                         >
                             <span className="text-[15px] leading-tight tracking-widest uppercase">
                                 {loading ? "PROCESSING..." : "SEND OTP"}
@@ -204,11 +208,11 @@ const ForgotPassword = () => {
                             )}
                         </div>
 
-                        <div className="flex gap-4 mt-6">
+                        <div className="flex gap-4 mt-3">
                             <button
                                 onClick={verifyOtp}
                                 disabled={loading}
-                                className="flex-[2] bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70"
+                                className="flex-[2] bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70 cursor-pointer"
                             >
                                 <span className="text-[15px] leading-tight tracking-widest uppercase">
                                     {loading ? "VERIFYING..." : "CONFIRM OTP"}
@@ -221,7 +225,7 @@ const ForgotPassword = () => {
                                     setMessage(null);
                                 }}
                                 disabled={loading}
-                                className="flex-1 bg-white text-black font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70"
+                                className="flex-1 bg-white text-black font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70 cursor-pointer"
                             >
                                 <span className="text-[15px] leading-tight tracking-widest uppercase">
                                     CHANGE
@@ -232,7 +236,7 @@ const ForgotPassword = () => {
                             Didn't receive?{" "}
                             <button
                                 onClick={sendOtp}
-                                className="text-black hover:text-[var(--theme-accent)] hover:underline ml-1"
+                                className="text-black hover:text-[var(--theme-accent)] hover:underline ml-1 cursor-pointer"
                             >
                                 Resend
                             </button>
@@ -251,18 +255,62 @@ const ForgotPassword = () => {
                                     </span>
                                 )}
                             </label>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={passwords.newPassword}
-                                onChange={(e) =>
-                                    setPasswords({
-                                        ...passwords,
-                                        newPassword: e.target.value,
-                                    })
-                                }
-                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={passwords.newPassword}
+                                    onChange={(e) =>
+                                        setPasswords({
+                                            ...passwords,
+                                            newPassword: e.target.value,
+                                        })
+                                    }
+                                    className="border-2 border-black p-3 pr-10 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent w-full"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowNewPassword(!showNewPassword)
+                                    }
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black cursor-pointer focus:outline-none transition-colors"
+                                >
+                                    {showNewPassword ? (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                            />
+                                        </svg>
+                                    ) : (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
@@ -273,24 +321,74 @@ const ForgotPassword = () => {
                                     </span>
                                 )}
                             </label>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={passwords.confirmPassword}
-                                onChange={(e) =>
-                                    setPasswords({
-                                        ...passwords,
-                                        confirmPassword: e.target.value,
-                                    })
-                                }
-                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={
+                                        showConfirmPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    placeholder="••••••••"
+                                    value={passwords.confirmPassword}
+                                    onChange={(e) =>
+                                        setPasswords({
+                                            ...passwords,
+                                            confirmPassword: e.target.value,
+                                        })
+                                    }
+                                    className="border-2 border-black p-3 pr-10 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent w-full"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword,
+                                        )
+                                    }
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black cursor-pointer focus:outline-none transition-colors"
+                                >
+                                    {showConfirmPassword ? (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                            />
+                                        </svg>
+                                    ) : (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         <button
                             onClick={resetPassword}
                             disabled={loading}
-                            className="mt-4 w-full bg-[var(--theme-accent)] hover:bg-black text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70"
+                            className="mt-4 w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70 cursor-pointer"
                         >
                             <span className="text-[15px] leading-tight tracking-widest uppercase">
                                 {loading ? "PROCESSING..." : "RESET PASSWORD"}
@@ -299,20 +397,12 @@ const ForgotPassword = () => {
                     </div>
                 )}
 
-                {msg && (
-                    <div
-                        className={`mt-6 p-3 border-2 border-black text-xs font-bold uppercase tracking-widest text-center ${msgType === "error" ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"}`}
-                    >
-                        {msg}
-                    </div>
-                )}
-
                 <div className="mt-8 pt-6 border-t-2 border-black/10 text-center">
                     <Link
                         to="/login"
                         className="text-xs font-bold text-black/60 hover:text-black uppercase tracking-widest transition-colors hover:underline"
                     >
-                        ← BACK TO LOGIN
+                        BACK TO LOGIN
                     </Link>
                 </div>
             </div>
