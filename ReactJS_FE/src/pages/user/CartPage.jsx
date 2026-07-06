@@ -48,7 +48,13 @@ const CartPage = () => {
                 <div className="mt-8 mb-4 border-b-2 border-black/10 pb-4 relative">
                     <div className="flex flex-col lg:flex-row gap-12 items-end">
                         <div className="flex-1 flex justify-between items-end w-full">
-                            <h1 className="text-[40px] leading-none font-anton uppercase tracking-widest text-black">
+                            <h1
+                                className="text-6xl font-anton uppercase tracking-wider text-black m-0 leading-none"
+                                style={{
+                                    textShadow:
+                                        "1px 1px 0 rgba(255,255,255,0.5)",
+                                }}
+                            >
                                 YOUR CART
                             </h1>
                             <span className="text-[13px] font-oswald font-medium text-black/50 tracking-widest uppercase mb-1 hidden md:block">
