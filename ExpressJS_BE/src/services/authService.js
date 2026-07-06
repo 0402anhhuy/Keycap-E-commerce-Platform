@@ -28,8 +28,7 @@ const signToken = (payload) =>
     });
 
 const createVerification = async ({
-    firstName,
-    lastName,
+    name,
     dob,
     email,
     password,
@@ -43,12 +42,11 @@ const createVerification = async ({
 
     // Encode extra fields into address JSON to avoid DB schema change for Verification
     const addressData = address || {};
-    addressData.firstName = firstName;
-    addressData.lastName = lastName;
+    addressData.name = name;
     addressData.dob = dob;
 
     await Verification.create({
-        name: `${firstName} ${lastName}`.trim(),
+        name,
         email,
         password,
         address: addressData,
@@ -72,22 +70,14 @@ const verifyOtp = async ({ email, otp, type }) => {
     return pending;
 };
 
-const register = async ({
-    firstName,
-    lastName,
-    dob,
-    email,
-    password,
-    address,
-}) => {
+const register = async ({ name, dob, email, password, address }) => {
     const existing = await User.findOne({ where: { email } });
     if (existing)
         throw Object.assign(new Error("Email already exists"), { status: 409 });
 
     const passwordHash = await bcrypt.hash(password, 10);
     const otp = await createVerification({
-        firstName,
-        lastName,
+        name,
         dob,
         email,
         password: passwordHash,
@@ -111,8 +101,7 @@ const verifyRegister = async ({ email, otp }) => {
     }
 
     const user = await User.create({
-        firstName: pending.address?.firstName || "",
-        lastName: pending.address?.lastName || "",
+        name: pending.address?.name || "",
         dob: pending.address?.dob || null,
         email: pending.email,
         password: pending.password,
@@ -124,7 +113,7 @@ const verifyRegister = async ({ email, otp }) => {
     const payload = {
         id: user.id,
         email: user.email,
-        name: `${user.firstName} ${user.lastName}`,
+        name: user.name,
         role: user.role,
         phone: user.phone,
         avatar: user.avatar,
@@ -137,17 +126,17 @@ const verifyRegister = async ({ email, otp }) => {
 const login = async ({ email, password }) => {
     const user = await User.findOne({ where: { email } });
     if (!user)
-        throw Object.assign(new Error("Email hoặc mật khẩu không đúng."), {
+        throw Object.assign(new Error("Email or password is not correct"), {
             status: 401,
         });
     if (!user.isActive)
-        throw Object.assign(new Error("Tài khoản đã bị khóa."), {
+        throw Object.assign(new Error("Account is banned"), {
             status: 403,
         });
 
     const match = await bcrypt.compare(password, user.password);
     if (!match)
-        throw Object.assign(new Error("Email hoặc mật khẩu không đúng."), {
+        throw Object.assign(new Error("Email or password is not correct"), {
             status: 401,
         });
 
@@ -155,7 +144,7 @@ const login = async ({ email, password }) => {
     const payload = {
         id: user.id,
         email: user.email,
-        name: `${user.firstName} ${user.lastName}`,
+        name: user.name,
         role: user.role,
         phone: user.phone,
         avatar: user.avatar,
@@ -168,12 +157,12 @@ const login = async ({ email, password }) => {
 const forgotPassword = async ({ email }) => {
     const user = await User.findOne({ where: { email } });
     if (!user)
-        throw Object.assign(new Error("Email không tồn tại trong hệ thống."), {
+        throw Object.assign(new Error("Email does not exist"), {
             status: 404,
         });
 
     const otp = await createVerification({ email, type: "reset" });
-    await sendOTPEmail(email, otp, "Mã OTP đặt lại mật khẩu");
+    await sendOTPEmail(email, otp, "OTP has been sent to your email");
 };
 
 const verifyResetOtp = async ({ email, otp }) => {
@@ -186,14 +175,13 @@ const resetPassword = async ({ email, newPassword }) => {
         where: { email, type: "reset" },
     });
     if (!pending || pending.otpHash !== "VERIFIED")
-        throw Object.assign(new Error("Yêu cầu chưa được xác thực OTP."), {
+        throw Object.assign(new Error("OTP verification is required"), {
             status: 400,
         });
     if (new Date() > new Date(pending.expiresAt))
-        throw Object.assign(
-            new Error("Phiên đặt lại mật khẩu đã hết hạn, vui lòng thử lại."),
-            { status: 400 },
-        );
+        throw Object.assign(new Error("OTP verification has expired"), {
+            status: 400,
+        });
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
     await User.update({ password: passwordHash }, { where: { email } });
