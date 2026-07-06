@@ -130,15 +130,13 @@ const Register = () => {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                throw new Error(data.message || "Lỗi gửi OTP");
+                throw new Error(data.message || "Error sending OTP");
             }
 
             setStep(1);
-            setMsg(data.message || "OTP đã được gửi tới email");
-            setMsgType("success");
+            setMsg("OTP has been sent to your email", "success");
         } catch (err) {
-            setMsg(err.message || "Lỗi gửi OTP");
-            setMsgType("error");
+            setMsg("Error sending OTP", "error");
         } finally {
             setLoading(false);
         }
@@ -149,7 +147,7 @@ const Register = () => {
 
         if (!/^\d{6}$/.test(otp)) {
             setErrors({
-                otp: "OTP phải gồm 6 chữ số.",
+                otp: "OTP must be 6 digits",
             });
 
             return;
@@ -174,17 +172,15 @@ const Register = () => {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                throw new Error(data.message || "Lỗi xác thực OTP");
+                throw new Error(data.message || "Error verifying OTP");
             }
 
-            setMsg("Đăng ký thành công! Đang chuyển hướng...");
-            setMsgType("success");
+            setMsg("Register success! Redirecting...", "success");
             setTimeout(() => {
                 navigate("/login" + window.location.search);
             }, 1500);
         } catch (err) {
-            setMsg(err.message || "Lỗi xác thực OTP");
-            setMsgType("error");
+            setMsg("Error verifying OTP", "error");
         } finally {
             setLoading(false);
         }
@@ -363,7 +359,9 @@ const Register = () => {
                                 <input
                                     name="confirmPassword"
                                     type={
-                                        showConfirmPassword ? "text" : "password"
+                                        showConfirmPassword
+                                            ? "text"
+                                            : "password"
                                     }
                                     placeholder="••••••••"
                                     value={formData.confirmPassword}
