@@ -24,7 +24,6 @@ const Register = () => {
     const [step, setStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState(null);
-    const [msgType, setMsgType] = useState("info");
     const [errors, setErrors] = useState({});
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
