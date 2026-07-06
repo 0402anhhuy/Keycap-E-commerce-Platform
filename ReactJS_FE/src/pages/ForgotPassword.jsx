@@ -42,11 +42,11 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ email }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Error");
+            if (!res.ok) throw new Error(data.message || "error");
             setStep(1);
             setMessage("OTP has been sent to your email", "success");
         } catch (err) {
-            setMessage("Email does not exist", "Error");
+            setMessage(err.message || "Email does not exist", "error");
         } finally {
             setLoading(false);
         }
@@ -54,7 +54,7 @@ const ForgotPassword = () => {
 
     const verifyOtp = async () => {
         if (otp.length !== 6) {
-            setMessage("Please enter 6 digits", "Error");
+            setMessage("Please enter 6 digits", "error");
             return;
         }
         setErrors({});
@@ -101,14 +101,14 @@ const ForgotPassword = () => {
                 }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Error");
+            if (!res.ok) throw new Error(data.message || "error");
             setMessage(
                 "Reset password successfully! Redirecting...",
                 "Success",
             );
             setTimeout(() => navigate("/login"), 1500);
         } catch (err) {
-            setMessage(err.message, "Error");
+            setMessage(err.message, "error");
         } finally {
             setLoading(false);
         }
