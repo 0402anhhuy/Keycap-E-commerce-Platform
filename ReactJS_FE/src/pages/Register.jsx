@@ -24,9 +24,15 @@ const Register = () => {
     const [step, setStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState(null);
+    const [msgType, setMsgType] = useState("info");
     const [errors, setErrors] = useState({});
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const setMessage = (text, type = "info") => {
+        setMsg(text);
+        setMsgType(type);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -133,9 +139,9 @@ const Register = () => {
             }
 
             setStep(1);
-            setMsg("OTP has been sent to your email", "success");
+            setMessage("OTP has been sent to your email", "success");
         } catch (err) {
-            setMsg("Error sending OTP", "error");
+            setMessage("Error sending OTP", "error");
         } finally {
             setLoading(false);
         }
@@ -174,12 +180,12 @@ const Register = () => {
                 throw new Error(data.message || "Error verifying OTP");
             }
 
-            setMsg("Register success! Redirecting...", "success");
+            setMessage("Register success! Redirecting...", "success");
             setTimeout(() => {
                 navigate("/login" + window.location.search);
             }, 1500);
         } catch (err) {
-            setMsg("Error verifying OTP", "error");
+            setMessage("Error verifying OTP", "error");
         } finally {
             setLoading(false);
         }
