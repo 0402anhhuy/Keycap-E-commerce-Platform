@@ -26,6 +26,8 @@ const Register = () => {
     const [msg, setMsg] = useState(null);
     const [msgType, setMsgType] = useState("info");
     const [errors, setErrors] = useState({});
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,7 +54,7 @@ const Register = () => {
         }
 
         if (!formData.dob) {
-            errs.dob = "Vui lòng chọn ngày sinh.";
+            errs.dob = "Date of birth is required";
         }
 
         if (!email) {
@@ -75,18 +77,18 @@ const Register = () => {
         }
 
         if (!formData.password) {
-            errs.password = "Vui lòng nhập mật khẩu.";
+            errs.password = "Password is required";
         } else if (formData.password.length < 6) {
-            errs.password = "Mật khẩu tối thiểu 6 ký tự.";
+            errs.password = "Password must be at least 6 characters long";
         }
 
         if (!formData.confirmPassword) {
-            errs.confirmPassword = "Vui lòng xác nhận mật khẩu.";
+            errs.confirmPassword = "Confirm password is required";
         } else if (formData.password !== formData.confirmPassword) {
-            errs.confirmPassword = "Mật khẩu xác nhận không khớp.";
+            errs.confirmPassword = "Confirm password does not match";
         }
 
-        if (!formData.address.trim()) errs.address = "Vui lòng nhập địa chỉ.";
+        if (!formData.address.trim()) errs.address = "Address is required";
 
         return errs;
     };
@@ -295,14 +297,58 @@ const Register = () => {
                                     </span>
                                 )}
                             </label>
-                            <input
-                                name="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
-                            />
+                            <div className="relative">
+                                <input
+                                    name="password"
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="border-2 border-black p-3 pr-10 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent w-full"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowNewPassword(!showNewPassword)
+                                    }
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black cursor-pointer focus:outline-none transition-colors"
+                                >
+                                    {showNewPassword ? (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                            />
+                                        </svg>
+                                    ) : (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
@@ -313,14 +359,62 @@ const Register = () => {
                                     </span>
                                 )}
                             </label>
-                            <input
-                                name="confirmPassword"
-                                type="password"
-                                placeholder="••••••••"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
-                            />
+                            <div className="relative">
+                                <input
+                                    name="confirmPassword"
+                                    type={
+                                        showConfirmPassword ? "text" : "password"
+                                    }
+                                    placeholder="••••••••"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className="border-2 border-black p-3 pr-10 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent w-full"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword,
+                                        )
+                                    }
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black cursor-pointer focus:outline-none transition-colors"
+                                >
+                                    {showConfirmPassword ? (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                            />
+                                        </svg>
+                                    ) : (
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
