@@ -1018,7 +1018,7 @@ const ProductPage = () => {
                                 </p>
                                 <button
                                     onClick={clearFilters}
-                                    className="h-12 w-40 border-2 border-black bg-[var(--theme-accent)] px-5 py-2 items-center gap-2 font-oswald font-bold uppercase tracking-widest text-white hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
+                                    className="h-12 w-fit border-2 border-black bg-[var(--theme-accent)] px-5 py-2 items-center gap-2 font-oswald font-bold uppercase tracking-widest text-white hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all cursor-pointer"
                                 >
                                     Clear filters
                                 </button>
