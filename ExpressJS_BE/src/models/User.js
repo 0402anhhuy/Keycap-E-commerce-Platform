@@ -10,13 +10,8 @@ const User = sequelize.define(
             primaryKey: true,
         },
 
-        firstName: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-
-        lastName: {
-            type: DataTypes.STRING(50),
+        name: {
+            type: DataTypes.STRING(100),
             allowNull: false,
         },
 
