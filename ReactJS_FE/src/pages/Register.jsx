@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { OtpInput } from "../components";
 import Toast from "../components/Toast";
 
-const STEPS = ["Thông tin", "Xác thực OTP"];
+const STEPS = ["Information", "OTP Verification"];
 
 const Register = () => {
     const navigate = useNavigate();
@@ -11,8 +11,7 @@ const Register = () => {
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
+        name: "",
         dob: "",
         email: "",
         password: "",
@@ -22,15 +21,10 @@ const Register = () => {
     });
 
     const [otp, setOtp] = useState("");
-
     const [step, setStep] = useState(0);
-
     const [loading, setLoading] = useState(false);
-
     const [msg, setMsg] = useState(null);
-
     const [msgType, setMsgType] = useState("info");
-
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -50,37 +44,33 @@ const Register = () => {
     const validate = () => {
         const errs = {};
 
-        const firstName = formData.firstName.trim();
-        const lastName = formData.lastName.trim();
-
+        const name = formData.name.trim();
         const email = formData.email.trim().toLowerCase();
 
-        if (!firstName) {
-            errs.firstName = "Vui lòng nhập tên.";
+        if (!name) {
+            errs.name = "Name is required";
         }
-        if (!lastName) {
-            errs.lastName = "Vui lòng nhập họ.";
-        }
+
         if (!formData.dob) {
             errs.dob = "Vui lòng chọn ngày sinh.";
         }
 
         if (!email) {
-            errs.email = "Vui lòng nhập email.";
+            errs.email = "Email is required";
         } else {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailRegex.test(email)) {
-                errs.email = "Email không hợp lệ.";
+                errs.email = "Invalid email";
             }
         }
 
         if (!formData.phone.trim()) {
-            errs.phone = "Vui lòng nhập số điện thoại.";
+            errs.phone = "Phone is required";
         } else {
             const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
             if (!phoneRegex.test(formData.phone.trim())) {
-                errs.phone = "Số điện thoại không hợp lệ (10 chữ số).";
+                errs.phone = "Invalid phone";
             }
         }
 
@@ -117,8 +107,7 @@ const Register = () => {
 
         try {
             const payload = {
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim(),
+                name: formData.name.trim(),
                 dob: formData.dob,
                 email: formData.email.trim().toLowerCase(),
                 password: formData.password,
@@ -143,13 +132,10 @@ const Register = () => {
             }
 
             setStep(1);
-
             setMsg(data.message || "OTP đã được gửi tới email");
-
             setMsgType("success");
         } catch (err) {
             setMsg(err.message || "Lỗi gửi OTP");
-
             setMsgType("error");
         } finally {
             setLoading(false);
@@ -190,15 +176,12 @@ const Register = () => {
             }
 
             setMsg("Đăng ký thành công! Đang chuyển hướng...");
-
             setMsgType("success");
-
             setTimeout(() => {
                 navigate("/login" + window.location.search);
             }, 1500);
         } catch (err) {
             setMsg(err.message || "Lỗi xác thực OTP");
-
             setMsgType("error");
         } finally {
             setLoading(false);
@@ -233,36 +216,18 @@ const Register = () => {
                         <div className="flex gap-4">
                             <div className="flex flex-col gap-1.5 flex-1">
                                 <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
-                                    First Name{" "}
-                                    {errors.firstName && (
+                                    Name{" "}
+                                    {errors.name && (
                                         <span className="text-red-500">
-                                            {errors.firstName}
+                                            {errors.name}
                                         </span>
                                     )}
                                 </label>
                                 <input
-                                    name="firstName"
+                                    name="name"
                                     type="text"
-                                    placeholder="John"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-1.5 flex-1">
-                                <label className="text-xs font-bold uppercase tracking-widest text-black flex justify-between">
-                                    Last Name{" "}
-                                    {errors.lastName && (
-                                        <span className="text-red-500">
-                                            {errors.lastName}
-                                        </span>
-                                    )}
-                                </label>
-                                <input
-                                    name="lastName"
-                                    type="text"
-                                    placeholder="Doe"
-                                    value={formData.lastName}
+                                    placeholder="John Doe"
+                                    value={formData.name}
                                     onChange={handleChange}
                                     className="border-2 border-black p-3 text-sm font-semibold focus:outline-none focus:shadow-[4px_4px_0_rgba(0,0,0,1)] transition-all bg-transparent"
                                 />
@@ -379,7 +344,7 @@ const Register = () => {
                         <button
                             onClick={sendOtp}
                             disabled={loading}
-                            className="mt-4 w-full bg-black text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-70"
+                            className="mt-2 w-full bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center gap-2 transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] disabled:opacity-70 cursor-pointer"
                         >
                             <span className="text-[15px] leading-tight tracking-widest uppercase">
                                 {loading ? "PROCESSING..." : "SEND OTP"}
@@ -420,11 +385,11 @@ const Register = () => {
                             )}
                         </div>
 
-                        <div className="flex gap-4 mt-6">
+                        <div className="flex gap-4 mt-3">
                             <button
                                 onClick={verifyOtp}
                                 disabled={loading}
-                                className="flex-[2] bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70"
+                                className="flex-[2] bg-[var(--theme-accent)] text-white font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70 cursor-pointer"
                             >
                                 <span className="text-[15px] leading-tight tracking-widest uppercase">
                                     {loading ? "VERIFYING..." : "CONFIRM"}
@@ -433,7 +398,7 @@ const Register = () => {
                             <button
                                 onClick={sendOtp}
                                 disabled={loading}
-                                className="flex-1 bg-white text-black font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70"
+                                className="flex-1 bg-white text-black font-black h-[52px] flex items-center justify-center transition-all border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_rgba(0,0,0,1)] disabled:opacity-70 cursor-pointer"
                             >
                                 <span className="text-[15px] leading-tight tracking-widest uppercase">
                                     RESEND
@@ -442,8 +407,6 @@ const Register = () => {
                         </div>
                     </div>
                 )}
-
-
 
                 <div className="mt-8 pt-6 border-t-2 border-black/10 text-center">
                     <p className="text-xs font-bold text-black uppercase tracking-widest">
@@ -457,12 +420,12 @@ const Register = () => {
                     </p>
                 </div>
             </div>
-            
-            <Toast 
-                show={!!msg} 
-                message={msg} 
-                type={msgType} 
-                onClose={() => setMsg(null)} 
+
+            <Toast
+                show={!!msg}
+                message={msg}
+                type={msgType}
+                onClose={() => setMsg(null)}
             />
         </div>
     );
