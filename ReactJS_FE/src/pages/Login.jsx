@@ -9,6 +9,11 @@ const Login = () => {
     const [msg, setMsg] = useState(null);
     const [msgType, setMsgType] = useState("info");
 
+    const setMessage = (text, type = "info") => {
+        setMsg(text);
+        setMsgType(type);
+    };
+
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     useEffect(() => {
@@ -35,8 +40,7 @@ const Login = () => {
         e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            setMsg("Please enter your email and password");
-            setMsgType("error");
+            setMessage("Please enter your email and password", "error");
             return;
         }
 
@@ -58,15 +62,13 @@ const Login = () => {
             const data = await res.json();
 
             if (!res.ok) {
-                setMsg(data.message || "Lỗi đăng nhập");
-                setMsgType("error");
+                setMessage(data.message || "Login failed", "error");
                 setLoading(false);
                 return;
             }
 
             if (!data.token) {
-                setMsg("Server không trả token");
-                setMsgType("error");
+                setMessage("Server không trả token", "error");
                 setLoading(false);
                 return;
             }
@@ -74,8 +76,7 @@ const Login = () => {
             localStorage.setItem("accessToken", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
-            setMsg("Login successful");
-            setMsgType("success");
+            setMessage("Login successful", "success");
 
             const params = new URLSearchParams(window.location.search);
             let redirectUrl = params.get("redirect") || "/";
@@ -92,8 +93,7 @@ const Login = () => {
                 window.location.href = redirectUrl;
             }, 500);
         } catch (err) {
-            setMsg(err.message || "Error");
-            setMsgType("error");
+            setMessage(err.message || "Error", "error");
             setLoading(false);
         }
     };
