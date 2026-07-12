@@ -22,12 +22,13 @@ const ProductDetail = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
-
     const [product, setProduct] = useState(null);
     const [similarProducts, setSimilarProducts] = useState([]);
     const [similarStartIndex, setSimilarStartIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [msg, setMsg] = useState("");
+    const [msgType, setMsgType] = useState("error");
 
     const handleNextSimilar = () => {
         if (similarStartIndex + 3 < similarProducts.length) {
@@ -48,13 +49,9 @@ const ProductDetail = () => {
     const [success, setSuccess] = useState(false);
 
     // Toast state
-    const [toastState, setToastState] = useState({
-        show: false,
-        message: "",
-        type: "error",
-    });
-    const showToast = (message, type = "error") => {
-        setToastState({ show: true, message, type });
+    const showToast = (text, type = "error") => {
+        setMsg(text);
+        setMsgType(type);
     };
 
     // Engagement & History states
@@ -295,17 +292,17 @@ const ProductDetail = () => {
                 }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Đánh giá thất bại.");
+            if (!res.ok) throw new Error(data.message || "Review failed");
 
             setReviewMessage(
-                `🎉 Đánh giá thành công! Bạn nhận được +${data.rewardPoints || 10} điểm tích lũy và mã giảm giá ${data.rewardCouponCode || ""}`,
+                `Review successfully! You get +${data.rewardPoints || 10} points and ${data.rewardCouponCode || ""}`,
             );
             setCommentInput("");
             setImagesInput("");
             setEligibleOrder(null);
             fetchProductReviews();
         } catch (err) {
-            setReviewMessage(`❌ Lỗi: ${err.message}`);
+            showToast(err.message, "error");
         } finally {
             setSubmittingReview(false);
         }
@@ -322,8 +319,9 @@ const ProductDetail = () => {
         try {
             await addToCart(product.id, quantity);
             setSuccess(true);
+            showToast("Added to cart successfully!", "success");
         } catch (err) {
-            showToast(err.message || "Lỗi thêm giỏ hàng");
+            showToast(err.message, "error");
         } finally {
             setAdding(false);
         }
@@ -337,10 +335,10 @@ const ProductDetail = () => {
         <div className="min-h-screen text-black relative bg-[url('https://dwarf-factory.com/assets/images/bg/light.jpg')]">
             <Header />
             <Toast
-                show={toastState.show}
-                message={toastState.message}
-                type={toastState.type}
-                onClose={() => setToastState({ ...toastState, show: false })}
+                show={!!msg}
+                message={msg}
+                type={msgType}
+                onClose={() => showToast(null)}
             />
 
             {/* Breadcrumb */}
