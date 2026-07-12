@@ -46,7 +46,7 @@ const ForgotPassword = () => {
             setStep(1);
             setMessage("OTP has been sent to your email", "success");
         } catch (err) {
-            setMessage(err.message || "Email does not exist", "error");
+            setMessage("Error when sending OTP", "error");
         } finally {
             setLoading(false);
         }
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
     const resetPassword = async () => {
         const newErrors = {};
         if (!passwords.newPassword || passwords.newPassword.length < 6)
-            newErrors.newPassword = "Password must be at least 6 characters";
+            setMessage("Password must be at least 6 characters", "error");
         if (passwords.newPassword !== passwords.confirmPassword)
             newErrors.confirmPassword = "Confirm password does not match";
         if (Object.keys(newErrors).length) {
@@ -104,7 +104,7 @@ const ForgotPassword = () => {
             if (!res.ok) throw new Error(data.message || "error");
             setMessage(
                 "Reset password successfully! Redirecting...",
-                "Success",
+                "success",
             );
             setTimeout(() => navigate("/login"), 1500);
         } catch (err) {
