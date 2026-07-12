@@ -66,7 +66,7 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = async (productId, quantity = 1) => {
         const token = getToken();
-        if (!token) throw new Error("Vui lòng đăng nhập");
+        if (!token) throw new Error("Please login to add to cart");
         const res = await fetch(`${API_URL}/api/carts`, {
             method: "POST",
             headers: {
@@ -76,7 +76,7 @@ export const CartProvider = ({ children }) => {
             body: JSON.stringify({ productId, quantity }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Lỗi thêm vào giỏ");
+        if (!res.ok) throw new Error(data.message || "Failed to add to cart");
         await fetchCart();
         return data;
     };
@@ -92,7 +92,7 @@ export const CartProvider = ({ children }) => {
             body: JSON.stringify({ quantity }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Lỗi cập nhật giỏ.");
+        if (!res.ok) throw new Error(data.message || "Error updating cart");
         await fetchCart();
         return data;
     };
@@ -105,7 +105,7 @@ export const CartProvider = ({ children }) => {
         });
         if (!res.ok) {
             const d = await res.json();
-            throw new Error(d.message || "Lỗi xóa sản phẩm.");
+            throw new Error(d.message || "Error removing item from cart");
         }
         await fetchCart();
     };
@@ -118,7 +118,7 @@ export const CartProvider = ({ children }) => {
         });
         if (!res.ok) {
             const d = await res.json();
-            throw new Error(d.message || "Lỗi xóa giỏ.");
+            throw new Error(d.message || "Error clearing cart");
         }
         setItems([]);
         setTotal(0);
