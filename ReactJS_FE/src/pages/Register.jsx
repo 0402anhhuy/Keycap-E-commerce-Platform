@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { OtpInput } from "../components";
-import Toast from "../components/Toast";
+import { OtpInput, Toast } from "../components";
 
 const STEPS = ["Information", "OTP Verification"];
 
