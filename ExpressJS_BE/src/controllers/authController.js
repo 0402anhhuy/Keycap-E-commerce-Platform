@@ -5,11 +5,11 @@ const register = async (req, res) => {
         const { name, dob, email, password, address } = req.body;
         if (!name || !email || !password)
             return res.status(400).json({
-                message: "Vui lòng cung cấp đầy đủ tên, email và mật khẩu.",
+                message: "Please provide name, email and password",
             });
         await authService.register({ name, dob, email, password, address });
         return res.json({
-            message: "OTP đã được gửi tới email. Vui lòng kiểm tra hộp thư.",
+            message: "OTP has been sent to your email",
         });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
@@ -22,7 +22,7 @@ const verifyRegister = async (req, res) => {
         if (!email || !otp)
             return res
                 .status(400)
-                .json({ message: "Vui lòng cung cấp email và mã OTP." });
+                .json({ message: "Please provide email and OTP" });
         const result = await authService.verifyRegister({ email, otp });
         return res.status(201).json(result);
     } catch (err) {
@@ -36,7 +36,7 @@ const login = async (req, res) => {
         if (!email || !password)
             return res
                 .status(400)
-                .json({ message: "Vui lòng cung cấp email và mật khẩu." });
+                .json({ message: "Please provide email and password" });
         const result = await authService.login({ email, password });
         return res.json(result);
     } catch (err) {
@@ -64,9 +64,9 @@ const verifyResetOtp = async (req, res) => {
         if (!email || !otp)
             return res
                 .status(400)
-                .json({ message: "Vui lòng cung cấp email và mã OTP." });
+                .json({ message: "Please provide email and OTP" });
         await authService.verifyResetOtp({ email, otp });
-        return res.json({ message: "OTP hợp lệ." });
+        return res.json({ message: "OTP is valid" });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
     }
@@ -78,9 +78,9 @@ const resetPassword = async (req, res) => {
         if (!email || !newPassword)
             return res
                 .status(400)
-                .json({ message: "Vui lòng cung cấp đầy đủ thông tin." });
+                .json({ message: "Please provide new password" });
         await authService.resetPassword({ email, newPassword });
-        return res.json({ message: "Đặt lại mật khẩu thành công." });
+        return res.json({ message: "Reset password successfully" });
     } catch (err) {
         return res.status(err.status || 500).json({ message: err.message });
     }
